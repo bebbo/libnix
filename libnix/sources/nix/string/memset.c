@@ -1,27 +1,23 @@
 #include <string.h>
 
 void *memset(void *s,int c,size_t n)
-{ size_t m;
-  if(n)
-  { unsigned long *p=(unsigned long *)s;
-    if(n>15)
-    { c*=0x01010101;
-      if((long)p&1)
-      { *((char *)p)++=c;
-        n--; }
-      if((long)p&2)
-      { *((short *)p)++=c;
-        n-=2; }
-      for(m=n/(8*sizeof(long));m;--m)
-      { *p++=c; *p++=c; *p++=c; *p++=c; 
-        *p++=c; *p++=c; *p++=c; *p++=c; }
-      n&=(8*sizeof(long)-1);
-      for(m=n/sizeof(long);m;--m)
-        *p++=c;
-      if((n&=sizeof(long)-1)==0) goto leave;
+{ 
+    unsigned long *p = (unsigned long *)s;
+    unsigned char chr = (unsigned char)c;
+    unsigned long lc = (chr << 24) | (chr << 16) | (chr << 8) | chr;
+    unsigned char *ch;
+    size_t i;
+    size_t num = n / 4;
+    size_t remain = n % 4;
+
+    /* Do LONG operations most of the time to optimize memory bandwidth */
+    for (i = 0; i < num; i++) {
+	*p++ = lc;
     }
-    do;while(*((char *)p)++=c,--n);
-  }
-leave:
-  return s;
+
+    ch = (unsigned char *)p;
+    for (i = 0; i < remain; i++) {
+	*ch++ = chr;
+    }
+    return s;
 }
