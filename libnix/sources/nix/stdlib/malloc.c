@@ -59,10 +59,9 @@ void *malloc(size_t size)
 
 void __initmalloc(void)
 {
-	struct Library *DOSBase = OpenLibrary("dos.library", 0);
-	NewList((struct List *)&__memorylist);
-	__memsema = AllocMem(sizeof(struct SignalSemaphore), MEMF_PUBLIC | MEMF_CLEAR);
-	InitSemaphore(__memsema);
+  NewList((struct List *)&__memorylist);
+  __memsema = AllocMem(sizeof(struct SignalSemaphore), MEMF_PUBLIC | MEMF_CLEAR);
+  InitSemaphore(__memsema);
 }
 
 void __exitmalloc(void)
