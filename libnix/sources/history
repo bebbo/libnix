@@ -371,12 +371,11 @@ S general code cleanup
 V2.0
 
 V2.1
-F added putvar, setvar, mktemp, mkstemp
+F added putenv, setenv, mktemp, mkstemp
 
 V2.2
 Minor include shuffle to avoid having to patch <devices/timer.h> -- thanks to Christian Siebert
 Got rid of GCC 3.x warnings about casting lvalues -- rewrote memset.
-bcopy and bzero now call memset.
 Removed duplicate files snprintf and vsnprintf -- they were wrong anyways.
-__request.c -- rewritten in C (Christian Siebert)
+__request.c -- rewritten in C (Gunther Nikl)
 
