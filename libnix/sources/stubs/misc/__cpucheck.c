@@ -4,11 +4,11 @@
 #if defined(mc68020) || defined(__HAVE_68881__)
 
 #ifdef mc68020
-static const char errtext1[]="Need a 68020 or higher CPU";
+const char errtext1[]="Need a 68020 or higher CPU";
 #endif
 
 #ifdef __HAVE_68881__
-static const char errtext2[]="Need some FPU to run";
+const char errtext2[]="Need some FPU to run";
 #endif
 
 asm(
