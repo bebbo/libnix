@@ -1,21 +1,85 @@
 #include <stdlib.h>
-#include <string.h>
 
+/* This is a _fast_ block move routine! */
+typedef union {
+    void *v;
+    char *c;
+    short *s;
+    long *l;
+} val;
 void bcopy(const void *s1,void *s2,size_t n)
-{
-    unsigned char *ch1 = s1;
-    unsigned char *ch2 = s2;
-    if (ch1 < ch2) {
-	while (n > 0) {
-	    *ch2++ = *ch1++;
-	    n--;
-	}
+{ 
+    size_t m;
+    val v1, v2;
+    v1.v = s1;
+    v2.v = s2;
+    
+    if(!n)
+	return;
+
+    if(s2 < s1) {
+	if(n > 15) {
+	    if((long)s1 & 1) {
+		*v2.c++ = *v1.c++;
+		n--;
+	    }
+	    if(!((long)s2 & 1)) {
+		if((long)s1 & 2) {
+		    *v2.s++ = *v1.s++;
+		    n-=2;
+		}
+		for(m=n/(8*sizeof(long));m;--m) {
+		    *v2.l++ = *v1.l++;
+		    *v2.l++ = *v1.l++;
+		    *v2.l++ = *v1.l++;
+		    *v2.l++ = *v1.l++;
+		    *v2.l++ = *v1.l++;
+		    *v2.l++ = *v1.l++;
+		    *v2.l++ = *v1.l++;
+		    *v2.l++ = *v1.l++;
+		}
+		n &= 8 * sizeof(long) - 1;
+		for(m = n / sizeof(long); m; --m)
+		    *v2.l++ = *v1.l++;
+		n &= sizeof(long) - 1; 
+	    }
+	    if(!n) 
+		return;	    
+	} 
+	do;
+	while(*v2.c++ = *v1.c++, --n);
     } else {
-	ch1 += n;
-	ch2 += n;
-	while (n > 0) {
-	    *ch2-- = *ch1--;
-	    n--;
-	}
+	v1.c += n;
+	v2.c += n;
+	if(n > 15) {
+	    if((long)s1&1) {
+		*--v2.c = *--v1.c;
+		n--; 
+	    }
+	    if(!((long)s2 & 1)) {
+		if((long)s1 & 2) {
+		    *--v2.s=*--v1.s;
+		    n -= 2; 
+		}
+		for(m = n / (8*sizeof(long)); m; --m) {
+		    *--v2.l = *--v1.l;
+		    *--v2.l = *--v1.l;
+		    *--v2.l = *--v1.l;
+		    *--v2.l = *--v1.l;
+		    *--v2.l = *--v1.l;
+		    *--v2.l = *--v1.l;
+		    *--v2.l = *--v1.l;
+		    *--v2.l = *--v1.l;
+		}
+		n &= 8*sizeof(long)-1;
+		for(m = n / sizeof(long); m; --m)
+		    *--v2.l = *--v1.l;
+		n &= sizeof(long)-1; 
+	    }
+	    if(!n) 
+		return;
+	} 
+	do;
+	while(*--v2.c = *--v1.c,--n);
     }
 }
