@@ -1,6 +1,6 @@
-#include <sys/time.h>
 #include <dos/dos.h>
 #include <proto/dos.h>
+#include <sys/time.h>
 
 extern long __gmtoffset;
 

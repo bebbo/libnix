@@ -1,6 +1,6 @@
+#include <proto/dos.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <proto/dos.h>
 #include "stabs.h"
 
 extern void __seterrno(void);

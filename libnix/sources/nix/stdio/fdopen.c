@@ -1,9 +1,9 @@
+#include <proto/exec.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <proto/exec.h>
 
 FILE *fdopen(int filedes,const char *mode)
 { extern int _lx_addflags(int,int);

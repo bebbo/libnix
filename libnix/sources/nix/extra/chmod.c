@@ -1,8 +1,9 @@
+#include <dos/dosextens.h>
+#include <proto/dos.h>
+
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <dos/dosextens.h>
-#include <proto/dos.h>
 
 extern void __seterrno(void);
 extern char *__amigapath(const char *path);

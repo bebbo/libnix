@@ -1,7 +1,8 @@
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <dos/dosextens.h>
 #include <proto/dos.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <strsup.h>
 #include <stdio.h>
 

@@ -1,8 +1,8 @@
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <dos/dosextens.h>
 #include <proto/dos.h>
 #include <proto/exec.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "stabs.h"
 
 extern int __stat(struct stat *buf,struct FileInfoBlock *fib);

@@ -1,6 +1,6 @@
+#include <proto/exec.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <proto/exec.h>
 
 char *mktemp(char *buf)
 { long pid = (long)FindTask(0L);
