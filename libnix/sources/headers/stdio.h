@@ -83,6 +83,7 @@ extern long ftell(FILE *stream);
 extern int setvbuf(FILE *stream,char *buf,int mode,size_t size);
 extern int fread(void *,size_t,size_t,FILE *);
 extern int fwrite(const void *,size_t,size_t,FILE *);
+extern char *tmpnam(char *buf);
 
 /* More bsd headers compatibility */
 
