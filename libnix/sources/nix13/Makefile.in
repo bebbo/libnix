@@ -5,9 +5,9 @@ VPATH =		@srcdir@
 
 CC =		@CC@
 CPP =		@CPP@
-AS =		as
+AS =		@AS@
 
-AR =		ar
+AR =		@AR@
 RANLIB =	@RANLIB@
 AWK =		@AWK@
 

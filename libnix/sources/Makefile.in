@@ -42,20 +42,20 @@ libamiga:
 	cd amiga;$(MAKE) -f $(CURDIR)/../sources/amiga/Makefile CFLAGS="$(CFLAGS)"
 
 filelists:
-	-cd $(srcdir)/math;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/math $(CURDIR)/math/filelist
-	-cd $(srcdir)/nix;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/nix $(CURDIR)/nix/filelist
-	-cd $(srcdir)/nix13;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/nix13 $(CURDIR)/nix13/filelist
-	-cd $(srcdir)/socket;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/socket $(CURDIR)/socket/filelist
+	-cd $(srcdir)/math;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/math $(CURDIR)/math/filelist
+	-cd $(srcdir)/nix;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/nix $(CURDIR)/nix/filelist
+	-cd $(srcdir)/nix13;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/nix13 $(CURDIR)/nix13/filelist
+	-cd $(srcdir)/socket;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/socket $(CURDIR)/socket/filelist
 	-cd $(srcdir)/stack;	$(MAKELIST) SOURCEFILES="*.c" FLDIR=$(CURDIR)/stack $(CURDIR)/stack/filelist
 	-cd $(srcdir)/stubs;	$(MAKE) -f $(CURDIR)/Makefile STUBDIR=$(CURDIR)/stubs libbases/dos.c; \
 		$(MAKELIST) SOURCEFILES=" \
-		libbases/* misc/__DOSBase.c misc/__UtilityBase.c \
+		libbases/*.[cSCh] misc/__DOSBase.c misc/__UtilityBase.c \
 		misc/__MathIeeeSingBasBase.c misc/__MathIeeeDoubBasBase.c \
 		misc/__MathIeeeSingTransBase.c misc/__MathIeeeDoubTransBase.c \
 		misc/__cpucheck.c misc/__flush_cache.c misc/__initlibraries.c \
-		libnames/* stubs/*" \
+		libnames/* stubs/*.[cSCh]" \
 		FLDIR=$(CURDIR)/stubs $(CURDIR)/stubs/filelist
-	-cd $(srcdir)/amiga;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/amiga $(CURDIR)/amiga/filelist
+	-cd $(srcdir)/amiga;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/amiga $(CURDIR)/amiga/filelist
 
 $(FLDIR)/filelist:
 	echo "#Computer generated partial Makefile-do not edit" >$(FLDIR)/filelist

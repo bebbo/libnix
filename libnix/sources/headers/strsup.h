@@ -2,25 +2,11 @@
 #define _STRSUP_H
 
 #include <sys/types.h>
+#include <proto/exec.h>
 
 #ifdef __OPTIMIZE__
 
-extern __inline__ void *memcpy(void *s1,const void *s2,size_t n)
-{
-  #ifndef __NOLIBBASE__
-  extern struct ExecBase *SysBase;
-  #endif
-  register char *a6 __asm("a6") = (char *)SysBase;
-  register const void *a0 __asm("a0") = s2;
-  register const void *a1 __asm("a1") = s1;
-  register size_t d0 __asm("d0") = n;
-  __asm __volatile ("jsr a6@(-0x270)"
-  : /* no output */
-  : "r" (a6), "r" (a0), "r" (a1), "r" (d0)
-  : "a0","a1","d0","d1", "memory");
-  return s1;
-}
-
+#define memcpy(s1, s2, n) CopyMem(s2, s1, n)
 extern __inline__ void *memmove(void *s1,const void *s2,size_t n)
 { extern void bcopy();
 

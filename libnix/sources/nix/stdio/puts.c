@@ -9,3 +9,7 @@ int puts(const char *s)
     return EOF;
   return 0;
 }
+
+int putchar(int c) {
+	return fputc(c, stdout);
+}

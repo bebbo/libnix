@@ -3,6 +3,8 @@
 
 #ifndef SMALL_DATA
 #define A4(x) #x
+#elif defined(mc68020)
+#define A4(x) "a4@(" #x ":L)"
 #else
 #define A4(x) "a4@(" #x ":W)"
 #endif

@@ -17,7 +17,6 @@ pr_CLI		=	 172
 
 		.globl	__exit
 		.globl	_geta4
-
 		.text
 
 | first entry - init some vars, check for cli or wb start
@@ -48,7 +47,6 @@ fromWB: 	lea	a3@(pr_MsgPort:W),a0
 fromCLI:	lea	___INIT_LIST__+4,a2
 		moveql	#-1,d2
 		jbsr	callfuncs
-
 		movel	___env,sp@-
 		movel	___argv,sp@-
 		movel	___argc,sp@-

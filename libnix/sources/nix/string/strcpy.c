@@ -14,14 +14,14 @@ char *strcpy(char *s1,const char *s2)
 
 #else
 
-asm("
-	.globl	_strcpy
-_strcpy:
-	moveml	sp@(4:W),d0/a0
-	movel	d0,a1
-L1:	moveb	a0@+,a1@+
-	jne	L1
-	rts
-");
+asm(
+"	.globl	_strcpy;"
+"_strcpy:;"
+"	moveml	sp@(4:W),d0/a0;"
+"	movel	d0,a1;"
+"L1:	moveb	a0@+,a1@+;"
+"	jne	L1;"
+"	rts;"
+);
 
 #endif

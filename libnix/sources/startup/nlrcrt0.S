@@ -36,18 +36,18 @@ start:		movel	a0,d3
 		movel	4:W,a6
 
 		subal	a1,a1
-		jsr	a6@(_LVOFindTask:W)
+		jsr	a6@(_LVOFindTask:L)
 		movel	d0,a3
-		tstl	a3@(pr_CLI:W)
+		tstl	a3@(pr_CLI:L)
 		subal	a2,a2
 		bne	fromCLI
 
 | wb start - get our message
 
-fromWB: 	lea	a3@(pr_MsgPort:W),a0
-		jsr	a6@(_LVOWaitPort:W)
-		lea	a3@(pr_MsgPort:W),a0
-		jsr	a6@(_LVOGetMsg:W)
+fromWB: 	lea	a3@(pr_MsgPort:L),a0
+		jsr	a6@(_LVOWaitPort:L)
+		lea	a3@(pr_MsgPort:L),a0
+		jsr	a6@(_LVOGetMsg:L)
 		movel	d0,a2
 
 | resident setup - allocate memory and relocate
@@ -59,7 +59,7 @@ fromCLI:	movql	#ERROR_NO_FREE_STORE,d7
 		movel	d2,d0
 		movql	#1,d1
 		swap	d1
-		jsr	a6@(_LVOAllocMem:W)
+		jsr	a6@(_LVOAllocMem:L)
 		movel	d0,a4
 		movel	a4,d0
 		beq	cleanup
@@ -67,7 +67,7 @@ fromCLI:	movql	#ERROR_NO_FREE_STORE,d7
 		movel	d5,d0
 		movel	a5,a0
 		movel	a4,a1
-		jsr	a6@(_LVOCopyMemQuick:W)
+		jsr	a6@(_LVOCopyMemQuick:L)
 		lea	___datadata_relocs,a0
 		movel	a0@+,d0
 		beq	no_reloc
@@ -77,60 +77,60 @@ do_reloc:	movel	a0@+,a1
 		subl	d1,a4@(a1:l)
 		subql	#1,d0
 		bne	do_reloc
-no_reloc:	lea	a4@(0x7ffe:W),a4
+no_reloc:	lea	a4@(0x7ffe:L),a4
 
-		movel	sp,a4@(___SaveSP:W)
-		movel	a6,a4@(_SysBase:W)
-		movel	a2,a4@(__WBenchMsg:W)
-		movel	d3,a4@(___commandline:W)
-		movel	d4,a4@(___commandlen:W)
-		movel	d2,a4@(___MemLen:W)
+		movel	sp,a4@(___SaveSP:L)
+		movel	a6,a4@(_SysBase:L)
+		movel	a2,a4@(__WBenchMsg:L)
+		movel	d3,a4@(___commandline:L)
+		movel	d4,a4@(___commandlen:L)
+		movel	d2,a4@(___MemLen:L)
 
 | call main() - push args onto stack
 
-		lea	a4@(___INIT_LIST__:W),a2
+		lea	a4@(___INIT_LIST__:L),a2
 		addqw	#4,a2
 		moveql	#-1,d2
 		jbsr	callfuncs
-		movel	a4@(___env:W),sp@-
-		movel	a4@(___argv:W),sp@-
-		movel	a4@(___argc:W),sp@-
+		movel	a4@(___env:L),sp@-
+		movel	a4@(___argv:L),sp@-
+		movel	a4@(___argc:L),sp@-
 		jbsr	_main
-		movel	d0,sp@(4:W)
+		movel	d0,sp@(4:L)
 
 | exit() entry - get return val, restore stackptr
 
-__exit: 	lea	a4@(___EXIT_LIST__:W),a2
+__exit: 	lea	a4@(___EXIT_LIST__:L),a2
 		addqw	#4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
 
-		movel	sp@(4:W),d7
-		movel	a4@(___SaveSP:W),sp
+		movel	sp@(4:L),d7
+		movel	a4@(___SaveSP:L),sp
 
 | prepare cleanup - setup regs, free resident memory
 
-		movel	a4@(_SysBase:W),a6
+		movel	a4@(_SysBase:L),a6
 
-		movel	a4@(__WBenchMsg:W),a2
-		movel	a4@(___MemLen:W),d0
-		lea	a4@(-0x7ffe:W),a1
-		jsr	a6@(_LVOFreeMem:W)
+		movel	a4@(__WBenchMsg:L),a2
+		movel	a4@(___MemLen:L),d0
+		lea	a4@(-0x7ffe:L),a1
+		jsr	a6@(_LVOFreeMem:L)
 
 | cleanup - reply wbmsg and exit
 
 cleanup:	movel	a2,d0
 		beqs	todos
-		jsr	a6@(_LVOForbid:W)
+		jsr	a6@(_LVOForbid:L)
 		movel	a2,a1
-		jsr	a6@(_LVOReplyMsg:W)
+		jsr	a6@(_LVOReplyMsg:L)
 todos:		movel	d7,d0
 		rts
 
 | call all functions in the NULL terminated list pointed to by a2
 | d2 ascending or descending priority mode
 
-callfuncs:	lea	a4@(cleanupflag:W),a5
+callfuncs:	lea	a4@(cleanupflag:L),a5
 		movel	a2,a3
 		moveql	#0,d3
 		jra	oldpri

@@ -153,6 +153,7 @@ struct group *getgrent(void)
         return (struct group *)&builtin_nogroup;
       case (gid_t)(-1):
         //return NULL;
+	break;
     }
   }
 

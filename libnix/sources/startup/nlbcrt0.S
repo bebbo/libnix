@@ -25,69 +25,69 @@ pr_CLI		=	 172
 start:		movel	#___bss_size,d1
 		jbsr	_geta4
 		beqs	nobss
-		lea	a4@(__edata:W),a1
+		lea	a4@(__edata:L),a1
 clrbss: 	clrl	a1@+
 		subql	#4,d1
 		bnes	clrbss
 
-nobss:		movel	a0,a4@(___commandline:W)
-		movel	d0,a4@(___commandlen:W)
+nobss:		movel	a0,a4@(___commandline:L)
+		movel	d0,a4@(___commandlen:L)
 
-		movel	sp,a4@(___SaveSP:W)
-		movel	4:W,a6
-		movel	a6,a4@(_SysBase:W)
+		movel	sp,a4@(___SaveSP:L)
+		movel	4:L,a6
+		movel	a6,a4@(_SysBase:L)
 
 		subal	a1,a1
-		jsr	a6@(_LVOFindTask:W)
+		jsr	a6@(_LVOFindTask:L)
 		movel	d0,a3
-		tstl	a3@(pr_CLI:W)
+		tstl	a3@(pr_CLI:L)
 		bne	fromCLI
 
 | wb start - get wbmsg
 
-fromWB: 	lea	a3@(pr_MsgPort:W),a0
-		jsr	a6@(_LVOWaitPort:W)
-		lea	a3@(pr_MsgPort:W),a0
-		jsr	a6@(_LVOGetMsg:W)
-		movel	d0,a4@(__WBenchMsg:W)
+fromWB: 	lea	a3@(pr_MsgPort:L),a0
+		jsr	a6@(_LVOWaitPort:L)
+		lea	a3@(pr_MsgPort:L),a0
+		jsr	a6@(_LVOGetMsg:L)
+		movel	d0,a4@(__WBenchMsg:L)
 
 | execute all init functions then call main
 
-fromCLI:	lea	a4@(___INIT_LIST__:W),a2
+fromCLI:	lea	a4@(___INIT_LIST__:L),a2
 		addqw	#4,a2
 		moveql	#-1,d2
 		jbsr	callfuncs
-		movel	a4@(___env:W),sp@-
-		movel	a4@(___argv:W),sp@-
-		movel	a4@(___argc:W),sp@-
+		movel	a4@(___env:L),sp@-
+		movel	a4@(___argv:L),sp@-
+		movel	a4@(___argc:L),sp@-
 		jbsr	_main
-		movel	d0,sp@(4:W)
+		movel	d0,sp@(4:L)
 
 | exit() entry - execute all exit functions, reply wbmsg
 
-__exit: 	lea	a4@(___EXIT_LIST__:W),a2
+__exit: 	lea	a4@(___EXIT_LIST__:L),a2
 		addqw	#4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
 
-		movel	a4@(_SysBase:W),a6
+		movel	a4@(_SysBase:L),a6
 
-		movel	a4@(__WBenchMsg:W),d2
+		movel	a4@(__WBenchMsg:L),d2
 		beq	todos
-		jsr	a6@(_LVOForbid:W)
+		jsr	a6@(_LVOForbid:L)
 		movel	d2,a1
-		jsr	a6@(_LVOReplyMsg:W)
+		jsr	a6@(_LVOReplyMsg:L)
 
 | leave - get return val, restore stackptr
 
-todos:		movel	sp@(4:W),d0
-		movel	a4@(___SaveSP:W),sp
+todos:		movel	sp@(4:L),d0
+		movel	a4@(___SaveSP:L),sp
 		rts
 
 | call all functions in the NULL terminated list pointed to by a2
 | d2 ascending or descending priority mode
 
-callfuncs:	lea	a4@(cleanupflag:W),a5
+callfuncs:	lea	a4@(cleanupflag:L),a5
 		movel	a2,a3
 		moveql	#0,d3
 		jra	oldpri

@@ -9,9 +9,9 @@ VPATH =		@srcdir@
 
 CC =		@CC@
 CPP =		@CPP@
-AS =		as
+AS =		@AS@
 
-AR =		ar
+AR =		@AR@
 RANLIB =	@RANLIB@
 AWK =		@AWK@
 
@@ -26,7 +26,7 @@ OPTIONS=-I$(srcdir)/../headers -O -fomit-frame-pointer
 
 .PHONY: all filelist subdirs clean veryclean
 
-all: nrcrt0.o nbcrt0.o ncrt0.o libinit.o libinitr.o devinit.o
+all: nrcrt0.o nbcrt0.o nlrcrt0.o nlbcrt0.o ncrt0.o libinit.o libinitr.o devinit.o
 
 subdirs:
 
@@ -43,11 +43,23 @@ nrcrt0.o: nrcrt0.S
 	$(CC) -c $^
 	echo "\$$$(V)" >>$@
 
+# large baserelative resident startup-code
+
+nlrcrt0.o: nlrcrt0.S
+	$(CC) -m68020 -c $^
+	echo "\$$$(V)" >>$@
 # baserelative startup code
 
 nbcrt0.o: nbcrt0.S
 	$(CC) -c $^
 	echo "\$$$(V)" >>$@
+
+# large baserelative startup code
+
+nlbcrt0.o: nlbcrt0.S
+	$(CC) -m68020 -c $^
+	echo "\$$$(V)" >>$@
+
 
 # normal (=large) startup code
 

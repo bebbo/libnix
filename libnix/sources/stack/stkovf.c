@@ -1,11 +1,11 @@
 #include "bases.h"
 
-asm("
-	.text
-	.even
-	.globl	___stkovf
+asm(
+"	.text;"
+"	.even;"
+"	.globl	___stkovf;"
 
-___stkovf:
-	clrl	"A4(___stk_limit)"	| generate no more stackoverflows
-	jra	__XCOVF
-");
+"___stkovf:;"
+"	clrl	"A4(___stk_limit)"	| generate no more stackoverflows;"
+"	jra	__XCOVF;"
+);

@@ -5,6 +5,7 @@
 #include "debuglib.h"
 
 extern struct MinList __memorylist;
+extern struct SignalSemaphore *__memsema;
 
 void free(void *ptr)
 { struct MemHeader *a;
@@ -13,6 +14,7 @@ void free(void *ptr)
   { DB( BUG("NULL pointer free'd\n"); )
     return; }
 
+  ObtainSemaphore(__memsema);
   a=(struct MemHeader *)__memorylist.mlh_Head;
   for(;;)
   {
@@ -31,5 +33,7 @@ void free(void *ptr)
   Deallocate(a,(ULONG *)ptr-1,((ULONG *)ptr)[-1]);
   if(a->mh_Free==(char *)a->mh_Upper-(char *)a->mh_Lower) /* All free ? */
   { Remove(&a->mh_Node);
-    FreeMem(a,(char *)a->mh_Upper-(char *)a); }
+    FreeMem(a,(char *)a->mh_Upper-(char *)a); 
+  }
+  ReleaseSemaphore(__memsema);
 }

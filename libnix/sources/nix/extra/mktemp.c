@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <fcntl.h>
 #include <proto/exec.h>
 
 char *mktemp(char *buf)
@@ -22,4 +23,9 @@ char *mktemp(char *buf)
   }
 
   return buf;
+}
+
+int mkstemp(char *template) {
+  char *buf = mktemp(template);
+  return open(buf, O_CREAT | O_TRUNC | O_EXCL);
 }

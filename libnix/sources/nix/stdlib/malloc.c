@@ -5,33 +5,33 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <exec/lists.h>
 #include <exec/memory.h>
 #include <proto/exec.h>
+#include <proto/dos.h>
+#include <proto/alib.h>
 #include "stabs.h"
 
 extern ULONG _MSTEP;
 
-struct MinList __memorylist= /* memorylist (empty): free needs also access */
-{
-  (struct MinNode *)&__memorylist.mlh_Tail,
-  NULL,
-  (struct MinNode *)&__memorylist.mlh_Head
-};
-
+struct MinList __memorylist; /* memorylist (empty): free needs also access */
+struct SignalSemaphore  *__memsema;
 void *malloc(size_t size)
 {
-  struct MinNode *node=__memorylist.mlh_Head;
+  struct MinNode *node;
   struct MemHeader *b;
-  ULONG size2,*a;
+  ULONG size2,*a = NULL;
 
+  ObtainSemaphore(__memsema);
+  node=__memorylist.mlh_Head;
   size+=sizeof(ULONG);
   while(node->mln_Succ) /* yet some memory in my list ? */
   {
     if((a=Allocate((struct MemHeader *)node,size))!=NULL)
     { 
       *a++=size;
-      return a;
+	  goto end;
     }
     node=node->mln_Succ;
   }
@@ -47,16 +47,30 @@ void *malloc(size_t size)
     b->mh_Upper=(char *)b+size2;
     AddHead((struct List *)&__memorylist,&b->mh_Node);
     a=Allocate(b,size); /* It has to work this time */
-    *a++=size;
-    return a;
+	if (a != NULL) {
+		*a++=size;
+	}
   }
-  return NULL;
+
+ end:
+  ReleaseSemaphore(__memsema);
+  return a;
+}
+
+void __initmalloc(void)
+{
+	struct Library *DOSBase = OpenLibrary("dos.library", 0);
+	NewList((struct List *)&__memorylist);
+	__memsema = AllocMem(sizeof(struct SignalSemaphore), MEMF_PUBLIC | MEMF_CLEAR);
+	InitSemaphore(__memsema);
 }
 
 void __exitmalloc(void)
 { struct MemHeader *a;
   while((a=(struct MemHeader *)RemHead((struct List *)&__memorylist))!=NULL)
     FreeMem(a,(char *)a->mh_Upper-(char *)a); /* free all memory */
+  FreeMem(__memsema, sizeof(struct SignalSemaphore));
 }
 
 ADD2EXIT(__exitmalloc,-50);
+ADD2INIT(__initmalloc,-50);

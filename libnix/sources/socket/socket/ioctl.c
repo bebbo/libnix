@@ -68,6 +68,7 @@ int ioctl(int s, unsigned long cmd, ...)
         /* we really don't have to bother the library with cmds we can't even
          * map over...
          */
+	break;
       }
       rc = SOCK_ioctl(fp->lx_sock,cmd,data);
     break;
