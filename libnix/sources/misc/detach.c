@@ -3,6 +3,7 @@
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
+#include <stdlib.h>
 #include "stabs.h"
 
 /* Sorry, but the assembler code produced by gcc for this function is too bad.
