@@ -60,7 +60,7 @@ LONG ArgInt(UBYTE **tt, STRPTR entry, long defval)
   return defval;
 }
 
-#ifdef 0 /* only a example ??? */
+#if 0 /* only a example ??? */
 
 CxObj *UserFilter(UBYTE **tt, STRPTR entry, STRPTR defstr)
 {

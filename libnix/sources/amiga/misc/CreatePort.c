@@ -7,7 +7,7 @@
                     /*(l)->lh_Tail = NULL,*/ \
                     (l)->lh_TailPred = (struct Node *)&(l)->lh_Head)
 
-struct MsgPort *CreatePort(STRPTR name,LONG pri)
+struct MsgPort *CreatePort(CONST_STRPTR name,LONG pri)
 { APTR SysBase = *(APTR *)4L;
   struct MsgPort *port = NULL;
   UBYTE portsig;

@@ -4,7 +4,7 @@
 #include <proto/exec.h>
 #include "stabs.h"
 
-struct IORequest *CreateExtIO(struct MsgPort *port,LONG iosize)
+struct IORequest *CreateExtIO(CONST struct MsgPort *port,LONG iosize)
 { APTR SysBase = *(APTR *)4L;
   struct IORequest *ioreq = NULL;
 
@@ -16,7 +16,7 @@ struct IORequest *CreateExtIO(struct MsgPort *port,LONG iosize)
   return ioreq;
 }
 
-struct IOStdReq *CreateStdIO(struct MsgPort *port)
+struct IOStdReq *CreateStdIO(CONST struct MsgPort *port)
 {
   return (struct IOStdReq *)CreateExtIO(port,sizeof(struct IOStdReq));
 }

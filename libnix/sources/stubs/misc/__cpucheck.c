@@ -38,9 +38,9 @@ asm(
 "	rts;"
 "error:"
 "	movel	a0,sp@-;"
-"	jsr	___request;	| jbsr translates to jra which doesn't work on 68000;"
+"	jsr	___request;" /* jbsr translates to jra which doesn't work on 68000 */
 "	pea	20:W;"
-"	jsr	_exit;		| dito"
+"	jsr	_exit;"		/* dito */
 );
 
 ADD2INIT(__cpucheck,-80); /* Highest priority */

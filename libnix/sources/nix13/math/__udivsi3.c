@@ -3,14 +3,14 @@ asm(
 "		.globl	___udivsi3;"
 "		.globl	___udivsi4;"
 
-"| D1.L = D0.L % D1.L unsigned;"
+/* D1.L = D0.L % D1.L unsigned */
 
 "___umodsi3:	moveml	sp@(4:W),d0/d1;"
 "		jbsr	___udivsi4;"
 "		movel	d1,d0;"
 "		rts;"
 
-"| D0.L = D0.L / D1.L unsigned;"
+/* D0.L = D0.L / D1.L unsigned */
 
 "___udivsi3:	moveml	sp@(4:W),d0/d1;"
 "___udivsi4:	movel	d3,sp@-;"
