@@ -30,8 +30,7 @@ struct Task *CreateTask(STRPTR name, LONG pri, APTR initpc, ULONG stacksize)
 
   stacksize=(stacksize+3)&~3;
 
-  {
-    long *p1,*p2;
+  { long *p1,*p2;
     int i;
 
     for (p1=(long *)&nml,p2=(long*)&MemTemplate,i=7; i; *p1++=*p2++,i--) ;
@@ -60,6 +59,7 @@ struct Task *CreateTask(STRPTR name, LONG pri, APTR initpc, ULONG stacksize)
 }
 
 #else
+
 asm("
 		.globl	_CreateTask
 
@@ -123,4 +123,5 @@ Lmemlist:	.long	0,0			| Succ,Pred
 		.long	0x10000			| MemType
 |		.long	0			| Length
 ");
+
 #endif

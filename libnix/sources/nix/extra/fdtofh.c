@@ -6,9 +6,8 @@
  * It's not ANSI but it's encapsulated and may be useful - so why not :-).
  * 
  */
-unsigned long *__stdfiledes;
 
-unsigned long fdtofh(int filedescriptor)
-{
-  return __stdfiledes[filedescriptor];
-}
+#include "stdio.h"
+
+long fdtofh(int filedescriptor)
+{ return _lx_fhfromfd(filedescriptor)->lx_fh; }

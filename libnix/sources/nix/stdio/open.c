@@ -1,138 +1,243 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <limits.h>
 #include <errno.h>
-#undef LONGBITS
-#undef BITSPERBYTE
-#undef MAXINT
-#undef MININT
-#include <dos/dos.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <unistd.h>
 #define DEVICES_TIMER_H
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <stabs.h>
+#include <stdio.h>
+#include "stabs.h"
 
+/*
+**
+*/
 extern void __seterrno(void);
-extern char *__amigapath(const char *path);
-extern struct WBStartup *_WBenchMsg;
 
-unsigned long *__stdfiledes;
-static unsigned long stdfilesize=3;
+/*
+**
+*/
+static StdFileDes **stdfiledes;
+static unsigned long stdfilesize=0;
 static long stderrdes=0; /* The normal Amiga shell sets no process->pr_CES stream -
                           * we use Open("*",MODE_NEWFILE) in this case
                           */
 
-void __initstdio(void)
-{ unsigned long *sfd;
-
-  if((sfd=__stdfiledes=(unsigned long *)malloc(3*sizeof(unsigned long)))==NULL)
-    exit(20);
-  sfd[STDIN_FILENO ]=Input();
-  sfd[STDOUT_FILENO]=Output();
-  if(!(sfd[STDERR_FILENO]=((struct Process *)FindTask(NULL))->pr_CES))
-    if(_WBenchMsg!=NULL||!(sfd[STDERR_FILENO]=stderrdes=Open("*",MODE_OLDFILE)))
-      sfd[STDERR_FILENO]=sfd[STDOUT_FILENO];
+/*
+**
+*/
+static void _setup_file(StdFileDes *fp)
+{ fp->lx_inuse  = 1;
+  fp->lx_isatty = IsInteractive(fp->lx_fh) ? -1 : 0;
 }
 
-/* Call our private constructor */
-ADD2INIT(__initstdio,-30);
-
-void __exitstdio(void)
-{ long file,*sfd;
-  int i,max;
-
-  for(sfd=&__stdfiledes[3],max=stdfilesize,i=3;i<max;i++)
-    if((file=*sfd++))
-      Close(file);
-
-  if((file=stderrdes))
-    Close(file);
-}
-
-/* Call our private destructor at cleanup */
-ADD2EXIT(__exitstdio,-30);
-
-int open(const char *path,int flags,...)
-{
-  unsigned long *sfd;
+/*
+**
+*/
+static __inline StdFileDes *_allocfd(void)
+{ StdFileDes *fp,**sfd;
   int file,max;
+
+  for(sfd=stdfiledes,max=stdfilesize,file=0;file<max;sfd++,file++)
+    if(!sfd[0] || !sfd[0]->lx_inuse)
+      break;
+
+  if(file>SHRT_MAX)
+  { errno=EMFILE;
+    return NULL;
+  }
+
+  if(file==max)
+  { if((sfd=realloc(stdfiledes,(file+1)*sizeof(fp)))==NULL)
+    { errno=ENOMEM;
+      return NULL;
+    }
+    stdfiledes=sfd;
+    stdfilesize++;
+    *(sfd=&sfd[file]) = 0;
+  }
+
+  if((fp=sfd[0])==NULL)
+  { if((sfd[0]=fp=malloc(sizeof(*fp)))==NULL)
+    { errno=ENOMEM;
+      return NULL;
+    }
+    fp->lx_pos = file;
+  }
+
+  return fp;
+}
+
+/*
+**
+*/
+int open(const char *path,int flags,...)
+{ extern char *__amigapath(const char *path);
+  StdFileDes *sfd;
 
 #ifdef IXPATHS
   if((path=__amigapath(path))==NULL)
     return -1;
 #endif
 
-  for(sfd=__stdfiledes,max=stdfilesize,file=3;file<max;file++)
-    if(!sfd[file])
-      break;
-
-  if(file>SHRT_MAX)
-  { errno=EMFILE;
-    return -1; }
-
-  if(file==max)
-  { if((sfd=realloc(sfd,(file+1)*sizeof(unsigned long)))==NULL)
-    { errno=ENOMEM;
-      return -1; }
-    __stdfiledes=sfd;
-    stdfilesize++;
+  if ((sfd=_allocfd())) {
+    sfd->lx_sys=0;
+    sfd->lx_oflags=flags;
+    if ((sfd->lx_fh=Open((char *)path,flags&O_TRUNC?MODE_NEWFILE:
+                         flags&(O_WRONLY|O_RDWR)?MODE_READWRITE:MODE_OLDFILE))) {
+      _setup_file(sfd); return sfd->lx_pos;
+    }
+    __seterrno();
+    sfd->lx_inuse = 0;
   }
 
-  if((sfd[file]=Open((char *)path,flags&O_TRUNC?MODE_NEWFILE:
-                     flags&(O_WRONLY|O_RDWR)?MODE_READWRITE:MODE_OLDFILE)))
-    return file;
-  __seterrno();
-  return EOF;
+  return -1;
 }
 
 int close(int d)
-{
-  int ret=0;
-  if(d>2)
-  {
-    if(!Close(__stdfiledes[d]))
-    { ret=EOF;
-      __seterrno(); }
-    __stdfiledes[d]=0;
-  }
-  return ret;
-}
+{ StdFileDes *sfd = _lx_fhfromfd(d);
 
-off_t lseek(int d,off_t offset,int whence)
-{
-  long r,file=__stdfiledes[d];
-  __chkabort();
-  r=Seek(file,offset,whence==SEEK_SET?OFFSET_BEGINNING:
-         whence==SEEK_END?OFFSET_END:OFFSET_CURRENT);
-  if(r!=EOF)
-    r=Seek(file,0,OFFSET_CURRENT);
-  if(r==EOF)
-    __seterrno();
-  return r;
+  if (sfd) {
+    if (!(sfd->lx_inuse-=1)) {
+      if (sfd->lx_pos=d,!sfd->lx_sys) {
+        if (!Close(sfd->lx_fh)) {
+          __seterrno(); return EOF;
+        }
+      }
+    }
+    else {
+      stdfiledes[d] = 0;
+    }
+  }
+
+  return 0;
 }
 
 ssize_t read(int d,void *buf,size_t nbytes)
-{
-  long r;
-  __chkabort();
-  r=Read(__stdfiledes[d],buf,nbytes);
-  if(r==EOF)
+{ StdFileDes *sfd = _lx_fhfromfd(d);
+
+  if (sfd) {
+    long r;
+    __chkabort();
+    if((r=Read(sfd->lx_fh,buf,nbytes))!=EOF)
+      return r;
     __seterrno();
-  return r;
+  }
+
+  return EOF;
 }
 
 ssize_t write(int d,const void *buf,size_t nbytes)
-{
-  long r;
-  __chkabort();
-  r=Write(__stdfiledes[d],(char *)buf,nbytes);
-  if(r==EOF)
+{ StdFileDes *sfd = _lx_fhfromfd(d);
+
+  if (sfd) {
+    long r;
+    __chkabort();
+    switch((sfd->lx_oflags&O_APPEND)!=0) {
+      case 1:
+        if(!sfd->lx_isatty&&(Seek(sfd->lx_fh,0,OFFSET_END)==EOF))
+          break;
+      default:
+        if((r=Write(sfd->lx_fh,(char *)buf,nbytes))!=EOF)
+          return r;
+    }
     __seterrno();
-  return r;
+  }
+
+  return EOF;
+}
+
+off_t lseek(int d,off_t offset,int whence)
+{ StdFileDes *sfd = _lx_fhfromfd(d);
+
+  if (sfd) {
+    long r,file=sfd->lx_fh;
+    __chkabort();
+    if (Seek(file,offset,whence==SEEK_SET?OFFSET_BEGINNING:
+                         whence==SEEK_END?OFFSET_END:OFFSET_CURRENT)!=EOF)
+      if ((r=Seek(file,0,OFFSET_CURRENT))!=EOF)
+        return r;
+    __seterrno();
+  }
+
+  return EOF;
 }
 
 int isatty(int d)
-{ return IsInteractive(__stdfiledes[d]); }
+{ StdFileDes *sfd = _lx_fhfromfd(d);
+
+  return sfd?sfd->lx_isatty:0;
+}
+
+/*
+**
+*/
+int _lx_addflags(int d,int oflags)
+{ StdFileDes *sfd = _lx_fhfromfd(d);
+
+  return sfd?sfd->lx_oflags|=oflags:0;
+}
+
+/*
+** convert fd to a StdFileDes
+*/
+StdFileDes *_lx_fhfromfd(int d)
+{ if(d<(int)stdfilesize)
+  { StdFileDes *sfd=stdfiledes[d];
+    if(sfd&&sfd->lx_inuse)
+      return sfd; }
+  return NULL;
+}
+
+/*
+**
+*/
+void __initstdio(void)
+{ extern struct WBStartup *_WBenchMsg;
+  StdFileDes *fp,**sfd;
+
+  if((stdfiledes=sfd=(StdFileDes **)malloc(3*sizeof(StdFileDes *)))) {
+    if((sfd[STDIN_FILENO]=fp=(StdFileDes *)malloc(sizeof(StdFileDes)))) {
+      fp->lx_fh     = Input();
+      fp->lx_pos    = STDIN_FILENO;
+      fp->lx_sys    = -1;
+      fp->lx_oflags = O_RDONLY;
+      _setup_file(fp);
+      if((sfd[STDOUT_FILENO]=fp=(StdFileDes *)malloc(sizeof(StdFileDes)))) {
+        fp->lx_fh     = Output();
+        fp->lx_pos    = STDOUT_FILENO;
+        fp->lx_sys    = -1;
+        fp->lx_oflags = O_WRONLY;
+        _setup_file(fp);
+        if((sfd[STDERR_FILENO]=fp=(StdFileDes *)malloc(sizeof(StdFileDes)))) {
+          if((fp->lx_fh=((struct Process *)FindTask(NULL))->pr_CES)==0)
+            if(_WBenchMsg||(fp->lx_fh=stderrdes=Open("*",MODE_OLDFILE))==0)
+              fp->lx_fh=sfd[STDOUT_FILENO]->lx_fh;
+          fp->lx_pos    = STDERR_FILENO;
+          fp->lx_sys    = -1;
+          fp->lx_oflags = O_WRONLY;
+          _setup_file(fp);
+          stdfilesize += 3; return;
+        }
+      }
+    }
+  }
+  exit(20);
+}
+ADD2INIT(__initstdio,-30);
+
+void __exitstdio(void)
+{ int i,max;
+
+  for(max=stdfilesize,i=0;i<max;i++) {
+    StdFileDes *sfd = stdfiledes[i];
+    if(sfd && sfd->lx_inuse) {
+      close(i);
+    }
+  }
+
+  if(stderrdes)
+    Close(stderrdes);
+}
+ADD2EXIT(__exitstdio,-30);

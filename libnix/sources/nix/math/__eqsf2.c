@@ -1,5 +1,5 @@
 #include <proto/mathieeesingbas.h>
-#include <stabs.h>
+#include "stabs.h"
 
 signed long __eqsf2(float x,float y)
 { return IEEESPCmp(x,y); }

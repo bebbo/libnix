@@ -1,12 +1,10 @@
+#include <math.h>
+#include <float.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <limits.h>
-#include <ctype.h>
-#include <stabs.h>
-#include <math.h>
-#include <float.h>
-#include <strsup.h>
 
 /* a little macro to make life easier */
 
@@ -31,9 +29,31 @@
 
 extern unsigned char *__decimalpoint;
 
+static int __vfprintf(FILE *stream,const char *format,va_list args)
+{ unsigned char buf[((BUFSIZ/4)+3)&~3];
+  FILE fp;
+  int ret;
+
+  fp.outcount    = 0;
+  fp.flags       = stream->flags&~(__SWO|__SWR|__SNBF);
+  fp.file        = stream->file;
+  fp.buffer      = buf;
+  fp.bufsize     = sizeof(buf);
+  fp.linebufsize = 0;
+  if(((ret=vfprintf(&fp,format,args))>=0) && __fflush(&fp))
+    ret = -1;
+  if(fp.flags&__SERR)
+    stream->flags|=__SERR;
+  return ret;
+}
+
 int vfprintf(FILE *stream,const char *format,va_list args)
 { 
   size_t outcount=0;
+
+  /* optimize unbuffered write-only files */
+  if((stream->flags&(__SWO|__SNBF))==(__SWO|__SNBF))
+    return __vfprintf(stream,format,args);
 
   while(*format)
   {

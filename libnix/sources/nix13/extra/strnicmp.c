@@ -1,6 +1,6 @@
 #include <ctype.h>
 #include <string.h>
-#include <stabs.h>
+#include "stabs.h"
 
 int strnicmp(const char *s1,const char *s2,size_t len)
 { unsigned char c1,c2;

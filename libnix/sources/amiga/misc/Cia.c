@@ -1,4 +1,4 @@
-#include <stabs.h>
+#include "stabs.h"
 
 /* Absolute definitions for the cia registers
  * some of the are recommended to use

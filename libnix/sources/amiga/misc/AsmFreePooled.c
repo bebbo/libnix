@@ -1,4 +1,4 @@
-#include <pool.h>
+#include "pool.h"
 
 VOID ASM AsmFreePooled(REG(a0,POOL *poolHeader),REG(a1,APTR memory),REG(d0,ULONG memSize),REG(a6,APTR SysBase))
 {

@@ -1,11 +1,10 @@
 #include <stdio.h>
-#include <exec/nodes.h>
 #include <exec/lists.h>
 
 int fflush(FILE *stream) /* fflush one or all files */
-{
+{ struct MinNode *node,*nextnode;
   int retval;
-  struct MinNode *node,*nextnode;
+
   if(stream!=NULL)
     return __fflush(stream);
   retval=0;

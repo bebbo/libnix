@@ -4,8 +4,6 @@
 /*                                                                            */
 /******************************************************************************/
 
-#include <exec/types.h>
-#include <exec/execbase.h>
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include "stabs.h"
@@ -16,8 +14,8 @@
 /*                                                                            */
 /******************************************************************************/
 
-const BYTE LibName[]="simple.library";
-const BYTE LibIdString[]="version 1.0";
+const char LibName[]="simple.library";
+const char LibIdString[]="version 1.0";
 
 const UWORD LibVersion=1;
 const UWORD LibRevision=0;
@@ -46,10 +44,10 @@ int __UserLibInit(struct Library *myLib)
 
   myLibPtr = myLib;
 
-  /* required !!! */
-  SysBase=*(struct ExecBase **)4;
+  /* !!! required !!! */
+  SysBase = *(struct ExecBase **)4L;
 
-  return (DOSBase=(struct DosLibrary *)OpenLibrary("dos.library",33))==NULL;
+  return (DOSBase=(struct DosLibrary *)OpenLibrary("dos.library",33L))==NULL;
 }
 
 /******************************************************************************/
@@ -60,9 +58,9 @@ int __UserLibInit(struct Library *myLib)
 /*                                                                            */
 /******************************************************************************/
 
-void __UserLibCleanup()
+void __UserLibCleanup(void)
 {
-  CloseLibrary((struct Library *)DOSBase);
+  CloseLibrary(&DOSBase->dl_lib);
 }
 
 /******************************************************************************/

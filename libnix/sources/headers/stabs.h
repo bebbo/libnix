@@ -1,11 +1,11 @@
-#ifndef _STABS_H_
-#define _STABS_H_
+#ifndef _HEADERS_STABS_H
+#define _HEADERS_STABS_H
 
 /* These are some macros for handling of symboltable information
  */
 
 /* linker can use symbol b for symbol a if a is not defined */
-#define ALIAS(a,b) asm(".stabs \"_" #a "\",11,0,0,0\n.stabs \"_" #b "\",1,0,0,0")
+#define ALIAS(a,b) asm(".stabs \"_" #a "\",11,0,0,0;.stabs \"_" #b "\",1,0,0,0")
 
 /* add symbol a to list b (type c (22=text 24=data 26=bss)) */
 #define ADD2LIST(a,b,c) asm(".stabs \"_" #b "\"," #c ",0,0,_" #a )
@@ -99,4 +99,4 @@ _ADDTABL_ENDN(name,4)
 
 #define ADDTABL_END() asm(".stabs \"___FuncTable__\",20,0,0,-1")
 
-#endif
+#endif /* _HEADERS_STABS_H */

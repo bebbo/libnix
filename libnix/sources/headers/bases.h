@@ -1,5 +1,5 @@
-#ifndef _BASE_H_
-#define _BASE_H_
+#ifndef _HEADERS_BASE_H
+#define _HEADERS_BASE_H
 
 #ifndef SMALL_DATA
 #define A4(x) #x
@@ -21,4 +21,4 @@
 #define GETUTLBASE movel A4(_UtilityBase),a6
 #define GETWBBASE  movel A4(_WorkbenchBase),a6
 
-#endif _BASE_H_
+#endif /* _HEADERS_BASE_H */

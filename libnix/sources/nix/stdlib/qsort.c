@@ -16,7 +16,6 @@
 void qsort
 (void *base,size_t nmemb,size_t size,int (*compar)(const void *,const void *))
 { char *base2=(char *)base;
-  char tmp;
   size_t i,a,b,c;
   while(nmemb>1)
   { a=0;
@@ -30,7 +29,7 @@ void qsort
       if(a>=b)
         break; /* We found no pair */
       for(i=0;i<size;i++) /* swap them */
-      { tmp=base2[size*a+i];
+      { char tmp=base2[size*a+i];
         base2[size*a+i]=base2[size*b+i];
         base2[size*b+i]=tmp; }
       if(c==a) /* Keep track of middle element */
@@ -44,11 +43,9 @@ void qsort
     if(b<nmemb-b) /* do recursion on smaller intervall and iteration on larger one */
     { qsort(base2,b,size,compar);
       base2=&base2[size*b];
-      nmemb=nmemb-b;
-    }
+      nmemb=nmemb-b; }
     else
     { qsort(&base2[size*b],nmemb-b,size,compar);
       nmemb=b; }
   }
-  return;
 }

@@ -1,4 +1,4 @@
-#include <pool.h>
+#include "pool.h"
 
 APTR LibAllocPooled(APTR poolHeader, ULONG memSize)
 {

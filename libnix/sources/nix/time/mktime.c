@@ -1,10 +1,9 @@
 #include <time.h>
 
-static char monthtable[]=
-{ 31,29,31,30,31,30,31,31,30,31,30 };
-
 time_t mktime(struct tm *t)
-{
+{ static const char monthtable[] = {
+    31,29,31,30,31,30,31,31,30,31,30
+  };
   time_t tim,year;
   int leapyear=0,i;
   year=t->tm_year+1899; /* years from year 1 */
@@ -20,7 +19,7 @@ time_t mktime(struct tm *t)
   year%=4;
   if(year==3)
     leapyear++;
-  tim+=year*365-719162+t->tm_mday;
+  tim+=year*365-719162+t->tm_mday-1;
   for(i=0;i<t->tm_mon;i++)
     tim+=monthtable[i];
   if(!leapyear&&t->tm_mon>1) /* Sub 1 if no leap year */

@@ -4,11 +4,12 @@ srcdir =	@srcdir@
 VPATH =		@srcdir@
 
 CC =		@CC@
-CPP =           @CPP@
+CPP =		@CPP@
 AS =		as
 
+AR =		ar
 RANLIB =	@RANLIB@
-AWK =           @AWK@
+AWK =		@AWK@
 
 #### End system configuration section ####
 
@@ -18,17 +19,17 @@ endif
 
 CURDIR = $(shell pwd)
 
-OPTIONS=-I $(srcdir)/../headers -I ../../sources/headers -DFULL_SPECIFIERS $(CFLAGS)
-
-SOURCEFILES=*/*
+OPTIONS=-I$(srcdir)/../headers -DFULL_SPECIFIERS $(CFLAGS)
 
 OBJECTS2=$(OBJECTS) \
+         ../nix/assert/__eprintf.o \
          ../nix/stdio/printf.o ../nix/stdio/fprintf.o ../nix/stdio/sprintf.o \
          ../nix/stdio/vprintf.o ../nix/stdio/vsprintf.o stdio/vfprintf.o \
          ../nix/stdio/scanf.o ../nix/stdio/fscanf.o ../nix/stdio/sscanf.o \
-         ../nix/stdio/vscanf.o ../nix/stdio/vsscanf.o stdio/vfscanf.o
+         ../nix/stdio/vscanf.o ../nix/stdio/vsscanf.o stdio/vfscanf.o \
+         ../nix/stdio/tmpfile.o ../nix/stdio/tmpnam.o
 
-SUBDIRS2=$(SUBDIRS) ../nix/stdio
+SUBDIRS2=$(SUBDIRS) ../nix/assert ../nix/stdio
 
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \
@@ -58,9 +59,9 @@ veryclean:
 $(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)):
 	mkdir $@
 
-libm.a: $(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)) $(OBJECTS2) ../../sources/math/makefile ../../sources/math/filelist
+libm.a: $(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)) $(OBJECTS2) ../../sources/math/Makefile ../../sources/math/filelist
 	-rm -f $@
-	ar -q $@ $(OBJECTS2)
+	$(AR) -q $@ $(OBJECTS2)
 	$(RANLIB) $@
 	echo "\$$$(V)" >>$@
 

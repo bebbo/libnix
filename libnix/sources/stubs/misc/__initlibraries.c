@@ -1,5 +1,5 @@
 #include <proto/exec.h>
-#include <stabs.h>
+#include "stabs.h"
 
 extern struct lib /* These are the elements pointed to by __LIB_LIST__ */
 { struct Library *base;
@@ -10,9 +10,9 @@ extern ULONG __oslibversion;
 extern void __request(const char *text);
 extern void exit(int returncode);
 
-static void __openliberror(ULONG, char *,...) __attribute__ ((noreturn));
+static void __openliberror(ULONG,...) __attribute__ ((noreturn));
 
-static void __openliberror(ULONG version, char *name,...)
+static void __openliberror(ULONG version,...)
 { static const ULONG tricky=0x16c04e75; /* move.b d0,(a3)+ ; rts */
   char buf[60];
 

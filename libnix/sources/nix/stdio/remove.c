@@ -1,6 +1,5 @@
-#include <stdio.h>
 #include <errno.h>
-#include <dos/dos.h>
+#include <stdio.h>
 #include <proto/dos.h>
 
 extern void __seterrno(void);
@@ -16,6 +15,5 @@ int remove(const char *filename)
   if(DeleteFile((char *)filename))
     return 0;
   else
-  { __seterrno();
-    return -1; }
+  { __seterrno(); return -1; }
 }

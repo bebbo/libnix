@@ -1,20 +1,13 @@
 #include <time.h>
-#include <dos/dos.h>
-#ifdef __GNUC__ /* This is very sad :-( */
-#undef BITSPERBYTE
-#undef MAXINT
-#undef MININT
-#endif
 #include <limits.h>
+#include <dos/dos.h>
 #include <proto/dos.h>
-#include <stabs.h>
+#include "stabs.h"
 
 static struct DateStamp ds;
 
-int __initclock(void)
-{ DateStamp(&ds);
-  return 0;
-}
+void __initclock(void)
+{ DateStamp(&ds); }
 
 ADD2INIT(__initclock,-10);
 
@@ -23,5 +16,5 @@ clock_t clock(void)
   DateStamp(&ds2);
   return (((ds2.ds_Days-ds.ds_Days)*(24*60)+
            ds2.ds_Minute-ds.ds_Minute)*(60*TICKS_PER_SECOND)+
-          ds2.ds_Tick-ds.ds_Tick)*CLK_TCK/TICKS_PER_SECOND;
+           ds2.ds_Tick-ds.ds_Tick)*CLOCKS_PER_SEC/TICKS_PER_SECOND;
 }

@@ -1,4 +1,4 @@
-#include <stabs.h>
+#include "stabs.h"
 
 /* Absolute definitions for the custom chips 
  * Most of them are recommended not to use

@@ -5,18 +5,15 @@
 #include <devices/timer.h>
 #include <sys/time.h>
 
-#define MAX(x,y) (((x) > (y)) ? (x) : (y))
-
 #define SECSPERDAY (24L * 60L * 60L)
 
 int utimes(const char *file, const struct timeval *times)
-{
-  struct timeval modtime;
-  struct DateStamp d;
-  time_t t;
+{ struct DateStamp d;
 
   if (times) {
-    modtime = times[1];
+    struct timeval modtime = times[1];
+    time_t t;
+
     if (modtime.tv_usec > 1000000) {
       modtime.tv_sec += (modtime.tv_usec / 1000000);
       modtime.tv_usec %= 1000000;

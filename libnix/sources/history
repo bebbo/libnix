@@ -68,7 +68,7 @@ B Symbol redirections didn't work the way I expected - removed most of them.
 
 B -lm links libm.a BEFORE libnix. Moved some functions.
 
-B vfscanf() does no longer ungetc EOF
+B vfscanf() does no longer ungetc EOF.
 
 M Optimized __udivsi3, __umodsi3, __divsi3, __modsi3, div, ldiv.
 
@@ -158,7 +158,7 @@ B LocaleBase was defined twice - fixed.
 
 B Moved __decimalpoint from libm.a into libnix.a.
 
-F Added 3.1 system libraries to libstubs.a
+F Added 3.1 system libraries to libstubs.a.
 
 F Added Un*x functions (mkdir,chdir,rmdir,getwd,getcwd,opendir,readdir,closedir)
 
@@ -262,6 +262,7 @@ F Added CPU check with error requester for the non-68000 versions (changed
   startups, too).
 
 V1.1
+
 F cache flush function for gcc support added
 
 B fixed a macro in stabs.h for shared library support
@@ -276,13 +277,13 @@ V1.1a
 
 B fixed "off-by-one" error of portable strncpy()
 
-B fixed open() so that it ignores stdio slots now
+B fixed open() to ignore stdio slots now
 
 V1.1b
 
 B fixed longjmp() not returning 1 if passed a 0
 
-M changed automatic library opening once again ;(
+M changed automatic library opening once again ;-(
   (moved openliberror() function into __initlibraries source)
 
 P tweaked string functions and removed some asm versions
@@ -296,7 +297,8 @@ S added some const qualifiers at several places
 
 F tweaked libamiga.a functions
 
-F rewrote libinit.c, libinitr.c and devinit.c (requires ADE/GG GCC 2.7.2.1 or up)
+F rewrote libinit.c, libinitr.c and devinit.c
+  (requires ADE/GG GCC 2.7.2.1 or up)
 
 F added three math functions from vc.lib: frexp.c, ldexp.c and modf.c
 
@@ -306,3 +308,64 @@ S added "/WAIT" to default stdiowin options
   (suggested by Martin Hauner)
 
 V1.2
+
+S updated headers/strsup.h once again
+
+F added fdopen() (required changes in freopen())
+
+B fixed auto-initilization of init_stk.c
+  (broken since 1.2)
+
+B fixed bug in mktime() (tm_mday starts with 1!)
+  (reported by Detlef Wuerkner)
+
+S modified rename() according to man-page
+
+S __seterrno() does map rename() error now
+  (was disabled!?)
+
+V1.3
+
+F added networking support based on initial work by Jeff Sheperd
+  (supports AmiTCP and AS225 compatible stacks)
+
+B strftime() formats for date and date/time were swapped
+  (apparently this was due to an outdated manpage...)
+
+B fixed incorrect types usage with proper system types
+  (makes the library better prepared for PPC ;-)
+
+P improved memset(), bcopy() and bzero()
+  (hopefully ;-)
+
+B fixed (harmless?) bug in freopen() open mode handling
+  (did only handle rwa[b]+ but not rwa+[b])
+
+B fixed append filemode to really write at end of file only
+
+S changed fdopen() to be independed from freopen()
+
+S stdin/stdout/stderr initialization now use fdopen()
+  (-> removed freopen()'s stdio open kludge)
+
+S adapted chmod() to return success if SetProtection
+  fails because source is locked
+
+F finally rewrote devinit.c to use GCC 2.7.2.1 features
+  (now in sync with libinit.c/libinitr.c)
+
+B fixed Makefiles for case sensitives filesystems, cross
+  compilation support (dosesn't use ar directly anymore)
+  and proper $(MAKE) handling
+
+B fixed hole in math/Makefile.in :-(
+  (didn't reference *all* objects leading to vfprint/vfscanf)
+
+F added a better and more general debug scheme
+
+F added gettimeofday() from libnixPPC package
+
+S general code cleanup
+  (eg. replaced all numerical stdio flags with #defines)
+
+V2.0

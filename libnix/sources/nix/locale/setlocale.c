@@ -1,18 +1,13 @@
-#include <libraries/locale.h>
-#include <locale.h>
-#include <stdlib.h>
-#include <string.h>
-#include <dos/dos.h>
-#ifdef __GNUC__ /* This is very sad :-( */
-#undef BITSPERBYTE
-#undef MAXINT
-#undef MININT
-#endif
 #include <limits.h>
-#include <proto/exec.h>
+#include <locale.h>
+#include <string.h>
+#include <stdlib.h>
+#include <dos/dos.h>
+#include <libraries/locale.h>
 #include <proto/locale.h>
+#include <proto/exec.h>
 #include <strsup.h>
-#include <stabs.h>
+#include "stabs.h"
 
 extern struct LocaleBase *LocaleBase;
 extern char __localename[];

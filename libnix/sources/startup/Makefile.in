@@ -8,15 +8,16 @@ srcdir =	@srcdir@
 VPATH =		@srcdir@
 
 CC =		@CC@
-CPP =           @CPP@
+CPP =		@CPP@
 AS =		as
 
+AR =		ar
 RANLIB =	@RANLIB@
-AWK =           @AWK@
+AWK =		@AWK@
 
 #### End system configuration section ####
 
-OPTIONS=-I $(srcdir)/../headers -I ../../sources/headers -O -fomit-frame-pointer
+OPTIONS=-I$(srcdir)/../headers -O -fomit-frame-pointer
 
 %.o: %.c
 	$(CC) $(OPTIONS) -c $^ 2>&1|tee $*.err
@@ -25,7 +26,7 @@ OPTIONS=-I $(srcdir)/../headers -I ../../sources/headers -O -fomit-frame-pointer
 
 .PHONY: all filelist subdirs clean veryclean
 
-all: nrcrt0.o nbcrt0.o ncrt0.o libinit.o libinitr.o#devinit.o
+all: nrcrt0.o nbcrt0.o ncrt0.o libinit.o libinitr.o devinit.o
 
 subdirs:
 

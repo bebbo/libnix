@@ -1,3 +1,6 @@
+#ifndef _HEADERS_LIBINIT_H
+#define _HEADERS_LIBINIT_H
+
 /******************************************************************************/
 /*                                                                            */
 /* special define(s)                                                          */
@@ -19,7 +22,7 @@
 /*                                                                            */
 /******************************************************************************/
 
-struct LibBase {
+typedef struct libBase {
   struct Library  LibNode;
   UWORD           Pad;
   LONG            SegList;
@@ -27,9 +30,9 @@ struct LibBase {
                   SysBase;
 #ifdef EXTENDED
   ULONG           DataSize;
-  struct LibBase *Parent;
+  struct libBase *Parent;
 #endif
-};
+} *__LIB, *__DEV;
 
 /******************************************************************************/
 /*                                                                            */
@@ -38,10 +41,10 @@ struct LibBase {
 /******************************************************************************/
 
 LONG LibExtFunc(VOID);
-LONG LibExpunge(REG(a6,struct LibBase *));
-LONG LibClose(REG(a6,struct LibBase *));
-APTR LibOpen(REG(a6,struct LibBase *));
-APTR LibInit(REG(a0,LONG),REG(d0,struct LibBase *),REG(a6,struct Library *));
+LONG LibExpunge(REG(a6,__LIB));
+LONG LibClose(REG(a6,__LIB));
+APTR LibOpen(REG(a6,__LIB));
+APTR LibInit(REG(a0,LONG),REG(d0,__LIB),REG(a6,struct Library *));
 
 /******************************************************************************/
 /*                                                                            */
@@ -49,11 +52,11 @@ APTR LibInit(REG(a0,LONG),REG(d0,struct LibBase *),REG(a6,struct Library *));
 /*                                                                            */
 /******************************************************************************/
 
-APTR DevInit();
-VOID DevOpen();
-APTR DevClose();
-APTR DevExpunge();
-APTR DevExtFunc();
+LONG DevExtFunc(VOID);
+LONG DevExpunge(REG(a6,__DEV));
+LONG DevClose(REG(a1,APTR),REG(a6,__DEV));
+VOID DevOpen(REG(d0,ULONG),REG(a1,APTR),REG(d1,ULONG),REG(a6,__DEV));
+APTR DevInit(REG(a0,LONG),REG(d0,__DEV),REG(a6,struct Library *));
 
 /******************************************************************************/
 /*                                                                            */
@@ -69,13 +72,19 @@ extern const UWORD LibRevision;
 extern const char LibIdString[];
 extern const char LibName[];
 
+extern LONG __stdargs __UserDevInit(struct Library *,REG(a4,APTR));
+extern LONG __stdargs __UserDevOpen(struct IORequest *,ULONG,ULONG,REG(a4,APTR));
+extern VOID __stdargs __UserDevClose(struct IORequest *,REG(a4,APTR));
+extern VOID __stdargs __UserDevCleanup(REG(a4,APTR));
+
+extern const UWORD DevVersion;
+extern const UWORD DevRevision;
+extern const char DevIdString[];
+extern const char DevName[];
+
 extern APTR __LibTable__[];
 extern APTR __FuncTable__[];
 
 extern LONG __datadata_relocs[];
 
-/******************************************************************************/
-/*                                                                            */
-/* end of libinit.h                                                           */
-/*                                                                            */
-/******************************************************************************/
+#endif /* _HEADERS_LIBINIT_H */

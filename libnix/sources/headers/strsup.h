@@ -6,7 +6,11 @@
 #ifdef __OPTIMIZE__
 
 extern __inline__ void *memcpy(void *s1,const void *s2,size_t n)
-{ register char *a6 __asm("a6") = *(char **)4;
+{
+  #ifndef __NOLIBBASE__
+  extern struct ExecBase *SysBase;
+  #endif
+  register char *a6 __asm("a6") = (char *)SysBase;
   register const void *a0 __asm("a0") = s2;
   register const void *a1 __asm("a1") = s1;
   register size_t d0 __asm("d0") = n;
@@ -14,26 +18,26 @@ extern __inline__ void *memcpy(void *s1,const void *s2,size_t n)
   : /* no output */
   : "r" (a6), "r" (a0), "r" (a1), "r" (d0)
   : "a0","a1","d0","d1", "memory");
-
   return s1;
 }
 
 extern __inline__ void *memmove(void *s1,const void *s2,size_t n)
 { extern void bcopy();
+
   bcopy(s2,s1,n); return s1;
 }
 
 extern __inline__ void *memset(void *s,int c,size_t n)
 { 
   if (n) {
-    unsigned char *p=s;
+    unsigned char *p=(unsigned char *)s;
     do;while(*p++=c,--n);
   }
   return s;
 }
 
 extern __inline__ int memcmp(const void *s1,const void *s2,size_t n)
-{ const unsigned char *p1=s1,*p2=s2;
+{ const unsigned char *p1=(const unsigned char *)s1,*p2=(const unsigned char *)s2;
   unsigned long r,c;
 
   if ((r=n))
@@ -148,7 +152,7 @@ extern __inline__ char *strlwr(char *s)
   return s;
 }
 
-extern __inline__ char *stpcpy(char *dst,char *src)
+extern __inline__ char *stpcpy(char *dst,const char *src)
 {
   do;while((*dst++=*src++)); return(--dst);
 }

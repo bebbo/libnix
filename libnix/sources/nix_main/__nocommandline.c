@@ -1,5 +1,5 @@
 /*
- * This is a different calling convention for main (actually its _main):
+ * This is a different calling convention for main (actually it's _main):
  *
  * int main(char *commandline);
  * void exit(int returncode);
@@ -11,10 +11,10 @@
 #include <dos/dos.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <stabs.h>
+#include "stabs.h"
 
 extern char *__argc; /* Defined in startup */
-extern char  *__commandline;
+extern char *__commandline;
 extern unsigned long __commandlen;
 extern struct WBStartup *_WBenchMsg;
 

@@ -4,15 +4,16 @@ srcdir =	@srcdir@
 VPATH =		@srcdir@
 
 CC =		@CC@
-CPP =           @CPP@
+CPP =		@CPP@
 AS =		as
 
+AR =		ar
 RANLIB =	@RANLIB@
-AWK =           @AWK@
-FD2INLINE	= fd2inline
+AWK =		@AWK@
 
-CLIBPATH	= $(prefix)/os-include/clib/
+FD2INLINE	= fd2inline
 FDPATH		= $(prefix)/os-lib/fd/
+CLIBPATH	= $(prefix)/os-include/clib/
 
 #### End system configuration section ####
 
@@ -20,14 +21,11 @@ include ../../sources/amiga/filelist
 
 CURDIR = $(shell pwd)
 
-OPTIONS=-I $(srcdir)/../headers -I../../sources/headers $(CFLAGS)
-
-SOURCEFILES=*/*
+OPTIONS=-I$(srcdir)/../headers $(CFLAGS)
 
 FDFILES		= $(wildcard $(FDPATH)*.fd)
 CLIB		= $(addprefix $(CLIBPATH),$(subst _lib.fd,_protos.h,$(notdir $(fd))))
 STUB		= $(subst _lib.fd,,$(notdir $(fd)))
-
 
 %.o: %.c
 	$(CC) $(OPTIONS) -c $^ -o $@ 2>&1|tee $*.err
@@ -50,12 +48,12 @@ veryclean:
 $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
 	mkdir $@
 
-##libamiga.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) libglue.a ../../sources/amiga/makefile ../../sources/amiga/filelist
-libamiga.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) newlibglue.a ../../sources/amiga/makefile ../../sources/amiga/filelist
+#libamiga.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) libglue.a ../../sources/amiga/Makefile ../../sources/amiga/filelist
+libamiga.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) newlibglue.a ../../sources/amiga/Makefile ../../sources/amiga/filelist
 	-rm -f libamiga.a
-##	-cp libglue.a libamiga.a
+#	-cp libglue.a libamiga.a
 	-cp newlibglue.a libamiga.a
-	ar -q libamiga.a $(OBJECTS)
+	$(AR) -q libamiga.a $(OBJECTS)
 	$(RANLIB) libamiga.a
 
 libglue.a:
@@ -87,7 +85,7 @@ libglue.a:
 	        { if(file!="") print $$0 >file; }' ); done
 	-cd tmp;rm vararg.c dummy.c;$(CC) -c *.s
 	-rm libglue.a
-	-cd tmp;ar -q ../libglue.a *.o
+	-cd tmp;$(AR) -q ../libglue.a *.o
 	-rm -rf tmp
 
 newlibglue.a:	stublibs
@@ -97,7 +95,7 @@ newlibglue.a:	stublibs
 		rm -f $@;\
 		$(foreach fd, $(FDFILES),\
 		echo "adding $(STUB) stubs to $@ ...";\
-		ar -q $@ stubs/$(STUB)/*.o;)\
+		$(AR) -q $@ stubs/$(STUB)/*.o;)\
 		touch stamp-libglue;\
 	else\
 		true;\

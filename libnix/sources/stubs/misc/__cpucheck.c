@@ -1,5 +1,5 @@
-#include <bases.h>
-#include <stabs.h>
+#include "bases.h"
+#include "stabs.h"
 
 #if defined(mc68020) || defined(__HAVE_68881__)
 

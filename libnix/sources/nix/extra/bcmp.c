@@ -1,3 +1,3 @@
-#include <stabs.h>
+#include "stabs.h"
 
 ALIAS(bcmp,memcmp);

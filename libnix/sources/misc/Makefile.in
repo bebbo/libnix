@@ -4,17 +4,18 @@ srcdir =	@srcdir@
 VPATH =		@srcdir@
 
 CC =		@CC@
-CPP =           @CPP@
+CPP =		@CPP@
 AS =		as
 
+AR =		ar
 RANLIB =	@RANLIB@
-AWK =           @AWK@
+AWK =		@AWK@
 
 #### End system configuration section ####
 
 OBJECTS=detach.o swapstack.o
 
-OPTIONS=-I $(srcdir)/../headers -I../../sources/headers $(CFLAGS)
+OPTIONS=-I$(srcdir)/../headers $(CFLAGS)
 
 vpath %.c $(SOURCEDIR)
 

@@ -1,10 +1,10 @@
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <stabs.h>
+#include "stabs.h"
 
 extern ULONG __stk_safezone;
 
-APTR *__stackborders,__stk_limit;
+APTR *__stackborders=0,__stk_limit=0;
 
 /*
  * This way to find the bottom of the current stackframe

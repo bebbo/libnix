@@ -25,7 +25,7 @@ int fwrite(const void *ptr,size_t size,size_t nmemb,FILE *stream)
       int c;
       c=*b++;
       if(putc(c,stream)==EOF)
-	break;
+        break;
       total--;
     }
   }while(total);

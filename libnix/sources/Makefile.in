@@ -18,24 +18,19 @@
 srcdir =	@srcdir@
 VPATH =		@srcdir@
 
-CC =		@CC@
-CPP =           @CPP@
-AS =		as
-
-RANLIB =	@RANLIB@
-AWK =           @AWK@
+AWK =		@AWK@
 
 #### End system configuration section ####
 
 CURDIR = $(shell pwd)
 
-MAKELIST=make -f $(CURDIR)/Makefile
+MAKELIST=$(MAKE) -f $(CURDIR)/Makefile
 
-SUBDIRS=nixmain nix_main misc nix nix13 math stack stubs
+SUBDIRS=nixmain nix_main misc math nix nix13 socket stack stubs
 
 all: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f))
 	for subdir in $(SUBDIRS); do \
-	( cd $$subdir;make -f ../../sources/$$subdir/Makefile V="$(V)" \
+	( cd $$subdir;$(MAKE) -f ../../sources/$$subdir/Makefile V="$(V)" \
 	  CFLAGS="$(CFLAGS)" ); \
 	done
 
@@ -44,19 +39,20 @@ $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
 
 libamiga:
 	if [ ! -d amiga ] ; then mkdir amiga ; else true ; fi
-	cd amiga;make -f $(CURDIR)/../sources/amiga/Makefile CFLAGS="$(CFLAGS)"
+	cd amiga;$(MAKE) -f $(CURDIR)/../sources/amiga/Makefile CFLAGS="$(CFLAGS)"
 
 filelists:
 	-cd $(srcdir)/math;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/math $(CURDIR)/math/filelist
-	-cd $(srcdir)/stack;	$(MAKELIST) SOURCEFILES="*.c" FLDIR=$(CURDIR)/stack $(CURDIR)/stack/filelist
 	-cd $(srcdir)/nix;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/nix $(CURDIR)/nix/filelist
 	-cd $(srcdir)/nix13;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/nix13 $(CURDIR)/nix13/filelist
-	-cd $(srcdir)/stubs;	make -f $(CURDIR)/Makefile STUBDIR=$(CURDIR)/stubs libbases/dos.c; \
+	-cd $(srcdir)/socket;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/socket $(CURDIR)/socket/filelist
+	-cd $(srcdir)/stack;	$(MAKELIST) SOURCEFILES="*.c" FLDIR=$(CURDIR)/stack $(CURDIR)/stack/filelist
+	-cd $(srcdir)/stubs;	$(MAKE) -f $(CURDIR)/Makefile STUBDIR=$(CURDIR)/stubs libbases/dos.c; \
 		$(MAKELIST) SOURCEFILES=" \
 		libbases/* misc/__DOSBase.c misc/__UtilityBase.c \
 		misc/__MathIeeeSingBasBase.c misc/__MathIeeeDoubBasBase.c \
 		misc/__MathIeeeSingTransBase.c misc/__MathIeeeDoubTransBase.c \
-		misc/__initlibraries.c misc/__flush_cache.c misc/__cpucheck.c \
+		misc/__cpucheck.c misc/__flush_cache.c misc/__initlibraries.c \
 		libnames/* stubs/*" \
 		FLDIR=$(CURDIR)/stubs $(CURDIR)/stubs/filelist
 	-cd $(srcdir)/amiga;	$(MAKELIST) SOURCEFILES="*/*" FLDIR=$(CURDIR)/amiga $(CURDIR)/amiga/filelist
@@ -85,14 +81,9 @@ libbases/dos.c: $(STUBDIR)/Makefile library.list
 	  print "char __" sname "name[]=\"" $$2 "\";"           >fname;}'
 
 clean:
-	if [ -d nixmain ] ; then (cd nixmain; make -f ../../sources/nixmain/Makefile TARGET=clean clean) ; else true ; fi
-	if [ -d nix_main ] ; then (cd nix_main; make -f ../../sources/nix_main/Makefile TARGET=clean clean) ; else true ; fi
-	if [ -d misc ] ; then (cd misc; make -f ../../sources/misc/Makefile TARGET=clean clean) ; else true ; fi
-	if [ -d math ] ; then (cd math; make -f ../../sources/math/Makefile TARGET=clean clean) ; else true ; fi
-	if [ -d stack ] ; then (cd stack; make -f ../../sources/stack/Makefile TARGET=clean clean) ; else true ; fi
-	if [ -d nix ] ; then (cd nix; make -f ../../sources/nix/Makefile TARGET=clean clean) ; else true ; fi
-	if [ -d nix13 ] ; then (cd nix13; make -f ../../sources/nix13/Makefile TARGET=clean clean) ; else true ; fi
-	if [ -d stubs ] ; then (cd stubs; make -f ../../sources/stubs/Makefile TARGET=clean clean) ; else true ; fi
+	for subdir in $(SUBDIRS); do \
+	( if [ -d $$subdir ] ; then (cd $$subdir; $(MAKE) -f ../../sources/$$subdir/Makefile clean) ; else true ; fi ) \
+	done
 
 veryclean:
 	-rm -rf *

@@ -1,4 +1,4 @@
-#include <stabs.h>
+#include "stabs.h"
 
 ABSDEF(AbsExecBase,0x00000004);
 ABSDEF(cartridge,  0x00f00000);

@@ -3,5 +3,5 @@
 
 VOID waitbeam(LONG pos)
 {
-  do {} while(pos>VBeamPos());
+  do{}while(pos>VBeamPos());
 }

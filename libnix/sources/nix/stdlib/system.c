@@ -1,13 +1,12 @@
-#include <utility/tagitem.h>
 #include <dos/dos.h>
+#include <utility/tagitem.h>
 #include <proto/dos.h>
 
-static struct TagItem list[]={ { TAG_END,0 } }; /* No Tags */
-
 int system(const char *string)
-{
-  if(string==NULL)
+{ static struct TagItem notags[]={ { TAG_END,0 } };
+
+  if(!string)
     return 1;
   else
-    return SystemTagList((char *)string,list); 
+    return SystemTagList((char *)string,notags); 
 }

@@ -38,7 +38,7 @@ LibExtFunc(VOID)
 /******************************************************************************/
 
 LONG
-LibExpunge(REG(a6,struct LibBase *lib))
+LibExpunge(REG(a6,__LIB lib))
 {
   LONG SegList = 0;
 
@@ -81,7 +81,7 @@ LibExpunge(REG(a6,struct LibBase *lib))
 /******************************************************************************/
 
 LONG
-LibClose(REG(a6,struct LibBase *lib))
+LibClose(REG(a6,__LIB lib))
 {
   LONG SegList = 0;
 
@@ -104,7 +104,7 @@ LibClose(REG(a6,struct LibBase *lib))
 /******************************************************************************/
 
 APTR
-LibOpen(REG(a6,struct LibBase *lib))
+LibOpen(REG(a6,__LIB lib))
 {
   /* clear delayed expunge flag */
 
@@ -144,7 +144,7 @@ static __inline APTR __GetBssStart(void)
 }
 
 APTR
-LibInit(REG(a0,LONG SegList),REG(d0,struct LibBase *lib),REG(a6,struct Library *SysBase))
+LibInit(REG(a0,LONG SegList),REG(d0,__LIB lib),REG(a6,struct Library *SysBase))
 { ULONG size;
 
   /* set up header data */
@@ -197,7 +197,7 @@ LibInit(REG(a0,LONG SegList),REG(d0,struct LibBase *lib),REG(a6,struct Library *
 /******************************************************************************/
 
 static const APTR InitTab[] = {
-  (APTR)sizeof(struct LibBase),
+  (APTR)sizeof(struct libBase),
   (APTR)&__FuncTable__[1],
   (APTR)NULL,
   (APTR)&LibInit
