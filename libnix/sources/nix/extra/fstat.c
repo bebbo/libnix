@@ -10,11 +10,6 @@ extern void __seterrno(void);
 
 int fstat(int d,struct stat *buf)
 { extern int __stat(struct stat *buf,struct FileInfoBlock *fib);
-#if defined (__GNUC__)
-  #undef DOS_BASE_NAME
-  #define DOS_BASE_NAME dosbase
-  register APTR dosbase __asm("a6") = DOSBase;
-#endif
   StdFileDes *fp = _lx_fhfromfd(d);
   struct FileInfoBlock *fib;
   LONG pos,len,fh;
