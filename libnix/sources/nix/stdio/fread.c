@@ -24,7 +24,7 @@ int fread(void *ptr,size_t size,size_t nmemb,FILE *stream)
     {
       int c;
       if((c=__srget(stream))==EOF)
-	break;
+        break;
       *b++=c;
       total--;
     }

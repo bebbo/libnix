@@ -1,5 +1,5 @@
 #include <string.h>
-#include <stabs.h>
+#include "stabs.h"
 
 char *strrchr(const char *s,int c)
 { char *c1=(char *)0;

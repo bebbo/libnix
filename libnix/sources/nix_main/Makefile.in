@@ -4,17 +4,18 @@ srcdir =	@srcdir@
 VPATH =		@srcdir@
 
 CC =		@CC@
-CPP =           @CPP@
+CPP =		@CPP@
 AS =		as
 
+AR =		ar
 RANLIB =	@RANLIB@
-AWK =           @AWK@
+AWK =		@AWK@
 
 #### End system configuration section ####
 
 OBJECTS=__nocommandline.o _main.o
 
-OPTIONS=-I $(srcdir)/../headers -I../../sources/headers $(CFLAGS)
+OPTIONS=-I$(srcdir)/../headers $(CFLAGS)
 
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \
@@ -46,8 +47,8 @@ clean:
 veryclean: clean
 	-rm -f libnix_main.a
 
-libnix_main.a: $(OBJECTS) ../../sources/nix_main/makefile
+libnix_main.a: $(OBJECTS) ../../sources/nix_main/Makefile
 	-rm -f $@
-	ar -q $@ $(OBJECTS)
+	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@
 	echo "\$$$(V)" >>$@

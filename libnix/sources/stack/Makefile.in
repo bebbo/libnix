@@ -4,11 +4,12 @@ srcdir =	@srcdir@
 VPATH =		@srcdir@
 
 CC =		@CC@
-CPP =           @CPP@
+CPP =		@CPP@
 AS =		as
 
+AR =		ar
 RANLIB =	@RANLIB@
-AWK =           @AWK@
+AWK =		@AWK@
 
 #### End system configuration section ####
 
@@ -16,9 +17,7 @@ ifneq ($(TARGET),clean)
 include ../../sources/stack/filelist
 endif
 
-OPTIONS=-I $(srcdir)/../headers -I../../sources/headers $(CFLAGS)
-
-SOURCEFILES=*.c
+OPTIONS=-I$(srcdir)/../headers $(CFLAGS)
 
 REDEF=-D_DOSBase=___DOSBase
 
@@ -39,8 +38,8 @@ clean:
 veryclean:
 	-rm -rf *
 
-libstack.a: $(OBJECTS) ../../sources/stack/makefile ../../sources/stack/filelist
+libstack.a: $(OBJECTS) ../../sources/stack/Makefile ../../sources/stack/filelist
 	-rm -f $@
-	ar -q $@ $(OBJECTS)
+	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@
 	echo "\$$$(V)" >>$@

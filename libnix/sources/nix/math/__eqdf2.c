@@ -1,5 +1,5 @@
 #include <proto/mathieeedoubbas.h>
-#include <stabs.h>
+#include "stabs.h"
 
 signed long __eqdf2(double x,double y)
 { return IEEEDPCmp(x,y); }

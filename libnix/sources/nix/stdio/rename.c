@@ -17,10 +17,27 @@ int rename(const char *old,const char *new)
       if((new=__amigapath(new))!=NULL)
       {
 #endif
-        if(Rename((char *)old,(char *)new))
-          ret=0;
-        else
-          __seterrno();
+
+#if defined (__GNUC__)
+  #undef DOS_BASE_NAME
+  #define DOS_BASE_NAME dosbase
+  register APTR dosbase __asm("a6") = DOSBase;
+#endif
+
+        BPTR lnew=Lock((char *)new,SHARED_LOCK);
+        if(lnew) {
+          BPTR lold=Lock((char *)old,SHARED_LOCK);
+          if(lold)
+            ret=SameLock(lold,lnew),UnLock(lold);
+          UnLock(lnew);
+        }
+
+        if(ret) {
+          if(ret==1)
+            DeleteFile((char *)new);
+          if(ret=0,!Rename((char *)old,(char *)new))
+            __seterrno(),ret=-1;
+        }
 
 #ifdef IXPATHS
       }

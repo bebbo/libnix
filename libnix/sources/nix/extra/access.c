@@ -1,7 +1,7 @@
-#include <dos/dos.h>
-#include <proto/dos.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <dos/dos.h>
+#include <proto/dos.h>
 
 extern void __seterrno(void);
 extern char *__amigapath(const char *path);

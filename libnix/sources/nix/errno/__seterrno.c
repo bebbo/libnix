@@ -4,10 +4,7 @@
 
 /* Table to convert amigados error messages to unix ones */
 
-extern int errno;
-
-static long _errortable[]=
-{ 
+static long _errortable[] = {
   ERROR_NO_FREE_STORE		,ENOMEM,
   ERROR_TASK_TABLE_FULL		,EPROCLIM,
 /*ERROR_BAD_TEMPLATE
@@ -32,7 +29,7 @@ static long _errortable[]=
   ERROR_OBJECT_WRONG_TYPE*/
   ERROR_DISK_NOT_VALIDATED	,EBUSY,
   ERROR_DISK_WRITE_PROTECTED	,EROFS,
-/*ERROR_RENAME_ACROSS_DEVICES*/
+  ERROR_RENAME_ACROSS_DEVICES	,EXDEV,
   ERROR_DIRECTORY_NOT_EMPTY	,ENOTEMPTY,
   ERROR_TOO_MANY_LEVELS		,ENAMETOOLONG,
   ERROR_DEVICE_NOT_MOUNTED	,ENXIO,
@@ -56,22 +53,13 @@ static long _errortable[]=
   ERROR_BUFFER_OVERFLOW
   ERROR_BREAK*/
   ERROR_NOT_EXECUTABLE		,EACCES,
-  0
+  0				,EPERM
 };
   
 void __seterrno(void)
-{ 
-  long amigaerror;
-  long *ptr=_errortable;
-  amigaerror=IoErr();
-  while(*ptr)
-  {
-    if(*ptr++==amigaerror)
-    {
-      errno=*ptr;
-      return; 
-    }
-    ptr++;
-  }
-  errno=EPERM;
+{ long amigaerror=IoErr(),*ptr=_errortable,err;
+
+  while((err=*ptr++)&&(err!=amigaerror))
+    ++ptr;
+  errno=*ptr;
 }

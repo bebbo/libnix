@@ -1,4 +1,4 @@
-#include <pool.h>
+#include "pool.h"
 
 APTR ASM AsmAllocPooled(REG(a0,POOL *poolHeader),REG(d0,ULONG memSize),REG(a6,APTR SysBase))
 {

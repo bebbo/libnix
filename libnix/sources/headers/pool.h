@@ -1,3 +1,6 @@
+#ifndef _HEADERS_POOL_H
+#define _HEADERS_POOL_H
+
 #include <exec/types.h>
 
 #if defined(__GNUC__)
@@ -25,10 +28,12 @@ typedef struct Pool {
 } POOL;
 
 /*
-** required prototypes ;)
+** required prototypes
 */
 
 APTR ASM AsmCreatePool(REG(d0,ULONG),REG(d1,ULONG),REG(d2,ULONG),REG(a6,APTR));
 APTR ASM AsmAllocPooled(REG(a0,POOL *),REG(d0,ULONG),REG(a6,APTR));
 VOID ASM AsmFreePooled(REG(a0,POOL *),REG(a1,APTR),REG(d0,ULONG),REG(a6,APTR));
 VOID ASM AsmDeletePool(REG(a0,POOL *),REG(a6,APTR));
+
+#endif /* _HEADERS_POOL_H */

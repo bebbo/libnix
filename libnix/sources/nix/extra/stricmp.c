@@ -1,6 +1,6 @@
-#include <proto/utility.h>
 #include <string.h>
-#include <stabs.h>
+#include <proto/utility.h>
+#include "stabs.h"
 
 int stricmp(const char *s1,const char *s2)
 {

@@ -1,18 +1,17 @@
-#include <stdio.h>
 #include <stdlib.h>
 
-void *calloc(unsigned long nmemb,unsigned long size)
+void *calloc(size_t nmemb,size_t size)
 {
-  unsigned long l;
-  unsigned long *a;
+  size_t l;
+  size_t *a;
   void *b;
-  l=(nmemb*size+(sizeof(unsigned long)-1))&~(sizeof(unsigned long)-1);
-  a=(unsigned long *)(b=malloc(l));
+  l=(nmemb*size+(sizeof(size_t)-1))&~(sizeof(size_t)-1);
+  a=(size_t *)(b=malloc(l));
   if(b!=NULL)
   {
     do
       *a++=0;
-    while((l-=sizeof(unsigned long))!=0);
+    while((l-=sizeof(size_t))!=0);
   }
   return b;
 }

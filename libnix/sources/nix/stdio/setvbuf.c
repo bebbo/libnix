@@ -1,29 +1,31 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int setvbuf(FILE *stream,char *buf,int mode,size_t size)
-{ stream->flags&=~3;
-  stream->flags|=mode==_IOLBF?1:(mode==_IONBF?2:0);
-  if(size!=stream->bufsize||buf!=(char *)stream->buffer)
+{ short flags=stream->flags&~(__SNBF|__SLBF);
+  if(mode==_IONBF)
+    flags|=__SNBF;
+  else if(mode==_IOLBF)
+    flags|=__SLBF;
+  if(size!=(size_t)stream->bufsize||buf!=(char *)stream->buffer)
   { if(__fflush(stream))
       return -1;
     stream->incount=0;
+    stream->flags=(flags&=~__SRD);
     stream->tmpp=0;
-    stream->flags&=~4;
     mode=(buf==NULL);
-    if(mode)
-      if((buf=malloc(size))==NULL)
-      { errno=ENOMEM;
-        return -1; }
-    if(stream->flags&0x80)
+    if(mode&&(buf=malloc(size=size?size:1))==NULL)
+    { errno=ENOMEM;
+      return -1; }
+    if(flags&__SMBF)
       free(stream->buffer);
     if(mode)
-      stream->flags|=0x80;
+      flags|=__SMBF;
     else
-      stream->flags&=~0x80;
+      flags&=~__SMBF;
     stream->buffer=buf;
     stream->bufsize=size;
   } /* Need not adjust outcount, since setvbuf affects only the NEXT full buffer */
-  return 0;
+  stream->flags=flags; return 0;
 }

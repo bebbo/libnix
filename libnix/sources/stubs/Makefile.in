@@ -4,11 +4,12 @@ srcdir =	@srcdir@
 VPATH =		@srcdir@
 
 CC =		@CC@
-CPP =           @CPP@
+CPP =		@CPP@
 AS =		as
 
+AR =		ar
 RANLIB =	@RANLIB@
-AWK =           @AWK@
+AWK =		@AWK@
 
 #### End system configuration section ####
 
@@ -18,7 +19,7 @@ endif
 
 CURDIR = $(shell pwd)
 
-OPTIONS=-I $(srcdir)/../headers -I ../../sources/headers $(CFLAGS)
+OPTIONS=-I$(srcdir)/../headers $(CFLAGS)
 
 OBJECTS2=$(OBJECTS) ../nix/misc/__request.o
 
@@ -41,8 +42,8 @@ veryclean:
 $(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)):
 	mkdir $@
 
-libstubs.a: $(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)) $(OBJECTS2) ../../sources/stubs/makefile ../../sources/stubs/filelist
+libstubs.a: $(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)) $(OBJECTS2) ../../sources/stubs/Makefile ../../sources/stubs/filelist
 	rm -f $@
-	ar -q $@ $(OBJECTS2)
+	$(AR) -q $@ $(OBJECTS2)
 	$(RANLIB) $@
 	echo "\$$$(V)" >>$@

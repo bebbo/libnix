@@ -1,4 +1,4 @@
-#include <pool.h>
+#include "pool.h"
 
 VOID LibFreePooled(APTR poolHeader, APTR memory, ULONG memSize)
 {

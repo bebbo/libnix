@@ -1,5 +1,5 @@
-#include <stabs.h>
-#include <bases.h>
+#include "bases.h"
+#include "stabs.h"
 
 asm("
 	.text

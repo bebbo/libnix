@@ -1,4 +1,4 @@
-#include <pool.h>
+#include "pool.h"
 
 APTR LibCreatePool(ULONG requirements, ULONG puddleSize, ULONG threshSize)
 {

@@ -2,7 +2,7 @@
 #include <exec/memory.h>
 #include <clib/alib_protos.h>
 #include <proto/exec.h>
-#include <stabs.h>
+#include "stabs.h"
 
 struct IORequest *CreateExtIO(struct MsgPort *port,LONG iosize)
 { APTR SysBase = *(APTR *)4L;

@@ -1,15 +1,12 @@
 #include <stdio.h>
 
 char *gets(char *s)
-{
-  int c;
-  char *s2=s;
+{ char *s2=s;
+
   for(;;)
-  {
-    c=fgetc(stdin);
+  { int c=fgetc(stdin);
     if(c==EOF)
-    {
-      if(s2==s)
+    { if(s2==s)
         return NULL;
       break;
     }

@@ -1,15 +1,12 @@
 #include <stdio.h>
 
 char *fgets(char *s,int n,FILE *stream)
-{
-  int c;
-  char *s2=s;
+{ char *s2=s;
+
   while(--n)
-  {
-    c=fgetc(stream);
+  { int c=fgetc(stream);
     if(c==EOF)
-    {
-      if(s2==s)
+    { if(s2==s)
         return NULL;
       break;
     }

@@ -1,4 +1,4 @@
 #include <stdio.h>
 
 void clearerr(FILE *stream)
-{ stream->flags&=~96; }
+{ stream->flags&=~(__SERR|__SEOF); }

@@ -1,7 +1,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stabs.h>
+#include "stabs.h"
 
 static int __pathconv;
 

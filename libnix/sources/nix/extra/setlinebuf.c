@@ -1,6 +1,4 @@
 #include <stdio.h>
 
-int setlinebuf(FILE *f)
-{
-  return setvbuf(f, NULL, _IOLBF, 0);
-}
+int setlinebuf(FILE *stream)
+{ return setvbuf(stream,NULL,_IOLBF,0); }

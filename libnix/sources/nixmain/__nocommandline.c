@@ -4,7 +4,7 @@
 #include <proto/exec.h>
 #include <dos/dos.h>
 #include <proto/dos.h>
-#include <stabs.h>
+#include "stabs.h"
 
 extern int    __argc; /* Defined in startup */
 extern char **__argv;

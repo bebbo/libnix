@@ -1,3 +1,6 @@
+#ifndef _HEADERS_REGPARM_H
+#define _HEADERS_REGPARM_H
+
 #define ___PUSH(a) "movel\t" #a ",sp@-\n"
 #define ___POP(a)  "movel\tsp@+," #a "\n"
 
@@ -29,3 +32,4 @@ __REGP(functype,funcname,___PUSH(r3)___PUSH(r2)___PUSH(r1),12) (a1,a2,a3)
 #define REGPARM4(functype,funcname,a1,r1,a2,r2,a3,r3,a4,r4) \
 __REGP(functype,funcname,___PUSH(r4)___PUSH(r3)___PUSH(r2)___PUSH(r1),16) (a1,a2,a3,a4)
 
+#endif /* _HEADERS_REGPARM_H */

@@ -4,9 +4,7 @@
 /*                                                                            */
 /******************************************************************************/
 
-#include <exec/types.h>
 #include <exec/errors.h>
-#include <exec/execbase.h>
 #include <proto/exec.h>
 #include "stabs.h"
 
@@ -16,8 +14,8 @@
 /*                                                                            */
 /******************************************************************************/
 
-const BYTE DevName[]="simple.device";
-const BYTE DevIdString[]="version 1.0";
+const char DevName[]="simple.device";
+const char DevIdString[]="version 1.0";
 
 const UWORD DevVersion=1;
 const UWORD DevRevision=0;
@@ -41,8 +39,8 @@ struct ExecBase *SysBase;
 
 int __UserDevInit(struct Device *myDev)
 {
-  /* required !!! */
-  SysBase=*(struct ExecBase **)4;
+  /* !!! required !!! */
+  SysBase = *(struct ExecBase **)4L;
 
   /* setup your device base - to access device functions over *this* basePtr! */
 
@@ -65,7 +63,7 @@ int __UserDevInit(struct Device *myDev)
 /*                                                                            */
 /******************************************************************************/
 
-void __UserDevCleanup()
+void __UserDevCleanup(void)
 {
   /* your cleanup comes here */
 
@@ -84,7 +82,7 @@ void __UserDevCleanup()
 
 int __UserDevOpen(struct IORequest *iorq,ULONG unit,ULONG flags)
 {
-  int io_err=IOERR_OPENFAIL;
+  int io_err = IOERR_OPENFAIL;
 
   /* return a bool to indicate success */
 
@@ -101,7 +99,6 @@ int __UserDevOpen(struct IORequest *iorq,ULONG unit,ULONG flags)
 
 void __UserDevClose(struct IORequest *iorq)
 {
-
   /* nothing to return */
 }
 

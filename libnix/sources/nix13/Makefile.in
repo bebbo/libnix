@@ -4,11 +4,12 @@ srcdir =	@srcdir@
 VPATH =		@srcdir@
 
 CC =		@CC@
-CPP =           @CPP@
+CPP =		@CPP@
 AS =		as
 
+AR =		ar
 RANLIB =	@RANLIB@
-AWK =           @AWK@
+AWK =		@AWK@
 
 #### End system configuration section ####
 
@@ -18,9 +19,7 @@ endif
 
 CURDIR = $(shell pwd)
 
-OPTIONS=-I $(srcdir)/../headers -I ../../sources/headers $(CFLAGS) -msmall-code
-
-SOURCEFILES=*/*
+OPTIONS=-I$(srcdir)/../headers $(CFLAGS) -msmall-code
 
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \
@@ -50,8 +49,8 @@ veryclean:
 $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
 	mkdir $@
 
-libnix13.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) ../../sources/nix13/makefile ../../sources/nix13/filelist
+libnix13.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) ../../sources/nix13/Makefile ../../sources/nix13/filelist
 	-rm -f $@
-	ar -q $@ $(OBJECTS)
+	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@
 	echo "\$$$(V)" >>$@

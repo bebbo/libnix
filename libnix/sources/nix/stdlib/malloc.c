@@ -1,15 +1,14 @@
 /* 10-Apr-94 bug fix M. Fleischer
- * 11-Apr-94 bug fix & readjastment G. Nikl
+ * 11-Apr-94 bug fix & readjustment G. Nikl
  * 14-Apr-94 readjustment M. Fleischer
  * 24-Apr-94 cleanup for malloc changed
  */
 
-#include <exec/types.h>
-#include <exec/memory.h>
-#include <exec/nodes.h>
+#include <stdlib.h>
 #include <exec/lists.h>
+#include <exec/memory.h>
 #include <proto/exec.h>
-#include <stabs.h>
+#include "stabs.h"
 
 extern ULONG _MSTEP;
 
@@ -20,7 +19,7 @@ struct MinList __memorylist= /* memorylist (empty): free needs also access */
   (struct MinNode *)&__memorylist.mlh_Head
 };
 
-void *malloc(unsigned long size)
+void *malloc(size_t size)
 {
   struct MinNode *node=__memorylist.mlh_Head;
   struct MemHeader *b;

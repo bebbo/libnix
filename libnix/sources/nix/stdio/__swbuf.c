@@ -2,24 +2,24 @@
 #include <errno.h>
 
 int __swbuf(int c,FILE *stream) /* Get next output block */
-{
-  int out,lbs;
-  if(stream->flags&0x240) /* sprintf buffer | error on stream */
+{ int out,lbs;
+
+  if(stream->flags&(__SSTR|__SERR)) /* sprintf buffer | error on stream */
   { stream->outcount=0;
     errno=EPERM;
     return EOF;
-  }else if(stream->flags&4)
+  }else if(stream->flags&__SRD)
   {
     stream->incount=0; /* throw away input buffer */
     stream->tmpp=NULL;
-    stream->flags&=~4;
+    stream->flags&=~__SRD;
   }
-  lbs=stream->flags&_IOLBF?-stream->bufsize:0;
-  out=(stream->flags&_IONBF?0:stream->bufsize-1)+lbs;
-  if(!(stream->flags&8)) /* File wasn't in write mode */
+  lbs=stream->flags&__SLBF?-stream->bufsize:0;
+  out=(stream->flags&__SNBF?0:stream->bufsize-1)+lbs;
+  if(!(stream->flags&__SWR)) /* File wasn't in write mode */
   { stream->p=stream->buffer; /* set buffer */
     stream->outcount=--out;   /* and buffercount */
-    stream->flags|=8; }       /* and write mode */
+    stream->flags|=__SWR; }   /* and write mode */
   *stream->p++=c; /* put this character */
   if(stream->outcount<0&&(stream->outcount<lbs||(char)c=='\n'))
   { if(__fflush(stream)) /* Buffer full */
@@ -28,6 +28,6 @@ int __swbuf(int c,FILE *stream) /* Get next output block */
   }
   stream->linebufsize=lbs;
   stream->outcount=out;
-  stream->flags|=8;
+  stream->flags|=__SWR;
   return c;
 }

@@ -1,5 +1,5 @@
 #include <string.h>
-#include <stabs.h>
+#include "stabs.h"
 
 char *strchr(const char *s,int c)
 {

@@ -3,7 +3,7 @@
 #include <dos/dosextens.h>
 #include <proto/dos.h>
 #include <proto/exec.h>
-#include <stabs.h>
+#include "stabs.h"
 
 extern int __stat(struct stat *buf,struct FileInfoBlock *fib);
 extern void __seterrno(void);
