@@ -2,5 +2,9 @@
 
 void bzero(void *b,size_t n)
 {
-    memset(b, 0, n);
+    unsigned char *ch = (unsigned char *)b;
+    while (n > 0) {
+	*ch++ = 0;
+	n--;
+    }
 }
