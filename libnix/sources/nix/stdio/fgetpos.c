@@ -1,4 +1,4 @@
 #include <stdio.h>
 
-int fsetpos(FILE *stream,fpos_t *pos)
-{ return fseek(stream,*pos,SEEK_SET); }
+int fgetpos(FILE *stream,fpos_t *pos)
+{ *pos=ftell(stream); return 0; }
