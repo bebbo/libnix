@@ -17,13 +17,6 @@ int rename(const char *old,const char *new)
       if((new=__amigapath(new))!=NULL)
       {
 #endif
-
-#if defined (__GNUC__)
-  #undef DOS_BASE_NAME
-  #define DOS_BASE_NAME dosbase
-  register APTR dosbase __asm("a6") = DOSBase;
-#endif
-
         BPTR lnew=Lock((char *)new,SHARED_LOCK);
         if(lnew) {
           BPTR lold=Lock((char *)old,SHARED_LOCK);
