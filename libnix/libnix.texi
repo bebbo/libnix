@@ -15,12 +15,13 @@ public domain.
 @author Matthias Fleischer & Gunther Nikl
 @end titlepage
 
-@node Top,Description,(dir),(dir)
-@ifinfo
+@contents
+
+@node Top
+@top Introduction
 This is the documentation of libnix. The following is a list
 of chapters. You need not read all of them - but reading
 the chapter Features is recommended.
-@end ifinfo
 
 @menu
 * Description::      What is libnix?
@@ -36,6 +37,7 @@ the chapter Features is recommended.
 * Code size::	     How to write small programs with gcc
 * FAQs::	     Frequently asked questions and answers.
 @end menu
+
 @node Description,Authors,Top,Top
 @chapter What is libnix?
 
@@ -169,7 +171,7 @@ But that's not the recommended way. Therefore I don't explain this in
 detail here - use the @samp{-v} option of gcc for more details.
 
 @node Features,Special startups,Usage,Top
-@chapter Features - what you get
+@chapter Features
 
 The following list contains the elements of this package in
 the right linkage order. This means if you follow the list from
@@ -189,7 +191,7 @@ a working configuration.
 @end menu
 
 @node Startup codes,Commandline parser,Features,Features
-@chapter Startup codes
+@section Startup codes
 
 There is a lot of work to do before your @samp{main} function
 can be called - open shared libraries, open stdin, stdout, etc.
@@ -254,7 +256,7 @@ function!
 So you never need to try to write a program without a startup code.
 
 @node Startup interface,Startup usage,Startup codes,Startup codes
-@chapter Startup code interface
+@subsection Startup code interface
 
 The startup codes do the following:
 
@@ -309,7 +311,7 @@ in the file @samp{headers/stabs.h} - but keep in mind that this
 is non-portable. Priority values <=0 are reserved for library implementors.
 
 @node Startup usage,,Startup interface,Startup codes
-@chapter Startup code usage
+@subsection Startup code usage
 
 There are currently 3 startup codes in this package (maybe there will be more
 in the future). Depending on the code and data model you use and some other
@@ -339,7 +341,7 @@ because you want to access the data from a different task!)
 @end table
 
 @node Commandline parser,libstack.a,Startup codes,Features
-@chapter Commandline parser
+@section Commandline parser
 
 There are currently 2 commandline parser modules in the libnix package.
 You can easily write your own by looking into the examples
@@ -383,7 +385,7 @@ use the single argument. You cannot use it for compiling ANSI code.
 @end table
 
 @node libstack.a,libnix.a,Commandline parser,Features
-@chapter special stack handling facilities
+@section Special stack handling facilities
 
 The current Amiga OS (V3.1) has a very limited stack handling compared
 to most other OSs: Every process has it's own fixed sized stack - and that's
@@ -404,8 +406,9 @@ the newer check/extend methods.
 * Advanced::		       Fine tuning.
 * Costs::		       Some damned lies (Benchmarks ;-) ).
 @end menu
+
 @node swapstack,stackextend implementation,libstack.a,libstack.a
-@chapter Minimum stack setting
+@subsection Minimum stack setting
 
 Most large tools need more stack than the default 4096 bytes. If your tool is
 one of them you can either rely on the user being able to raise the current stack
@@ -417,7 +420,7 @@ All you have to do is to provide a variable
 
 somewhere in your code and to link with the appropriate swapstack.o module.
 @node stackextend implementation,stackextend usage,swapstack,libstack.a
-@chapter Implementation of stack checking and extension
+@subsection Implementation of stack checking and extension
 
 The basic principle of stack checking is that the compiler emits special code
 to check if the stack is large enough whenever there's need for a bigger chunk
@@ -444,8 +447,9 @@ time (while a stack tends to be very dynamic) libnix caches once used stackframe
 and utilizes them again if necessary. The memory needed for this doesn't accumulate
 or such but just sticks to a maximum value raised once. This may look like a memory leak
 (while in fact it isn't). Be prepared for it.
+
 @node stackextend usage,Advanced,stackextend implementation,libstack.a
-@chapter Using stack checking or extension
+@subsection Using stack checking or extension
 To utilize the stack checking or extension feature you need at least V2.7.0 of
 gcc. With this compiler you get 2 new amiga specific options that emit special
 code whenever necessary:
@@ -480,7 +484,7 @@ If you like to write or call functions with more than 256 bytes of arguments
 stack extension code (@xref{Advanced}.).
 
 @node Advanced,Costs,stackextend usage,libstack.a
-@chapter Stack extension fine tuning
+@subsection Stack extension fine tuning
 
 To adjust the behaviour of the stack extension code to your personal needs
 you may set some of the following variables (or functions)
@@ -506,7 +510,7 @@ Is a user replaceable stack overflow handler. The default one just pops
 up a requester, then exits. This function is not allowed to return.
 
 @node Costs,,Advanced,libstack.a
-@chapter Overhead of stack extension
+@subsection Overhead of stack extension
 
 The additional code needed for stack extension (or checking) costs memory
 and CPU power. Here are some numbers to give you a very rough idea for it.
@@ -532,7 +536,7 @@ Library code size     0 	184	      788
 @end example
 
 @node libnix.a,libamiga.a,libstack.a,Features
-@chapter Some ANSI (mis)features
+@section Some ANSI (mis)features
 
 I suppose you are familiar with C and especially ANSI C - if not
 you should read a good book about it
@@ -559,7 +563,7 @@ use this library.
 @end menu
 
 @node Locale,Formatted I/O,libnix.a,libnix.a
-@chapter Locale
+@subsection Locale
 
 One feature of a complete ANSI compatible library is locale support. The
 ANSI standard only knows of two locales:
@@ -601,7 +605,7 @@ is a much better choice). Or by just using setlocale anywhere in your program -
 you will get default locale at program startup then.
 
 @node Formatted I/O,atof strtod,Locale,libnix.a
-@chapter Formatted I/O
+@subsection Formatted I/O
 
 The formatted I/O specifications are all there (remember: this library tries to
 be ANSI compliant). But there are two things you should know about them:
@@ -622,7 +626,7 @@ you should link with the math library @samp{-lm}.
 @end itemize
 
 @node atof strtod,Memory management,Formatted I/O,libnix.a
-@chapter atof strtod
+@subsection atof strtod
 
 The two functions @samp{atof} and @samp{strtod} require a working
 @samp{%f} specifier in @samp{vfscanf} - therefore they
@@ -631,7 +635,7 @@ Since @samp{libm.a} is linked before @samp{libnix.a} these
 two functions have been gone into the math library.
 
 @node Memory management,Standard I/O,atof strtod,libnix.a
-@chapter Memory management
+@subsection Memory management
 
 Most of the memory management of this library runs through malloc().
 Only the commandline parser uses AllocVec() - so you can use it without
@@ -656,7 +660,7 @@ You should use a multiple of MMU pages. If you don't use a full MMU page
 you gain nothing - malloc rounds up anyway.
 
 @node Standard I/O,Signal handling,Memory management,libnix.a
-@chapter Standard I/O - where stdin, stdout, stderr come from
+@subsection Standard I/O - where stdin, stdout, stderr come from
 
 2 of the 3 standard I/O streams are no real problem:
 
@@ -689,7 +693,7 @@ you simply get the same stream as in @samp{stdout}.
 @end enumerate
 
 @node Signal handling,setjmp longjmp,Standard I/O,libnix.a
-@chapter Signal handling
+@subsection Signal handling
 
 There is only support for the two signals SIGABRT and SIGINT. The library
 knows of some other signals but cannot generate them. The support for
@@ -734,7 +738,7 @@ amiga specific you can use this. The second method is the
 ANSI standard method and works on all types of machines.
 
 @node setjmp longjmp,ctype,Signal handling,libnix.a
-@chapter setjmp, longjmp
+@subsection setjmp, longjmp
 
 This library is compatible to the header files that come with gcc -
 and the jmp_buf in there is not large enough for the FPU registers.
@@ -743,7 +747,7 @@ restore any of the other local variables (they are restored :-) ),
 so this is NO incompatibility to the ANSI standard.
 
 @node ctype,clock,setjmp longjmp,libnix.a
-@chapter ctype.h functions
+@subsection ctype.h functions
 
 If you look into ctype.h you will see that the functions in there are
 just macros - and that they are duplicate in the library as functions.
@@ -753,7 +757,7 @@ duplicate as functions.
 And remember: These functions are affected by the setlocale() call.
 
 @node clock,Multibyte character functions,ctype,libnix.a
-@chapter The clock function
+@subsection The clock function
 
 The clock() function's work is to measure processor time for the specific
 task - but there is no information like this in the amiga OS :-(.
@@ -761,14 +765,14 @@ So it just measures the time from program start on - and is compatible with
 this behaviour to all single tasking OSs around.
 
 @node Multibyte character functions,,clock,libnix.a
-@chapter Multibyte character functions
+@subsection Multibyte character functions
 
 The multibyte character functions are all there - but since the
 Amiga OS uses no other character set than ECMA Latin I they simulate
 just "C" locale. This means they do nothing useful.
 
 @node libstubs.a,detach.o,libamiga.a,Features
-@chapter libstubs - automatic library opening
+@section libstubs - automatic library opening
 
 The Amiga OS shared libraries are a nice thing. All the tasks can
 use them in parallel, they eat up memory only if you use them and
@@ -793,7 +797,7 @@ opened for you by the compiler.
 @end menu
 
 @node Auto-library-opening usage,Auto-library-opening interface,libstubs.a,libstubs.a
-@chapter Usage
+@subsection Usage
 
 To use this feature you have to do nothing (therefore it's called
 automatic). But you can control the library version if you wish
@@ -805,7 +809,7 @@ somewhere in your program. But don't set this lower than 37 - most functions
 of libnix (including the commandline parsers) need 37 or more.
 
 @node Auto-library-opening interface,,Auto-library-opening usage,libstubs.a
-@chapter Interface
+@subsection Interface
 
 Implementing such a feature is no hard work if you know how - this
 implementation uses a (not so good known) feature of the gnu linker
@@ -884,7 +888,7 @@ and do some action if it fails :).
 @end itemize
 
 @node detach.o,,libstubs.a,Features
-@chapter Detaching from the current CLI
+@section Detaching from the current CLI
 
 Some people like multitasking that much that they tend to start everything
 in the background. Some tools are able to do this automatically - and with
@@ -908,7 +912,7 @@ unsigned long stack=50000; /* but need a large stack		    */
 @end example
 
 @node Special startups,Set elements,Features,Top
-@chapter Special startups
+@section Special startups
 
 As a serious Amiga programmer you may sooner or later want to write your
 own shared library or device. This can be a very difficult task if you never
@@ -926,7 +930,7 @@ operations like multiplying two integers can fail - don't take anything for gran
 @end menu
 
 @node Calling convention,libinit.o,Special startups,Special startups
-@chapter Calling convention
+@subsection Calling convention
 
 On the amiga almost all shared libraries are called with the library base
 in a6 and other parameters in other registers. The result is placed in d0
@@ -955,8 +959,9 @@ vector. To achieve this you have to provide some inline functions
 (like those in the gnu:os-include/inline directory) or glue code and you have
 to privatize the function's name by adding some '__'s or similar. You will
 also have to set up your OWN library base.
+
 @node libinit.o,libinitr.o,Calling convention,Special startups
-@chapter Shared library startup
+@subsection Shared library startup
 
 This startup gives you one data segment for all possible callers.
 You will have to use semaphores to share special data between them.
@@ -983,7 +988,7 @@ void __UserLibCleanUp();
 Please look into the examples directory for more details.
 
 @node libinitr.o,devinit.o,libinit.o,Special startups
-@chapter Shared library with different data segments
+@subsection Shared library with different data segments
 
 If you don't like the hassle with semaphores you can use this startup.
 It provides a new data segment for each task that opens your library.
@@ -999,7 +1004,7 @@ You cannot interact between your tasks.
 The usage stays the same.
 
 @node devinit.o,,libinitr.o,Special startups
-@chapter Device startup
+@subsection Device startup
 
 The device startup uses different names over the library startup
 (though a device is always a shared library on the Amiga).
@@ -1102,7 +1107,7 @@ Some details:
 @end menu
 
 @node Data models,Code models,geta4,geta4
-@chapter Data models - large and small
+@section Data models - large and small
 
 Let's take a simple C program:
 
@@ -1203,7 +1208,7 @@ know enough to prevent collosions need no explanation of when
 it's possible ;-).
 
 @node Code models,,Data models,geta4
-@chapter Code models
+@section Code models
 
 All your constant data and all (constant) code form the code section.
 To access the code section there exist two code models:
@@ -1267,8 +1272,12 @@ Both methods require to access the library base pointer
 (and a valid value in it) so they make up a reference to
 this variable.
 
+@menu
+* libamiga.a:: Glue code and some other things
+@end menu
+
 @node libamiga.a,libstubs.a,libnix.a,Features
-@chapter Glue code and some other things
+@section Glue code and some other things
 
 It's not possible for me to redistribute amiga.lib - but you should
 have one if you really want to use the possibilities of your amiga.
@@ -1387,5 +1396,4 @@ wrong order. You can use the SetMathPatch program by Andreas Wolff to fix this
 and another more serious bug with mc68040 processors.
 @end table
 @printindex cp
-@contents
 @bye
