@@ -37,7 +37,7 @@ CURDIR := $(shell pwd)
 
 MAK2=$(MAKE) -f $(CURDIR)/sources/Makefile
 
-SUBDIRS=startup lib libb lib020 libb020 lib881 libb881 libb32 #lib060 libb060 libb32 libb32881 libb32060
+SUBDIRS=startup lib libb lib020 libb020 lib881 libb881 libb32 libb32881 #lib060 libb060 libb32060
 
 all: $(SUBDIRS)
 	cd sources;	$(MAKE) filelists
@@ -51,7 +51,7 @@ all: $(SUBDIRS)
 #	cd lib060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68060 -m68881"
 #	cd libb060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68060 -m68881"
 	cd libb32;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68020"
-#	cd libb32881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68020 -m68881"
+	cd libb32881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68020 -m68881"
 #	cd libb32060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68060 -m68881"
 #	cd libix;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DIXPATHS"
 
@@ -77,7 +77,7 @@ clean:
 #	cd lib060;	$(MAK2) clean
 #	cd libb060;	$(MAK2) clean
 	cd libb32;	$(MAK2) clean
-#	cd libb32881;	$(MAK2) clean
+	cd libb32881;	$(MAK2) clean
 #	cd libb32060;	$(MAK2) clean
 #	cd libix;	$(MAK2) clean
 	-rm -f sources/*/filelist sources/stubs/libbases/* sources/stubs/libnames/*
@@ -92,7 +92,7 @@ veryclean:
 #	cd lib060;	$(MAK2) veryclean
 #	cd libb060;	$(MAK2) veryclean
 	cd libb32;	$(MAK2) veryclean
-#	cd libb32881;	$(MAK2) veryclean
+	cd libb32881;	$(MAK2) veryclean
 #	cd libb32060;	$(MAK2) veryclean
 #	cd libix;	$(MAK2) veryclean
 	-rm sources/*/filelist
@@ -123,8 +123,8 @@ install: installdirs
 #	$(INSTALL) libb060/misc/*.o $(prefix)/lib/libb/libm060/libnix
 	$(INSTALL) libb32/*/lib*.a $(prefix)/lib/libb32/libm020/libnix
 	$(INSTALL) libb32/misc/*.o $(prefix)/lib/libb32/libm020/libnix
-#	$(INSTALL) libb32881/*/lib*.a $(prefix)/lib/libb32/libm020/libm881/libnix
-#	$(INSTALL) libb32881/misc/*.o $(prefix)/lib/libb32/libm020/libm881/libnix
+	$(INSTALL) libb32881/*/lib*.a $(prefix)/lib/libb32/libm020/libm881/libnix
+	$(INSTALL) libb32881/misc/*.o $(prefix)/lib/libb32/libm020/libm881/libnix
 #	$(INSTALL) libb32060/*/lib*.a $(prefix)/lib/libb32/libm060/libnix
 #	$(INSTALL) libb32060/misc/*.o $(prefix)/lib/libb32/libm060/libnix
 #	$(INSTALL_DATA) *.info* $(infodir)
@@ -149,17 +149,13 @@ installdirs: mkinstalldirs
 	$(libdir)/libb32 \
 	$(libdir)/libb32/libnix \
 	$(libdir)/libb32/libm020 \
-	$(libdir)/libb32/libm020/libnix 
+	$(libdir)/libb32/libm020/libnix \
+	$(libdir)/libb32/libm020/libm881 \
+	$(libdir)/libb32/libm020/libm881/libnix
 #	$(libdir)/libm060 \
 #	$(libdir)/libm060/libnix \
 #	$(libdir)/libb/libm060 \
 #	$(libdir)/libb/libm060/libnix
-#	$(libdir)/libb32 \
-#	$(libdir)/libb32/libnix \
-#	$(libdir)/libb32/libm020 \
-#	$(libdir)/libb32/libm020/libnix \
-#	$(libdir)/libb32/libm020/libm881 \
-#	$(libdir)/libb32/libm020/libm881/libnix \
 #	$(libdir)/libb32/libm060 \
 #	$(libdir)/libb32/libm060/libnix
 
@@ -189,10 +185,10 @@ distribution:
 #	cp -p lib060/misc/*.o t:gg/lib/libm060/libnix
 #	cp -p libb060/*/*.a t:gg/lib/libm060/libnix
 #	cp -p libb060/misc/*.o t:gg/lib/libm060/libnix
-#	cp -p libb32/*/*.a t:gg/lib/libm020/libnix
-#	cp -p libb32/misc/*.o t:gg/lib/libm020/libnix
-#	cp -p libb32881/*/*.a t:gg/lib/libm020/libm881/libnix
-#	cp -p libb32881/misc/*.o t:gg/lib/libm020/libm881/libnix
+	cp -p libb32/*/*.a t:gg/lib/libm020/libnix
+	cp -p libb32/misc/*.o t:gg/lib/libm020/libnix
+	cp -p libb32881/*/*.a t:gg/lib/libm020/libm881/libnix
+	cp -p libb32881/misc/*.o t:gg/lib/libm020/libm881/libnix
 #	cp -p libb32060/*/*.a t:gg/lib/libm060/libnix
 #	cp -p libb32060/misc/*.o t:gg/lib/libm060/libnix
 	-rm t:gg/lib/libnix/libglue.a t:gg/lib/libb/libnix/libglue.a
