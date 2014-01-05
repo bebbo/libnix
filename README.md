@@ -12,7 +12,7 @@ libnix: C link library for AmigaOS/m68k
 There are several initiatives trying to bring up an updated C link library for AmigaOS/m68k systems:
 
 * [libnix-3.0](https://github.com/diegocr/libnix) by Diego Casorran
-* [clib2](http://sourceforge.net/projects/clib2) by Olaf Barthel
-* [arosc.library](http://aros.sourceforge.net/nightly.php) in [Amiga Research Operating System](http://aros.sf.net) source tree
+* [clib2](http://clib2.cvs.sourceforge.net/) by Olaf Barthel
+* [arosc.library](http://repo.or.cz/w/AROS.git/tree/HEAD:/compiler/stdc) in [Amiga Research Operating System](http://aros.sf.net) source tree
 
 For now I decided to use original sources by Jeff Shepher et al., perhaps I'll merge Diego Casorran's changes if I find them indispensable.
