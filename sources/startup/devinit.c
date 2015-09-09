@@ -216,7 +216,7 @@ static const APTR InitTab[4] = {
   (APTR)sizeof(struct libBase),
   (APTR)&__FuncTable__[1],
   (APTR)NULL,
-  (APTR)&LibInit
+  (APTR)&DevInit
 };
 
 /******************************************************************************/
