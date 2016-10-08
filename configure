@@ -1202,6 +1202,7 @@ trap 'rm -fr `echo "Makefile
           sources/misc/Makefile
           sources/nix/Makefile
           sources/nix13/Makefile
+          sources/nix20/Makefile
           sources/nixmain/Makefile
           sources/nix_main/Makefile
           sources/socket/Makefile
@@ -1297,6 +1298,7 @@ CONFIG_FILES=\${CONFIG_FILES-"Makefile
           sources/misc/Makefile
           sources/nix/Makefile
           sources/nix13/Makefile
+          sources/nix20/Makefile
           sources/nixmain/Makefile
           sources/nix_main/Makefile
           sources/socket/Makefile

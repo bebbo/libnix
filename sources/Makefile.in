@@ -26,7 +26,7 @@ CURDIR = $(shell pwd)
 
 MAKELIST=$(MAKE) -f $(CURDIR)/Makefile
 
-SUBDIRS=nixmain nix_main misc math nix nix13 socket stack stubs
+SUBDIRS=nixmain nix_main misc math nix nix13 nix20 socket stack stubs
 
 all: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f))
 	for subdir in $(SUBDIRS); do \
@@ -45,6 +45,7 @@ filelists:
 	-cd $(srcdir)/math;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/math $(CURDIR)/math/filelist
 	-cd $(srcdir)/nix;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/nix $(CURDIR)/nix/filelist
 	-cd $(srcdir)/nix13;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/nix13 $(CURDIR)/nix13/filelist
+	-cd $(srcdir)/nix20;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/nix20 $(CURDIR)/nix20/filelist
 	-cd $(srcdir)/socket;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/socket $(CURDIR)/socket/filelist
 	-cd $(srcdir)/stack;	$(MAKELIST) SOURCEFILES="*.c" FLDIR=$(CURDIR)/stack $(CURDIR)/stack/filelist
 	-cd $(srcdir)/stubs;	$(MAKE) -f $(CURDIR)/Makefile STUBDIR=$(CURDIR)/stubs libbases/dos.c; \

@@ -131,9 +131,7 @@ sysdep/libnix/sources/nix/extra/snprintf.c
 sysdep/libnix/sources/nix/extra/stat.c
 sysdep/libnix/sources/nix/extra/stpcpy.c
 sysdep/libnix/sources/nix/extra/strdup.c
-sysdep/libnix/sources/nix/extra/stricmp.c
 sysdep/libnix/sources/nix/extra/strlower.c
-sysdep/libnix/sources/nix/extra/strnicmp.c
 sysdep/libnix/sources/nix/extra/strupper.c
 sysdep/libnix/sources/nix/extra/timer.c
 sysdep/libnix/sources/nix/extra/times.c
@@ -151,7 +149,6 @@ sysdep/libnix/sources/nix/math/__adddf3.c
 sysdep/libnix/sources/nix/math/__addsf3.c
 sysdep/libnix/sources/nix/math/__divdf3.c
 sysdep/libnix/sources/nix/math/__divsf3.c
-sysdep/libnix/sources/nix/math/__divsi3.c
 sysdep/libnix/sources/nix/math/__eqdf2.c
 sysdep/libnix/sources/nix/math/__eqsf2.c
 sysdep/libnix/sources/nix/math/__extendsfdf2.c
@@ -163,13 +160,11 @@ sysdep/libnix/sources/nix/math/__floatsidf.c
 sysdep/libnix/sources/nix/math/__floatsisf.c
 sysdep/libnix/sources/nix/math/__muldf3.c
 sysdep/libnix/sources/nix/math/__mulsf3.c
-sysdep/libnix/sources/nix/math/__mulsi3.c
 sysdep/libnix/sources/nix/math/__negdf2.c
 sysdep/libnix/sources/nix/math/__negsf2.c
 sysdep/libnix/sources/nix/math/__subdf3.c
 sysdep/libnix/sources/nix/math/__subsf3.c
 sysdep/libnix/sources/nix/math/__truncdfsf2.c
-sysdep/libnix/sources/nix/math/__udivsi3.c
 sysdep/libnix/sources/nix/misc/__request.c
 sysdep/libnix/sources/nix/misc/bcopy.c
 sysdep/libnix/sources/nix/misc/bzero.c
@@ -284,6 +279,12 @@ sysdep/libnix/sources/nix13/extra/strnicmp.c
 sysdep/libnix/sources/nix13/math/__divsi3.c
 sysdep/libnix/sources/nix13/math/__mulsi3.c
 sysdep/libnix/sources/nix13/math/__udivsi3.c
+sysdep/libnix/sources/nix20/Makefile.in
+sysdep/libnix/sources/nix20/extra/stricmp.c
+sysdep/libnix/sources/nix20/extra/strnicmp.c
+sysdep/libnix/sources/nix20/math/__divsi3.c
+sysdep/libnix/sources/nix20/math/__mulsi3.c
+sysdep/libnix/sources/nix20/math/__udivsi3.c
 sysdep/libnix/sources/nix_main/Makefile.in
 sysdep/libnix/sources/nix_main/__nocommandline.c
 sysdep/libnix/sources/nix_main/_main.c

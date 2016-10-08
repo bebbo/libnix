@@ -4,6 +4,7 @@ lib/libb/libm020/libm881/libnix/detach.o
 lib/libb/libm020/libm881/libnix/libm.a
 lib/libb/libm020/libm881/libnix/libnix.a
 lib/libb/libm020/libm881/libnix/libnix13.a
+lib/libb/libm020/libm881/libnix/libnix20.a
 lib/libb/libm020/libm881/libnix/libnix_main.a
 lib/libb/libm020/libm881/libnix/libnixmain.a
 lib/libb/libm020/libm881/libnix/libstack.a
@@ -13,6 +14,7 @@ lib/libb/libm020/libnix/detach.o
 lib/libb/libm020/libnix/libm.a
 lib/libb/libm020/libnix/libnix.a
 lib/libb/libm020/libnix/libnix13.a
+lib/libb/libm020/libnix/libnix20.a
 lib/libb/libm020/libnix/libnix_main.a
 lib/libb/libm020/libnix/libnixmain.a
 lib/libb/libm020/libnix/libstack.a
@@ -22,6 +24,7 @@ lib/libb/libnix/detach.o
 lib/libb/libnix/libm.a
 lib/libb/libnix/libnix.a
 lib/libb/libnix/libnix13.a
+lib/libb/libnix/libnix20.a
 lib/libb/libnix/libnix_main.a
 lib/libb/libnix/libnixmain.a
 lib/libb/libnix/libstack.a
@@ -31,6 +34,7 @@ lib/libm020/libm881/libnix/detach.o
 lib/libm020/libm881/libnix/libm.a
 lib/libm020/libm881/libnix/libnix.a
 lib/libm020/libm881/libnix/libnix13.a
+lib/libm020/libm881/libnix/libnix20.a
 lib/libm020/libm881/libnix/libnix_main.a
 lib/libm020/libm881/libnix/libnixmain.a
 lib/libm020/libm881/libnix/libstack.a
@@ -40,6 +44,7 @@ lib/libm020/libnix/detach.o
 lib/libm020/libnix/libm.a
 lib/libm020/libnix/libnix.a
 lib/libm020/libnix/libnix13.a
+lib/libm020/libnix/libnix20.a
 lib/libm020/libnix/libnix_main.a
 lib/libm020/libnix/libnixmain.a
 lib/libm020/libnix/libstack.a
@@ -51,6 +56,7 @@ lib/libnix/libinitr.o
 lib/libnix/libm.a
 lib/libnix/libnix.a
 lib/libnix/libnix13.a
+lib/libnix/libnix20.a
 lib/libnix/libnix_main.a
 lib/libnix/libnixmain.a
 lib/libnix/libstack.a

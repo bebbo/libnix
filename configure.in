@@ -19,6 +19,7 @@ AC_OUTPUT(Makefile
           sources/misc/Makefile
           sources/nix/Makefile
           sources/nix13/Makefile
+          sources/nix20/Makefile
           sources/nixmain/Makefile
           sources/nix_main/Makefile
           sources/socket/Makefile
