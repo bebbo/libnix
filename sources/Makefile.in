@@ -50,11 +50,7 @@ filelists:
 	-cd $(srcdir)/stack;	$(MAKELIST) SOURCEFILES="*.c" FLDIR=$(CURDIR)/stack $(CURDIR)/stack/filelist
 	-cd $(srcdir)/stubs;	$(MAKE) -f $(CURDIR)/Makefile STUBDIR=$(CURDIR)/stubs libbases/dos.c; \
 		$(MAKELIST) SOURCEFILES=" \
-		libbases/*.[cSCh] misc/__DOSBase.c misc/__UtilityBase.c \
-		misc/__MathIeeeSingBasBase.c misc/__MathIeeeDoubBasBase.c \
-		misc/__MathIeeeSingTransBase.c misc/__MathIeeeDoubTransBase.c \
-		misc/__cpucheck.c misc/__flush_cache.c misc/__initlibraries.c \
-		libnames/* stubs/*.[cSCh]" \
+		libbases/*.[cSCh] misc/*.c libnames/* stubs/*.[cSCh]" \
 		FLDIR=$(CURDIR)/stubs $(CURDIR)/stubs/filelist
 	-cd $(srcdir)/amiga;	$(MAKELIST) SOURCEFILES="*/*.[cSCh]" FLDIR=$(CURDIR)/amiga $(CURDIR)/amiga/filelist
 

@@ -381,11 +381,13 @@ sysdep/libnix/sources/stubs/misc/__MathIeeeSingTransBase.c
 sysdep/libnix/sources/stubs/misc/__UtilityBase.c
 sysdep/libnix/sources/stubs/misc/__cpucheck.c
 sysdep/libnix/sources/stubs/misc/__flush_cache.c
+sysdep/libnix/sources/stubs/misc/__initcpp.c
 sysdep/libnix/sources/stubs/misc/__initlibraries.c
 sysdep/libnix/sources/stubs/stubs/__exit_list__.c
 sysdep/libnix/sources/stubs/stubs/__init_list__.c
+sysdep/libnix/sources/stubs/stubs/__ctor_list__.c
+sysdep/libnix/sources/stubs/stubs/__dtor_list__.c
 sysdep/libnix/sources/stubs/stubs/__lib_list__.c
-sysdep/libnix/sources/stubs/stubs/__main.c
 sysdep/libnix/sources/stubs/stubs/__oslibversion.c
 sysdep/libnix/sources/stubs/stubs/__priority.c
 sysdep/libnix/sources/stubs/stubs/__procname.c

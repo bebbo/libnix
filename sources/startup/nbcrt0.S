@@ -129,6 +129,7 @@ _geta4: 	lea	___a4_init,a4
 
 		.long ___nocommandline
 		.long ___initlibraries
+		.long ___initcpp
 		.long ___cpucheck
 
 .comm		_SysBase,4

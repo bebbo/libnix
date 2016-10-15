@@ -166,6 +166,7 @@ oldpri: 	movel	a3@+,d0
 
 		.long ___nocommandline
 		.long ___initlibraries
+		.long ___initcpp
 		.long ___cpucheck
 
 .comm		_SysBase,4

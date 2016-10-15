@@ -116,6 +116,7 @@ _geta4: 	rts
 
 		.long ___nocommandline
 		.long ___initlibraries
+		.long ___initcpp
 		.long ___cpucheck
 
 .comm		_SysBase,4
