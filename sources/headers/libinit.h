@@ -7,6 +7,10 @@
 /*                                                                            */
 /******************************************************************************/
 
+#ifndef __stdargs
+#define __stdargs
+#endif
+
 #if !defined(REG)
 #define REG(reg,arg) arg __asm(#reg)
 #endif
