@@ -17,10 +17,14 @@ FILE *fopen(const char *filename,const char *mode)
 { struct filenode *node = (struct filenode *)calloc(1,sizeof(*node));
   if(node!=NULL)
   { if((node->FILE.buffer=(char *)malloc(BUFSIZ))!=NULL)
-    { node->FILE.bufsize=BUFSIZ;
+    { int f;
+      node->FILE.bufsize=BUFSIZ;
       node->FILE.flags|=__SMBF; /* Buffer is malloc'ed */
-      if(freopen(filename,mode,&node->FILE)!=NULL)
-      { AddHead((struct List *)&__filelist,(struct Node *)&node->node);
+      f = open(filename,mode);
+      //if(freopen(filename,mode,&node->FILE)!=NULL)
+      if (f >= 0)
+      { node->FILE.file = f;
+	AddHead((struct List *)&__filelist,(struct Node *)&node->node);
         return &node->FILE; }
       free(node->FILE.buffer);
     }
