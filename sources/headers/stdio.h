@@ -84,6 +84,11 @@ extern int setvbuf(FILE *stream,char *buf,int mode,size_t size);
 extern int fread(void *,size_t,size_t,FILE *);
 extern int fwrite(const void *,size_t,size_t,FILE *);
 extern char *tmpnam(char *buf);
+extern void perror(const char *string);
+extern int puts(const char *s);
+extern int remove(const char *filename);
+extern int rename(const char *old,const char *neww);
+extern FILE *tmpfile(void);
 
 /* More bsd headers compatibility */
 
@@ -94,20 +99,93 @@ extern FILE **__sF; /* Standard I/O streams */
 #define stdout (__sF[1])
 #define stderr (__sF[2])
 
-/* Be careful: We have side effects and use incount in __srget -
-	       must use comma-operator */
-#define getc(fp) ((fp)->incount-=1,(fp)->incount>=0?(int)*(fp)->p++:__srget(fp))
-#define putc(c,fp) \
-((fp)->outcount-=1,(fp)->outcount>=0|| \
-((fp)->outcount>=(fp)->linebufsize&&(char)(c)!='\n')? \
-*(fp)->p++=(c):__swbuf((c),(fp)))
-#define ferror(fp) ((fp)->flags&__SERR)
-#define feof(fp)   ((fp)->flags&__SEOF)
+/* Inline functions. */
+
+static inline void clearerr(FILE *stream)
+{ stream->flags&=~(__SERR|__SEOF); }
+
+static inline int feof(FILE * fp)
+{ return ((fp)->flags&__SEOF); }
+
+static inline int ferror(FILE *fp)
+{ return ((fp)->flags&__SERR); }
+
+static inline int fgetpos(FILE *stream,fpos_t *pos)
+{ *pos=ftell(stream); return 0; }
+
+static inline int fileno(FILE *file)
+{ return file->file; }
+
+static inline int fprintf(FILE *stream,const char *format,...)
+{ int retval;
+  va_list args;
+  va_start(args,format);
+  retval=vfprintf(stream,format,args);
+  va_end(args);
+  return retval;
+}
+
+static inline int fscanf(FILE *stream,const char *format,...)
+{ int retval;
+  va_list args;
+  va_start(args,format);
+  retval=vfscanf(stream,format,args);
+  va_end(args);
+  return retval;
+}
+
+static inline int fsetpos(FILE *stream,fpos_t *pos)
+{ return fseek(stream,*pos,SEEK_SET); }
+
+static inline int getc(FILE *fp)
+{ if (--fp->incount >= 0)
+    return *fp->p++;
+  return __srget(fp);
+}
+
+static inline int getchar()
+{ return getc(stdin);
+}
+
+static inline char *gets(char *s)
+{ return fgets(s, 0, stdin); }
+
+static inline int printf(const char *format,...)
+{ int retval;
+  va_list args;
+  va_start(args,format);
+  retval=vprintf(format,args);
+  va_end(args);
+  return retval;
+}
+
+static inline int putc(int c, FILE * fp)
+{ if (--fp->outcount >= 0 ||
+   fp ->outcount >= fp->linebufsize && (char)(c)!='\n')
+    return *fp->p++ = c;
+  return __swbuf(c, fp);
+}
+
+static inline int putchar(int c)
+{ return putc(c, stdout); }
+
+static inline int scanf(const char *format,...)
+{ int retval;
+  va_list args;
+  va_start(args,format);
+  retval=vscanf(format,args);
+  va_end(args);
+  return retval;
+}
+
+static inline int setbuf(FILE *stream,char *buf)
+{ return setvbuf(stream,buf,buf?_IOFBF:_IONBF,BUFSIZ); }
 
 /* own stuff */
 extern struct MinList __filelist;   /* List of all fopen'ed files */
 extern struct MinList __memorylist; /* List of memory puddles */
 
+#define __fflush fflush
 extern int __fflush(FILE *stream); /* fflush single file */
 extern void __chkabort(void);      /* check for SIGABRT */
 
