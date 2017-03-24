@@ -21,16 +21,6 @@ CURDIR = $(shell pwd)
 
 OPTIONS=-I$(srcdir)/../headers -DFULL_SPECIFIERS $(CFLAGS)
 
-OBJECTS2=$(OBJECTS) \
-         ../nix/assert/__eprintf.o \
-         ../nix/stdio/printf.o ../nix/stdio/fprintf.o ../nix/stdio/sprintf.o \
-         ../nix/stdio/vprintf.o ../nix/stdio/vsprintf.o stdio/vfprintf.o \
-         ../nix/stdio/scanf.o ../nix/stdio/fscanf.o ../nix/stdio/sscanf.o \
-         ../nix/stdio/vscanf.o ../nix/stdio/vsscanf.o stdio/vfscanf.o \
-         ../nix/stdio/tmpfile.o ../nix/stdio/tmpnam.o
-
-SUBDIRS2=$(SUBDIRS) ../nix/assert ../nix/stdio
-
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \
       -D_MathIeeeSingBasBase=___MathIeeeSingBasBase \
@@ -51,22 +41,17 @@ REDEF=-D_DOSBase=___DOSBase \
 all: libm.a
 
 clean:
-	-rm -rf $(SUBDIRS2)
+	-rm -rf $(SUBDIRS)
 
 veryclean:
 	-rm -rf *
 
-$(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)):
+$(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
 	mkdir $@
 
-libm.a: $(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)) $(OBJECTS2) ../../sources/math/Makefile ../../sources/math/filelist
+libm.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) ../../sources/math/Makefile ../../sources/math/filelist
 	-rm -f $@
-	$(AR) -q $@ $(OBJECTS2)
+	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@
 	echo "\$$$(V)" >>$@
 
-stdio/vfprintf.o: $(srcdir)/../nix/stdio/vfprintf.c
-	$(CC) $(OPTIONS) $^ -c -o stdio/vfprintf.o
-
-stdio/vfscanf.o: $(srcdir)/../nix/stdio/vfscanf.c
-	$(CC) $(OPTIONS) $^ -c -o stdio/vfscanf.o
