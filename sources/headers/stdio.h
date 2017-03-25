@@ -91,40 +91,65 @@ extern FILE **__sF; /* Standard I/O streams */
 #define stdout (__sF[1])
 #define stderr (__sF[2])
 
-/* Inline functions. */
-
-static inline int getc(FILE *fp)
+/* Inline functions or protos. */
+#ifdef __NO_INLINE__
+extern int getc(FILE *fp);
+extern int putc(int c, FILE * fp);
+extern void clearerr(FILE *stream);
+extern int feof(FILE * fp);
+extern int ferror(FILE *fp);
+extern int fgetc(FILE *stream);
+extern int fgetpos(FILE *stream,fpos_t *pos);
+extern int fileno(FILE *file);
+extern int fprintf(FILE *stream,const char *format,...);
+extern int fputc(int c,FILE *stream);
+extern int fscanf(FILE *stream,const char *format,...);
+extern int fsetpos(FILE *stream,fpos_t *pos);
+extern int getchar();
+extern char *gets(char *s);
+extern int vprintf(const char *format,va_list args);
+extern int printf(const char *format,...);
+extern int putchar(int c);
+extern int vscanf(const char *format,va_list args);
+extern int scanf(const char *format,...);
+extern void rewind(FILE *stream);
+extern int sscanf(const char *s,const char *format,...);
+extern int snprintf(char *s,size_t size,const char *format,...);
+extern int sprintf(char *s,const char *format,...);
+extern int setbuf(FILE *stream,char *buf);
+#else
+inline int getc(FILE *fp)
 { if (--fp->incount >= 0)
     return *fp->p++;
   return __srget(fp);
 }
 
-static inline int putc(int c, FILE * fp)
+inline int putc(int c, FILE * fp)
 { if (--fp->outcount >= 0 ||
       (fp->outcount >= fp->linebufsize && (char)(c)!='\n'))
     return *fp->p++ = c;
   return __swbuf(c, fp);
 }
 
-static inline void clearerr(FILE *stream)
+inline void clearerr(FILE *stream)
 { stream->flags&=~(__SERR|__SEOF); }
 
-static inline int feof(FILE * fp)
+inline int feof(FILE * fp)
 { return ((fp)->flags&__SEOF); }
 
-static inline int ferror(FILE *fp)
+inline int ferror(FILE *fp)
 { return ((fp)->flags&__SERR); }
 
-static inline int fgetc(FILE *stream)
+inline int fgetc(FILE *stream)
 { return getc(stream); }
 
-static inline int fgetpos(FILE *stream,fpos_t *pos)
+inline int fgetpos(FILE *stream,fpos_t *pos)
 { *pos=ftell(stream); return 0; }
 
-static inline int fileno(FILE *file)
+inline int fileno(FILE *file)
 { return file->file; }
 
-static inline int fprintf(FILE *stream,const char *format,...)
+inline int fprintf(FILE *stream,const char *format,...)
 { int retval;
   va_list args;
   va_start(args,format);
@@ -133,10 +158,10 @@ static inline int fprintf(FILE *stream,const char *format,...)
   return retval;
 }
 
-static inline int fputc(int c,FILE *stream)
+inline int fputc(int c,FILE *stream)
 { return putc(c,stream); }
 
-static inline int fscanf(FILE *stream,const char *format,...)
+inline int fscanf(FILE *stream,const char *format,...)
 { int retval;
   va_list args;
   va_start(args,format);
@@ -145,20 +170,20 @@ static inline int fscanf(FILE *stream,const char *format,...)
   return retval;
 }
 
-static inline int fsetpos(FILE *stream,fpos_t *pos)
+inline int fsetpos(FILE *stream,fpos_t *pos)
 { return fseek(stream,*pos,SEEK_SET); }
 
-static inline int getchar()
+inline int getchar()
 { return getc(stdin);
 }
 
-static inline char *gets(char *s)
+inline char *gets(char *s)
 { return fgets(s, 0, stdin); }
 
-static inline int vprintf(const char *format,va_list args)
+inline int vprintf(const char *format,va_list args)
 { return vfprintf(stdout,format,args); }
 
-static inline int printf(const char *format,...)
+inline int printf(const char *format,...)
 { int retval;
   va_list args;
   va_start(args,format);
@@ -167,13 +192,13 @@ static inline int printf(const char *format,...)
   return retval;
 }
 
-static inline int putchar(int c)
+inline int putchar(int c)
 { return putc(c, stdout); }
 
-static inline int vscanf(const char *format,va_list args)
+inline int vscanf(const char *format,va_list args)
 { return vfscanf(stdin,format,args); }
 
-static inline int scanf(const char *format,...)
+inline int scanf(const char *format,...)
 { int retval;
   va_list args;
   va_start(args,format);
@@ -182,10 +207,10 @@ static inline int scanf(const char *format,...)
   return retval;
 }
 
-static inline void rewind(FILE *stream)
+inline void rewind(FILE *stream)
 { fseek(stream,0,SEEK_SET); }
 
-static inline int sscanf(const char *s,const char *format,...)
+inline int sscanf(const char *s,const char *format,...)
 { int retval;
   va_list args;
   va_start(args,format);
@@ -194,7 +219,7 @@ static inline int sscanf(const char *s,const char *format,...)
   return retval;
 }
 
-static inline int snprintf(char *s,size_t size,const char *format,...)
+inline int snprintf(char *s,size_t size,const char *format,...)
 { int retval;
   va_list args;
   va_start(args,format);
@@ -203,7 +228,7 @@ static inline int snprintf(char *s,size_t size,const char *format,...)
   return retval;
 }
 
-static inline int sprintf(char *s,const char *format,...)
+inline int sprintf(char *s,const char *format,...)
 { int retval;
   va_list args;
   va_start(args,format);
@@ -212,8 +237,9 @@ static inline int sprintf(char *s,const char *format,...)
   return retval;
 }
 
-static inline int setbuf(FILE *stream,char *buf)
+inline int setbuf(FILE *stream,char *buf)
 { return setvbuf(stream,buf,buf?_IOFBF:_IONBF,BUFSIZ); }
+#endif
 
 /* own stuff */
 extern struct MinList __filelist;   /* List of all fopen'ed files */

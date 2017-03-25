@@ -29,7 +29,7 @@ MAKELIST=$(MAKE) -f $(CURDIR)/Makefile
 SUBDIRS=nixmain nix_main misc math nix nix13 nix20 socket stack stubs
 
 all: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f))
-	for subdir in $(SUBDIRS); do \
+	+for subdir in $(SUBDIRS); do \
 	( cd $$subdir; \
 	  $(MAKE) -f ../../sources/$$subdir/Makefile V="$(V)" CFLAGS="$(CFLAGS)" || exit \
 	); done
