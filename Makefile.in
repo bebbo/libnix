@@ -40,20 +40,20 @@ MAK2=$(MAKE) -f $(CURDIR)/sources/Makefile
 SUBDIRS=startup lib libb lib020 libb020 lib881 libb881 libb32 libb32881 #lib060 libb060 libb32060
 
 all: $(SUBDIRS)
-	-cd sources;	$(MAKE) filelists
-	-cd startup;	$(MAKE) -f $(CURDIR)/sources/startup/Makefile V="$(V)"
-	+cd lib; 	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer" || exit
-	+cd libb;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA" || exit
-	+cd lib020;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68020" || exit
-	+cd libb020;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68020" || exit
-	+cd lib881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68020 -m68881" || exit
-	+cd libb881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68020 -m68881" || exit
-#	+cd lib060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68060 -m68881" || exit
-#	+cd libb060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68060 -m68881" || exit
-	+cd libb32;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68020" || exit
-	+cd libb32881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68020 -m68881" || exit
-#	+cd libb32060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68060 -m68881" || exit
-#	+cd libix;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DIXPATHS" || exit
+	cd sources;	$(MAKE) filelists
+	cd startup;	$(MAKE) -f $(CURDIR)/sources/startup/Makefile V="$(V)"
+	cd lib; 	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer"
+	cd libb;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA"
+	cd lib020;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68020"
+	cd libb020;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68020"
+	cd lib881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68020 -m68881"
+	cd libb881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68020 -m68881"
+#	cd lib060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -m68060 -m68881"
+#	cd libb060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel -DSMALL_DATA -m68060 -m68881"
+	cd libb32;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68020"
+	cd libb32881;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68020 -m68881"
+#	cd libb32060;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -fbaserel32 -DSMALL_DATA -m68060 -m68881"
+#	cd libix;	$(MAK2) V="$(V)" CFLAGS="-Wall -O3 -fomit-frame-pointer -DIXPATHS"
 
 $(SUBDIRS):
 	mkdir $@
