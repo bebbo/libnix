@@ -1,7 +1,3 @@
+#undef __NO_INLINE__
 #include <string.h>
-
-size_t strlen(const char *string)
-{ const char *s=string;
-
-  do;while(*s++); return ~(string-s);
-}
+extern size_t strlen(const char *string);

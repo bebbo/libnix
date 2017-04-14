@@ -1,6 +1,3 @@
+#undef __NO_INLINE__
 #include <string.h>
-
-char *stpcpy(char *dest,const char *source)
-{
-  while((*dest++=*source++)); return(dest-1);
-}
+extern char *stpcpy(char *dest,const char *source);
