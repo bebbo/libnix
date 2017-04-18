@@ -11,7 +11,8 @@ extern void __seterrno(void);
 FILE *freopen(const char *filename,const char *mode,FILE *stream)
 { int error=__fflush(stream);
 
-  close(stream->file);
+  if (stream->file >= 0)
+    close(stream->file);
   if(stream->name!=NULL) /* file is temporary */
   { BPTR cd=CurrentDir(stream->tmpdir); /* cd t: */
     if(!DeleteFile(stream->name))  /* delete file */

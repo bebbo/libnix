@@ -40,7 +40,7 @@ static __inline StdFileDes *_allocfd(void)
   int file,max;
 
   for(sfd=stdfiledes,max=stdfilesize,file=0;file<max;sfd++,file++)
-    if(!sfd[0] || !sfd[0]->lx_inuse)
+    if(!sfd[0] || (!sfd[0]->lx_inuse && !sfd[0]->lx_sys))
       break;
 
   if(file>SHRT_MAX)
