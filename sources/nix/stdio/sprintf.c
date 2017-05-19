@@ -1,3 +1,9 @@
-#undef __NO_INLINE__
 #include "stdio.h"
-extern int sprintf(char *s,const char *format,...);
+int sprintf(char *s,const char *format,...)
+{ int retval;
+  va_list args;
+  va_start(args,format);
+  retval=vsprintf(s,format,args);
+  va_end(args);
+  return retval;
+}

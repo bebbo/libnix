@@ -1,3 +1,9 @@
-#undef __NO_INLINE__
 #include "stdio.h"
-extern int fscanf(FILE *stream,const char *format,...);
+int fscanf(FILE *stream,const char *format,...)
+{ int retval;
+  va_list args;
+  va_start(args,format);
+  retval=vfscanf(stream,format,args);
+  va_end(args);
+  return retval;
+}

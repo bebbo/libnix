@@ -91,6 +91,14 @@ extern FILE **__sF; /* Standard I/O streams */
 #define stdout (__sF[1])
 #define stderr (__sF[2])
 
+extern int fprintf(FILE *stream,const char *format,...);
+extern int fscanf(FILE *stream,const char *format,...);
+extern int printf(const char *format,...);
+extern int scanf(const char *format,...);
+extern int sscanf(const char *s,const char *format,...);
+extern int snprintf(char *s,size_t size,const char *format,...);
+extern int sprintf(char *s,const char *format,...);
+
 /* Inline functions or protos. */
 #ifdef __NO_INLINE__
 extern int getc(FILE *fp);
@@ -101,21 +109,14 @@ extern int ferror(FILE *fp);
 extern int fgetc(FILE *stream);
 extern int fgetpos(FILE *stream,fpos_t *pos);
 extern int fileno(FILE *file);
-extern int fprintf(FILE *stream,const char *format,...);
 extern int fputc(int c,FILE *stream);
-extern int fscanf(FILE *stream,const char *format,...);
 extern int fsetpos(FILE *stream,fpos_t *pos);
 extern int getchar();
 extern char *gets(char *s);
 extern int vprintf(const char *format,va_list args);
-extern int printf(const char *format,...);
 extern int putchar(int c);
 extern int vscanf(const char *format,va_list args);
-extern int scanf(const char *format,...);
 extern void rewind(FILE *stream);
-extern int sscanf(const char *s,const char *format,...);
-extern int snprintf(char *s,size_t size,const char *format,...);
-extern int sprintf(char *s,const char *format,...);
 extern int setbuf(FILE *stream,char *buf);
 #else
 inline int getc(FILE *fp)
@@ -149,26 +150,8 @@ inline int fgetpos(FILE *stream,fpos_t *pos)
 inline int fileno(FILE *file)
 { return file->file; }
 
-inline int fprintf(FILE *stream,const char *format,...)
-{ int retval;
-  va_list args;
-  va_start(args,format);
-  retval=vfprintf(stream,format,args);
-  va_end(args);
-  return retval;
-}
-
 inline int fputc(int c,FILE *stream)
 { return putc(c,stream); }
-
-inline int fscanf(FILE *stream,const char *format,...)
-{ int retval;
-  va_list args;
-  va_start(args,format);
-  retval=vfscanf(stream,format,args);
-  va_end(args);
-  return retval;
-}
 
 inline int fsetpos(FILE *stream,fpos_t *pos)
 { return fseek(stream,*pos,SEEK_SET); }
@@ -183,59 +166,14 @@ inline char *gets(char *s)
 inline int vprintf(const char *format,va_list args)
 { return vfprintf(stdout,format,args); }
 
-inline int printf(const char *format,...)
-{ int retval;
-  va_list args;
-  va_start(args,format);
-  retval=vprintf(format,args);
-  va_end(args);
-  return retval;
-}
-
 inline int putchar(int c)
 { return putc(c, stdout); }
 
 inline int vscanf(const char *format,va_list args)
 { return vfscanf(stdin,format,args); }
 
-inline int scanf(const char *format,...)
-{ int retval;
-  va_list args;
-  va_start(args,format);
-  retval=vscanf(format,args);
-  va_end(args);
-  return retval;
-}
-
 inline void rewind(FILE *stream)
 { fseek(stream,0,SEEK_SET); }
-
-inline int sscanf(const char *s,const char *format,...)
-{ int retval;
-  va_list args;
-  va_start(args,format);
-  retval=vsscanf(s,format,args);
-  va_end(args);
-  return retval;
-}
-
-inline int snprintf(char *s,size_t size,const char *format,...)
-{ int retval;
-  va_list args;
-  va_start(args,format);
-  retval=vsnprintf(s,size,format,args);
-  va_end(args);
-  return retval;
-}
-
-inline int sprintf(char *s,const char *format,...)
-{ int retval;
-  va_list args;
-  va_start(args,format);
-  retval=vsprintf(s,format,args);
-  va_end(args);
-  return retval;
-}
 
 inline int setbuf(FILE *stream,char *buf)
 { return setvbuf(stream,buf,buf?_IOFBF:_IONBF,BUFSIZ); }
