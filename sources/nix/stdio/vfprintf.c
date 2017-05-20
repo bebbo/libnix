@@ -14,8 +14,8 @@
                   outcount++;                \
                 }while(0)
 
-#define MINFLOATSIZE (DBL_DIG+1) /* Why not 1 more - it's 97% reliable */
-#define MININTSIZE (sizeof(unsigned long)*CHAR_BIT/3+1)
+#define MINFLOATSIZE (DBL_DIG+2) /* Why not 1 more - it's 97% reliable */
+#define MININTSIZE (sizeof(unsigned long long)*CHAR_BIT/3+1)
 #define MINPOINTSIZE (sizeof(void *)*CHAR_BIT/4+1)
 #define REQUIREDBUFFER (MININTSIZE>MINPOINTSIZE? \
                         (MININTSIZE>MINFLOATSIZE?MININTSIZE:MINFLOATSIZE): \
@@ -110,8 +110,13 @@ int vfprintf(FILE *stream,const char *format,va_list args)
         }
       }
 
-      if(*ptr=='h'||*ptr=='l'||*ptr=='L')
-        subtype=*ptr++;
+      if(*ptr=='h'||*ptr=='l'||*ptr=='L'||*ptr=='j'||*ptr=='z'||*ptr=='t')
+	{
+	  subtype=*ptr++;
+	  if(*ptr=='h'||*ptr=='l')
+	    ++ptr, ++subtype;
+	}else
+	  subtype=0;
 
       type=*ptr++;
 
@@ -123,7 +128,12 @@ int vfprintf(FILE *stream,const char *format,va_list args)
         case 'u':
         case 'x':
         case 'X':
-        { unsigned long v;
+        {
+#ifdef FULL_SPECIFIERS
+          unsigned long long v;
+#else
+          unsigned long v;
+#endif
           const char *tabel;
           int base;
 
@@ -133,9 +143,20 @@ int vfprintf(FILE *stream,const char *format,va_list args)
             flags|=ALTERNATEFLAG; }
 
           if(type=='d'||type=='i') /* These are signed */
-          { signed long v2;
+          {
+#ifdef FULL_SPECIFIERS
+          signed long long v2;
+#else
+          signed long v2;
+#endif
             if(subtype=='l')
               v2=va_arg(args,signed long);
+            else if (subtype == 'm' || subtype == 'j')
+#ifdef FULL_SPECIFIERS
+              v2=va_arg(args,signed long long);
+#else
+              {v2=va_arg(args,signed long);v2=va_arg(args,signed long);}
+#endif
             else
               v2=va_arg(args,signed int);
             if(v2<0)
@@ -150,6 +171,12 @@ int vfprintf(FILE *stream,const char *format,va_list args)
           }else                    /* These are unsigned */
           { if(subtype=='l')
               v=va_arg(args,unsigned long);
+            else if (subtype == 'm' || subtype == 'j')
+#ifdef FULL_SPECIFIERS
+              v=va_arg(args,unsigned long long);
+#else
+              {v=va_arg(args,unsigned long);v=va_arg(args,unsigned long);}
+#endif
             else
               v=va_arg(args,unsigned int);
             if(flags&ALTERNATEFLAG)
