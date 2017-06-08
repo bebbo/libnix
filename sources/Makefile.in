@@ -28,14 +28,17 @@ MAKELIST=$(MAKE) -f $(CURDIR)/Makefile
 
 SUBDIRS=nixmain nix_main misc math nix nix13 nix20 socket stack stubs
 
-all: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f))
-	+for subdir in $(SUBDIRS); do \
-	( cd $$subdir; \
-	  $(MAKE) -f ../../sources/$$subdir/Makefile V="$(V)" CFLAGS="$(CFLAGS)" || exit \
-	); done
+.PHONY: subdirs $(SUBDIRS)
 
-$(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
-	mkdir $@
+subdirs: $(SUBDIRS)
+
+math: nix
+
+$(SUBDIRS):
+	+( mkdir -p $@; cd $@; $(MAKE) -f ../../sources/$@/Makefile V="$(V)" CFLAGS="$(CFLAGS)" )
+	
+all: subdirs
+
 
 libamiga:
 	if [ ! -d amiga ] ; then mkdir amiga ; else true ; fi
