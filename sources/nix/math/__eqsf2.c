@@ -4,6 +4,7 @@
 signed long __eqsf2(float x,float y)
 { return IEEESPCmp(x,y); }
 
+ALIAS(__cmpsf2,__eqsf2);
 ALIAS(__gesf2,__eqsf2);
 ALIAS(__nesf2,__eqsf2);
 ALIAS(__gtsf2,__eqsf2);
