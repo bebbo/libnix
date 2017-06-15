@@ -47,6 +47,40 @@ static int __vfprintf(FILE *stream,const char *format,va_list args)
   return ret;
 }
 
+
+static unsigned __ulldivus(unsigned long long * llp, unsigned short n)
+{
+  struct LL {
+    unsigned long hi;
+    union {
+      unsigned long lo;
+      struct { unsigned short x; unsigned short y; };
+    };
+  } * hl = (struct LL *) llp;
+
+  unsigned long h = hl->hi;
+  if (h) {
+    unsigned l = hl->x;
+    unsigned k = hl->y;
+    unsigned c = h % n;
+    h = h / n;
+    l = l + (c << 16);
+    c = l % n;
+    l = l / n;
+    k = k + (c << 16);
+    unsigned r = k % n;
+    k = k / n;
+    hl->lo = (l << 16) + k;
+    hl->hi = h + (l >> 16);
+    return r;
+  }
+
+  unsigned r = hl->lo % n;
+  hl->lo /= n;
+  return r;
+}
+
+
 int vfprintf(FILE *stream,const char *format,va_list args)
 { 
   size_t outcount=0;
@@ -129,11 +163,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
         case 'x':
         case 'X':
         {
-#ifdef FULL_SPECIFIERS
           unsigned long long v;
-#else
-          unsigned long v;
-#endif
           const char *tabel;
           int base;
 
@@ -144,19 +174,11 @@ int vfprintf(FILE *stream,const char *format,va_list args)
 
           if(type=='d'||type=='i') /* These are signed */
           {
-#ifdef FULL_SPECIFIERS
           signed long long v2;
-#else
-          signed long v2;
-#endif
             if(subtype=='l')
               v2=va_arg(args,signed long);
             else if (subtype == 'm' || subtype == 'j')
-#ifdef FULL_SPECIFIERS
               v2=va_arg(args,signed long long);
-#else
-              {v2=va_arg(args,signed long);v2=va_arg(args,signed long);}
-#endif
             else
               v2=va_arg(args,signed int);
             if(v2<0)
@@ -172,11 +194,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
           { if(subtype=='l')
               v=va_arg(args,unsigned long);
             else if (subtype == 'm' || subtype == 'j')
-#ifdef FULL_SPECIFIERS
               v=va_arg(args,unsigned long long);
-#else
-              {v=va_arg(args,unsigned long);v=va_arg(args,unsigned long);}
-#endif
             else
               v=va_arg(args,unsigned int);
             if(flags&ALTERNATEFLAG)
@@ -192,8 +210,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
           base=type=='x'||type=='X'?16:(type=='o'?8:10);
           tabel=type!='X'?lowertabel:uppertabel;
           do
-          { *--buffer2=tabel[v%base];
-            v=v/base;
+          { *--buffer2=tabel[__ulldivus(&v, base)];
             size2++;
           }while(v);
           if(preci==ULONG_MAX) /* default */
