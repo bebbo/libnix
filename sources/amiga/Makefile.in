@@ -27,7 +27,7 @@ FDFILES		= $(wildcard $(FDPATH)*.fd)
 CLIB		= $(addprefix $(CLIBPATH),$(subst _lib.fd,_protos.h,$(notdir $(fd))))
 STUB		= $(subst _lib.fd,,$(notdir $(fd)))
 
-%.o: %.c
+%.o: %.c $(SUBDIRS)
 	$(CC) $(OPTIONS) -c $^ -o $@ 2>&1|tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 

@@ -28,7 +28,7 @@ REDEF=-D_DOSBase=___DOSBase \
       -D_LocaleBase=___LocaleBase
 
 #Use private library bases to avoid naming collisions
-%.o: %.c
+%.o: %.c $(SUBDIRS)
 	$(CC) $(OPTIONS) -S $^ -o $*.S 2>&1|tee $*.err
 	$(CPP) -traditional $(REDEF) $*.S -o $*__2.S
 	$(CC) $(OPTIONS) $*__2.S -c -o $*.o
