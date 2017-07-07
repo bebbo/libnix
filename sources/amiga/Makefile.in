@@ -45,11 +45,17 @@ clean:
 veryclean:
 	-rm -rf *
 
-$(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
-	mkdir $@
+.PHONY: subdirs $(SUBDIRS)
+
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+	mkdir -p $@
+
+
 
 #libamiga.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) libglue.a ../../sources/amiga/Makefile ../../sources/amiga/filelist
-libamiga.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) newlibglue.a ../../sources/amiga/Makefile ../../sources/amiga/filelist
+libamiga.a: subdirs $(OBJECTS) newlibglue.a ../../sources/amiga/Makefile ../../sources/amiga/filelist
 	-rm -f libamiga.a
 #	-cp libglue.a libamiga.a
 	-cp newlibglue.a libamiga.a

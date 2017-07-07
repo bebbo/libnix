@@ -41,10 +41,17 @@ clean:
 veryclean:
 	-rm -rf *
 
-$(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
-	mkdir $@
+.PHONY: subdirs $(SUBDIRS)
 
-libsocket.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) ../../sources/socket/Makefile ../../sources/socket/filelist
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+	mkdir -p $@
+	
+
+
+
+libsocket.a: subdirs $(OBJECTS) ../../sources/socket/Makefile ../../sources/socket/filelist
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@

@@ -39,10 +39,17 @@ clean:
 veryclean:
 	rm -rf *
 
-$(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)):
-	mkdir $@
+.PHONY: subdirs $(SUBDIRS2)
 
-libstubs.a: $(foreach f,$(SUBDIRS2),$(CURDIR)/$(f)) $(OBJECTS2) ../../sources/stubs/Makefile ../../sources/stubs/filelist
+subdirs: $(SUBDIRS2)
+
+$(SUBDIRS2):
+	mkdir -p $@
+	
+
+
+
+libstubs.a: subdirs $(OBJECTS2) ../../sources/stubs/Makefile ../../sources/stubs/filelist
 	rm -f $@
 	$(AR) -q $@ $(OBJECTS2)
 	$(RANLIB) $@

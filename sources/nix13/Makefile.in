@@ -46,10 +46,16 @@ clean:
 veryclean:
 	-rm -rf *
 
-$(foreach f,$(SUBDIRS),$(CURDIR)/$(f)):
-	mkdir $@
+.PHONY: subdirs $(SUBDIRS)
 
-libnix13.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) ../../sources/nix13/Makefile ../../sources/nix13/filelist
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+	mkdir -p $@
+	
+
+
+libnix13.a: subdirs $(OBJECTS) ../../sources/nix13/Makefile ../../sources/nix13/filelist
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@

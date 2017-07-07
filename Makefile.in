@@ -40,7 +40,7 @@ MAK2=$(MAKE) -f $(CURDIR)/sources/Makefile
 SUBDIRS=startup lib libb lib020 libb020 lib881 libb881 libb32 libb32881 #lib060 libb060 libb32060
 
 all: $(SUBDIRS)
-	cd sources;	$(MAKE) filelists
+	-cd sources;	$(MAKE) filelists
 	+cd startup;	$(MAKE) -f $(CURDIR)/sources/startup/Makefile V="$(V)"
 	+cd lib; 	$(MAK2) V="$(V)" CFLAGS="-Wall -Os -fomit-frame-pointer"
 	+cd libb;	$(MAK2) V="$(V)" CFLAGS="-Wall -Os -fomit-frame-pointer -fbaserel -DSMALL_DATA"
