@@ -19,8 +19,8 @@ AWK =		@AWK@
 
 OPTIONS=-I$(srcdir)/../headers -O -fomit-frame-pointer
 
-%.o: %.c
-	$(CC) $(OPTIONS) -c $^ 2>&1|tee $*.err
+%.o: %.c $(SUBDIRS)
+	$(CC) $(OPTIONS) -c $(filter-out $(SUBDIRS), $^) 2>&1|tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 	echo "\$$$(V)" >>$@
 

@@ -27,7 +27,7 @@ REDEF=-D_DOSBase=___DOSBase \
 
 #Use private library bases to avoid naming collisions
 %.o: %.c $(SUBDIRS)
-	$(CC) $(OPTIONS) -S $^ -o $*.S 2>&1|tee $*.err
+	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRS), $^) -o $*.S 2>&1|tee $*.err
 	$(CPP) -traditional $(REDEF) $*.S -o $*__2.S
 	$(CC) $(OPTIONS) $*__2.S -c -o $*.o
 	-rm $*.S $*__2.S

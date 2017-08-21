@@ -26,7 +26,7 @@ OBJECTS2=$(OBJECTS) ../nix/misc/__request.o
 SUBDIRS2=$(SUBDIRS) ../nix/misc
 
 %.o: %.c $(SUBDIRS2)
-	$(CC) $(OPTIONS) -c $^ -o $@ 2>&1|tee $*.err
+	$(CC) $(OPTIONS) -c $(filter-out $(SUBDIRS2), $^) -o $@ 2>&1|tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 
 .PHONY: all clean veryclean
