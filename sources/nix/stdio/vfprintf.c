@@ -14,26 +14,58 @@
                   outcount++;                \
                 }while(0)
 
-#define MINFLOATSIZE (DBL_DIG+2) /* Why not 1 more - it's 97% reliable */
+#define MINFLOATSIZE (DBL_DIG+3)
 #define MININTSIZE (sizeof(unsigned long long)*CHAR_BIT/3+1)
 #define MINPOINTSIZE (sizeof(void *)*CHAR_BIT/4+1)
 #define REQUIREDBUFFER (MININTSIZE>MINPOINTSIZE? \
                         (MININTSIZE>MINFLOATSIZE?MININTSIZE:MINFLOATSIZE): \
                         (MINPOINTSIZE>MINFLOATSIZE?MINPOINTSIZE:MINFLOATSIZE))
 
+/**
+ * '#'
+ * Used with o, x or X specifiers the value is preceeded with 0, 0x or 0X
+ * respectively for values different than zero.
+ * Used with a, A, e, E, f, F, g or G it forces the written output
+ * to contain a decimal point even if no more digits follow.
+ * By default, if no digits follow, no decimal point is written.
+ */
 #define ALTERNATEFLAG 1  /* '#' is set */
+
+/**
+ * '0'
+ * Left-pads the number with zeroes (0) instead of spaces when padding is specified
+ * (see width sub-specifier).
+ */
 #define ZEROPADFLAG   2  /* '0' is set */
+
+/**
+ * '-'
+ * Left-justify within the given field width;
+ * Right justification is the default (see width sub-specifier).
+ */
 #define LALIGNFLAG    4  /* '-' is set */
+
+/**
+ * ' '
+ * No idea what's this...
+ */
 #define BLANKFLAG     8  /* ' ' is set */
+
+/**
+ * '+'
+ * Forces to preceed the result with a plus or minus sign (+ or -) even for positive numbers.
+ * By default, only negative numbers are preceded with a - sign.
+ */
 #define SIGNFLAG      16 /* '+' is set */
 
 extern unsigned char *__decimalpoint;
 
 static int __vfprintf(FILE *stream,const char *format,va_list args)
-{ unsigned char buf[((BUFSIZ/4)+3)&~3];
+{ unsigned char buf[64];
   FILE fp;
   int ret;
 
+puts("__vfprintf");
   fp.outcount    = 0;
   fp.flags       = stream->flags&~(__SWO|__SWR|__SNBF);
   fp.file        = stream->file;
@@ -89,8 +121,10 @@ int vfprintf(FILE *stream,const char *format,va_list args)
   if((stream->flags&(__SWO|__SNBF))==(__SWO|__SNBF))
     return __vfprintf(stream,format,args);
 
+//  puts(format);
   while(*format)
   {
+//putchar(*format);
     if(*format=='%')
     { 
       static const char flagc[]=
@@ -99,7 +133,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
       { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
       static const char uppertabel[]=
       { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
-      size_t width=0,preci=ULONG_MAX,flags=0; /* Specifications */
+      short width=0,preci=0x7fff,flags=0; /* Specifications */
       char type,subtype='i';
       char buffer1[2];             /* Signs and that like */
       char buffer[REQUIREDBUFFER]; /* The body */
@@ -187,8 +221,8 @@ int vfprintf(FILE *stream,const char *format,va_list args)
             }else
             { if(flags&SIGNFLAG)
                 buffer1[size1++]='+';
-              else if(flags&BLANKFLAG)
-                buffer1[size1++]=' ';
+//              else if(flags&BLANKFLAG)
+//                buffer1[size1++]=' ';
               v=v2; }
           }else                    /* These are unsigned */
           { if(subtype=='l')
@@ -213,7 +247,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
           { *--buffer2=tabel[__ulldivus(&v, base)];
             size2++;
           }while(v);
-          if(preci==ULONG_MAX) /* default */
+          if(preci==0x7fff) /* default */
             preci=0;
           else
             flags&=~ZEROPADFLAG;
@@ -239,7 +273,230 @@ int vfprintf(FILE *stream,const char *format,va_list args)
         case 'E':
         case 'g':
         case 'G':
-        { double v;
+        {
+#if 1
+        	double d;
+        	short x = 0;
+        	short y = 0;
+        	char sign = 0;
+        	char const * infnan = 0;
+        	char pad = (flags & ZEROPADFLAG) ? '0' : ' ';
+    		short j = 1; // position in buffer after dot
+
+        	if (type == 'f' || type == 'F')
+        		type = 0;
+
+        	d=va_arg(args,double);
+
+        	// check for negative number and set the sign char if necessary
+        	if (*(char *)&d < 0) {
+        		*(char *)&d &= 0x7f;
+        		sign = '-';
+        	} else if (flags & SIGNFLAG)
+        		sign = '+';
+
+        	// check for inf/nan
+        	if ((*(short *)&d & 0x7ff0) == 0x7ff0) {
+        		if ((0[(long*)&d] & 0xfffff) || 1[(long *)&d]) {
+        			infnan = "NaN";
+        			sign = 0;
+        		} else {
+        			infnan = "inf";
+        		}
+        		width -= 3;
+        	}
+
+        	if(preci==0x7fff) /* old default */
+        		preci=6; 	  /* new default */
+        	else if (preci > 17)
+        		preci = 17;
+
+        	short num = preci;
+
+        	// real number
+        	if (!infnan) {
+        		// compute exponent
+        		if (d >= 1) {
+        			while (d >= 10000000000) {
+        				d *= 0.0000000001;
+        				x+=10;
+        			}
+        			while (d >= 10) {
+        				d *= 0.1;
+        				++x;
+        			}
+        		} else if (d > 0) {
+        			while (d < 0.0000000001) {
+        				d *= 10000000000;
+        				x -= 10;
+        			}
+        			while (d < 1) {
+        				d *= 10;
+        				--x;
+        			}
+        		}
+
+        		// count of digts:
+        		// f, F : all digits before dot, preci digits behind.
+        		// e, E : one digit before dot, preci digits behind dot
+        		// g, G : preci digits total
+
+        		// count of digits
+        		// f : x + preci
+        		// e : 1 + preci
+        		// g : preci
+        		if (!type) {
+        			num += x;
+        			if (num >= REQUIREDBUFFER)
+        				num = REQUIREDBUFFER;
+        		} else if (type == 'E' || type == 'e') {
+        			++num;
+        		}
+    			if (num <= 0)
+    				num = 1;
+
+//        		printf("num=%d|", num);
+
+        		// compute the digits
+        		for (short i = 0; i < num; ++i) {
+        			short z = d;
+        			d = (d - z) * 10;
+        			buffer[i] = '0' + z;
+        		}
+
+        		// round up
+        		if ( d >= 5.) {
+        			short i = num - 1;
+        			for (; i >= 0; --i) {
+        				if (++buffer[i] <= '9')
+        					break;
+        				buffer[i] = '0';
+        			}
+        			// overflow: start behind .  at 0 and first digit is '1'
+        			if (i < 0) {
+        				++x;
+        				--num;
+        				j = 0;
+        			}
+        		}
+
+        		// kill trailing zeroes
+        		if (type == 'g' || type == 'G') {
+        			short i = num - 1;
+        			for (; i > 0; --i) {
+        				if (buffer[i] != '0')
+        					break;
+        			}
+        			// i == count - 1 of digits without trailing zero
+//        			printf("num=%d, preci=%d, i=%d\n", num, preci, i);
+        			if (x >= 0 && x < preci) {
+        				preci = i - x;
+        				if (preci < 0) preci = 0;
+        				num = x + 1 + preci;
+        				type = 0;
+        			} else {
+        				preci = i;
+        				num = i + 1;
+        				type = type == 'g' ? 'e' : 'E';
+        			}
+//        			printf("num=%d, preci=%d, i=%d\n", num, preci, i);
+        		}
+
+        		// calculate width
+        		if (type) {
+        			// 1e+00
+        			width -= 5 + preci;
+
+        			if (x < -99) {
+        				--width;
+        			} else if (x > 99) {
+        				--width;
+        			}
+        		} else {
+        			// 123.456  -> x = 2, preci = 3
+        			width -= x + 1 + preci ;
+        		}
+
+        		// dot?
+        		if (preci > 0 || (flags &ALTERNATEFLAG))
+        			--width;
+        	}
+
+        	if (sign)
+        		--width;
+
+        	//if (width < 0) width = 0;
+
+        //	printf("width=%d\n", width);
+
+        	// pad on left side
+        	if (!(flags&LALIGNFLAG))
+        		while (--width >= 0)
+        			OUT(pad);
+
+        	// output sign if set
+        	if (sign)
+        		OUT(sign);
+
+        	if (infnan) {
+        		// output inf/nan
+        		OUT(infnan[0]);
+        		OUT(infnan[1]);
+        		OUT(infnan[2]);
+        	} else {
+//    			printf("num=%d, preci=%d, i=%d, j=%d\n", num, preci, i, j);
+        		// output the number
+        		OUT(j ? buffer[0] : '1');
+
+        		if (!type) {
+        			for(;j <= x && j < num; ++j)
+        				OUT(buffer[j]);
+        			for (;j <= x; ++j)
+        				OUT('0');
+        		}
+
+        		if (preci || (flags &ALTERNATEFLAG))
+        			OUT(__decimalpoint[0]);
+
+        		for(; j < num; ++j) {
+        			OUT(buffer[j]);
+        			--preci;
+        		}
+        		if (!type)
+        			for (;preci > 0; --preci)
+        				OUT('0');
+
+        		if (type) {
+        			OUT(type);
+        			if (x < 0) {
+        				OUT('-');
+        				x = -x;
+        			} else
+        			OUT('+');
+        			--width;
+        			if (x > 99) {
+        				short z = x/100;
+        				OUT('0' + z);
+        				x -= z * 100;
+        				--width;
+        			}
+        			short z = x/10;
+        			OUT('0' + z);
+        			x -= z * 10;
+        			--width;
+        			OUT('0' + x);
+        			--width;
+        		}
+        	}
+
+        	// pad on right side
+        	if (flags&LALIGNFLAG)
+        		while (--width >= 0)
+        			OUT(' ');
+//puts("");
+
+#else
+          double v;
           char killzeros=0,sign=0; /* some flags */
           int ex1,ex2; /* Some temporary variables */
           size_t size,dnum,dreq;
@@ -261,8 +518,10 @@ int vfprintf(FILE *stream,const char *format,va_list args)
             buffer2=udstr;
             break; }
 
-          if(preci==ULONG_MAX) /* old default */
+          if(preci==0xffff) /* old default */
             preci=6; /* new default */
+          else if (preci > 17)
+            preci = 17;
 
           if(v<0.0)
           { sign='-';
@@ -305,7 +564,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
               type=type=='g'?'e':'E';
             preci--;
             if(!(flags&ALTERNATEFLAG))
-              killzeros=1; /* set flag to kill trailing zeros */
+              killzeros=1; /* set flags to kill trailing zeros */
           }
 
           dreq=preci+1; /* Calculate number of decimal places required */
@@ -314,6 +573,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
 
           dnum=0;
           while(dnum<dreq&&dnum<MINFLOATSIZE) /* Calculate all decimal places needed */
+//          while(dnum<dreq) /* Calculate all decimal places needed */
           { buffer[dnum++]=(char)v+'0';
             v=(v-(double)(char)v)*10.0; }
 
@@ -386,7 +646,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
           if(flags&LALIGNFLAG)
             for(i=0;i<pad;i++)
               OUT(' ');
-
+#endif // 0
           width=preci=0; /* Everything already done */
           break;
         }
@@ -440,3 +700,35 @@ int vfprintf(FILE *stream,const char *format,va_list args)
   }
   return outcount;
 }
+
+#ifdef TESTME
+int main(int argc, char ** argv) {
+  double d;
+	printf("%-20.0f|\n", 0.0d);
+	printf("%-20.0e\n", 0.0d);
+	printf("%-20.1g\n", 0.0d);
+	printf("%#20.0f\n", 0.0d);
+	printf("%#20.0e\n", 0.0d);
+	printf("%#20.1g\n", 0.0d);
+
+	d = 1.2345678902468e-13;
+	for (int i = 0; i < 24; ++i) {
+		d *= 10;
+		printf("%20.7f\n", d);
+	}
+
+	d = 1.2345678902468e-13;
+	for (int i = 0; i < 24; ++i) {
+		d *= 10;
+		printf("%20.7g\n", d);
+	}
+
+	d = 1.2345678902468e-13;
+	for (int i = 0; i < 24; ++i) {
+		d *= 10;
+		printf("%20.7e\n", d);
+	}
+
+  return 0;
+}
+#endif
