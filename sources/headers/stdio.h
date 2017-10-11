@@ -99,10 +99,11 @@ extern int sscanf(const char *s,const char *format,...);
 extern int snprintf(char *s,size_t size,const char *format,...);
 extern int sprintf(char *s,const char *format,...);
 
-/* Inline functions or protos. */
-#ifdef __NO_INLINE__
 extern int getc(FILE *fp);
 extern int putc(int c, FILE * fp);
+
+/* Inline functions or protos. */
+#ifdef __NO_INLINE__
 extern void clearerr(FILE *stream);
 extern int feof(FILE * fp);
 extern int ferror(FILE *fp);
@@ -119,18 +120,6 @@ extern int vscanf(const char *format,va_list args);
 extern void rewind(FILE *stream);
 extern int setbuf(FILE *stream,char *buf);
 #else
-inline int getc(FILE *fp)
-{ if (--fp->incount >= 0)
-    return *fp->p++;
-  return __srget(fp);
-}
-
-inline int putc(int c, FILE * fp)
-{ if (--fp->outcount >= 0 ||
-      (fp->outcount >= fp->linebufsize && (char)(c)!='\n'))
-    return *fp->p++ = c;
-  return __swbuf(c, fp);
-}
 
 inline void clearerr(FILE *stream)
 { stream->flags&=~(__SERR|__SEOF); }

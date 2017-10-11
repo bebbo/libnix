@@ -1,3 +1,7 @@
-#undef __NO_INLINE__
 #include "stdio.h"
-extern int getc(FILE *fp);
+
+int getc(FILE *fp)
+{ if (--fp->incount >= 0)
+    return *fp->p++;
+  return __srget(fp);
+}
