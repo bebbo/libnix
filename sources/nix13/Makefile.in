@@ -19,7 +19,7 @@ endif
 
 CURDIR = $(shell pwd)
 
-OPTIONS=-I$(srcdir)/../headers $(CFLAGS) -msmall-code
+OPTIONS=-I$(srcdir)/../headers $(CFLAGS) -D__KICK13__
 
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \
@@ -29,8 +29,17 @@ REDEF=-D_DOSBase=___DOSBase \
       -D_MathIeeeDoubTransBase=___MathIeeeDoubTransBase \
       -D_LocaleBase=___LocaleBase
 
-%.o: %.c $(SUBDIRS)
-	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRS), $^) -o $*.S 2>&1|tee $*.err
+
+OBJECTS2=$(OBJECTS) \
+	amiga/misc/ArgArray.o \
+	misc/swapstack.o \
+	nix/extra/dirent.o \
+	nixmain/__nocommandline.o
+
+SUBDIRS2=$(SUBDIRS) amiga/misc misc nix/extra nixmain
+
+%.o: %.c $(SUBDIRS2)
+	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRS2), $^) -o $*.S 2>&1|tee $*.err
 	$(CPP) -traditional $(REDEF) $*.S -o $*__2.S
 	$(CC) $(OPTIONS) $*__2.S -c -o $*.o
 	-rm $*.S $*__2.S
@@ -41,22 +50,32 @@ REDEF=-D_DOSBase=___DOSBase \
 all: libnix13.a
 
 clean:
-	-rm -rf $(SUBDIRS)
+	-rm -rf $(SUBDIRS2)
 
 veryclean:
 	-rm -rf *
 
-.PHONY: subdirs $(SUBDIRS)
+.PHONY: subdirs $(SUBDIRS2)
 
-subdirs: $(SUBDIRS)
+subdirs: $(SUBDIRS2)
 
-$(SUBDIRS):
+$(SUBDIRS2):
 	mkdir -p $@
 	
-
-
-libnix13.a: subdirs $(OBJECTS) ../../sources/nix13/Makefile ../../sources/nix13/filelist
+libnix13.a: subdirs $(OBJECTS2) ../../sources/nix13/Makefile ../../sources/nix13/filelist
 	-rm -f $@
-	$(AR) -q $@ $(OBJECTS)
+	$(AR) -q $@ $(OBJECTS2)
 	$(RANLIB) $@
 	echo "\$$$(V)" >>$@
+
+amiga/misc/ArgArray.o: $(srcdir)/../amiga/misc/ArgArray.c
+	$(CC) $(OPTIONS) $^ -c -o amiga/misc/ArgArray.o
+
+misc/swapstack.o: $(srcdir)/../misc/swapstack.c
+	$(CC) $(OPTIONS) $^ -c -o misc/swapstack.o
+
+nix/extra/dirent.o: $(srcdir)/../nix/extra/dirent.c
+	$(CC) $(OPTIONS) $^ -c -o nix/extra/dirent.o
+
+nixmain/__nocommandline.o: $(srcdir)/../nixmain/__nocommandline.c
+	$(CC) $(OPTIONS) $^ -c -o nixmain/__nocommandline.o
