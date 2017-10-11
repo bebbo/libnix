@@ -277,7 +277,6 @@ int vfprintf(FILE *stream,const char *format,va_list args)
 #if 1
         	double d;
         	short x = 0;
-        	short y = 0;
         	char sign = 0;
         	char const * infnan = 0;
         	char pad = (flags & ZEROPADFLAG) ? '0' : ' ';
@@ -358,11 +357,12 @@ int vfprintf(FILE *stream,const char *format,va_list args)
 //        		printf("num=%d|", num);
 
         		// compute the digits
-        		for (short i = 0; i < num; ++i) {
+    			{ short i = 0;
+        		for (; i < num; ++i) {
         			short z = d;
         			d = (d - z) * 10;
         			buffer[i] = '0' + z;
-        		}
+        		}}
 
         		// round up
         		if ( d >= 5.) {
