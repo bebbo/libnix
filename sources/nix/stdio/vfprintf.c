@@ -65,7 +65,6 @@ static int __vfprintf(FILE *stream,const char *format,va_list args)
   FILE fp;
   int ret;
 
-puts("__vfprintf");
   fp.outcount    = 0;
   fp.flags       = stream->flags&~(__SWO|__SWR|__SNBF);
   fp.file        = stream->file;
@@ -315,24 +314,26 @@ int vfprintf(FILE *stream,const char *format,va_list args)
         	// real number
         	if (!infnan) {
         		// compute exponent
-        		if (d >= 1) {
-        			while (d >= 10000000000) {
-        				d *= 0.0000000001;
-        				x+=10;
-        			}
-        			while (d >= 10) {
-        				d *= 0.1;
-        				++x;
-        			}
-        		} else if (d > 0) {
-        			while (d < 0.0000000001) {
-        				d *= 10000000000;
-        				x -= 10;
-        			}
-        			while (d < 1) {
-        				d *= 10;
-        				--x;
-        			}
+        		if (0[(long*)&d] || 1[(long*)&d]) {
+					if (d >= 1) {
+						while (d >= 10000000000) {
+							d *= 0.0000000001;
+							x+=10;
+						}
+						while (d >= 10) {
+							d *= 0.1;
+							++x;
+						}
+					} else  {
+						while (d < 0.0000000001) {
+							d *= 10000000000;
+							x -= 10;
+						}
+						while (d < 1) {
+							d *= 10;
+							--x;
+						}
+					}
         		}
 
         		// count of digts:
