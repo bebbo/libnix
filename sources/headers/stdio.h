@@ -121,50 +121,56 @@ extern void rewind(FILE *stream);
 extern int setbuf(FILE *stream,char *buf);
 #else
 
-inline void clearerr(FILE *stream)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+#define __MY_INLINE__ inline
+#else
+#define __MY_INLINE__ extern inline
+#endif
+
+__MY_INLINE__ void clearerr(FILE *stream)
 { stream->flags&=~(__SERR|__SEOF); }
 
-inline int feof(FILE * fp)
+__MY_INLINE__ int feof(FILE * fp)
 { return ((fp)->flags&__SEOF); }
 
-inline int ferror(FILE *fp)
+__MY_INLINE__ int ferror(FILE *fp)
 { return ((fp)->flags&__SERR); }
 
-inline int fgetc(FILE *stream)
+__MY_INLINE__ int fgetc(FILE *stream)
 { return getc(stream); }
 
-inline int fgetpos(FILE *stream,fpos_t *pos)
+__MY_INLINE__ int fgetpos(FILE *stream,fpos_t *pos)
 { *pos=ftell(stream); return 0; }
 
-inline int fileno(FILE *file)
+__MY_INLINE__ int fileno(FILE *file)
 { return file->file; }
 
-inline int fputc(int c,FILE *stream)
+__MY_INLINE__ int fputc(int c,FILE *stream)
 { return putc(c,stream); }
 
-inline int fsetpos(FILE *stream,fpos_t *pos)
+__MY_INLINE__ int fsetpos(FILE *stream,fpos_t *pos)
 { return fseek(stream,*pos,SEEK_SET); }
 
-inline int getchar()
+__MY_INLINE__ int getchar()
 { return getc(stdin);
 }
 
-inline char *gets(char *s)
+__MY_INLINE__ char *gets(char *s)
 { return fgets(s, 0, stdin); }
 
-inline int vprintf(const char *format,va_list args)
+__MY_INLINE__ int vprintf(const char *format,va_list args)
 { return vfprintf(stdout,format,args); }
 
-inline int putchar(int c)
+__MY_INLINE__ int putchar(int c)
 { return putc(c, stdout); }
 
-inline int vscanf(const char *format,va_list args)
+__MY_INLINE__ int vscanf(const char *format,va_list args)
 { return vfscanf(stdin,format,args); }
 
-inline void rewind(FILE *stream)
+__MY_INLINE__ void rewind(FILE *stream)
 { fseek(stream,0,SEEK_SET); }
 
-inline int setbuf(FILE *stream,char *buf)
+__MY_INLINE__ int setbuf(FILE *stream,char *buf)
 { return setvbuf(stream,buf,buf?_IOFBF:_IONBF,BUFSIZ); }
 #endif
 
