@@ -23,7 +23,7 @@
 
 /**
  * '#'
- * Used with o, x or X specifiers the value is preceeded with 0, 0x or 0X
+ * Used with o, exponent or X specifiers the value is preceeded with 0, 0x or 0X
  * respectively for values different than zero.
  * Used with a, A, e, E, f, F, g or G it forces the written output
  * to contain a decimal point even if no more digits follow.
@@ -85,13 +85,13 @@ static unsigned __ulldivus(unsigned long long * llp, unsigned short n)
     unsigned long hi;
     union {
       unsigned long lo;
-      struct { unsigned short x; unsigned short y; };
+      struct { unsigned short exponent; unsigned short y; };
     };
   } * hl = (struct LL *) llp;
 
   unsigned long h = hl->hi;
   if (h) {
-    unsigned l = hl->x;
+    unsigned l = hl->exponent;
     unsigned k = hl->y;
     unsigned c = h % n;
     h = h / n;
@@ -132,14 +132,16 @@ int vfprintf(FILE *stream,const char *format,va_list args)
       { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
       static const char uppertabel[]=
       { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
-      short width=0,preci=0x7fff,flags=0; /* Specifications */
+      short width=0;
+      short preci=0x7fff;
+      short flags=0; /* Specifications */
       char type,subtype='i';
       char buffer1[2];             /* Signs and that like */
       char buffer[REQUIREDBUFFER]; /* The body */
       char *buffer2=buffer;        /* So we can set this to any other strings */
       size_t size1=0,size2=0;      /* How many chars in buffer? */
       const char *ptr=format+1;    /* pointer to format string */
-      size_t i,pad;                /* Some temporary variables */
+      short i,pad;                /* Some temporary variables */
 
       do /* read flags */
         for(i=0;i<sizeof(flagc);i++)
@@ -266,6 +268,7 @@ int vfprintf(FILE *stream,const char *format,va_list args)
           size2=size2<=preci?size2:preci;
           preci=0;
           break;
+
 #ifdef FULL_SPECIFIERS
         case 'f':
         case 'e':
@@ -275,11 +278,10 @@ int vfprintf(FILE *stream,const char *format,va_list args)
         {
 #if 1
         	double d;
-        	short x = 0;
+        	short exponent = 0;
         	char sign = 0;
         	char const * infnan = 0;
         	char pad = (flags & ZEROPADFLAG) ? '0' : ' ';
-    		short j = 1; // position in buffer after dot
 
         	if (type == 'f' || type == 'F')
         		type = 0;
@@ -306,137 +308,171 @@ int vfprintf(FILE *stream,const char *format,va_list args)
 
         	if(preci==0x7fff) /* old default */
         		preci=6; 	  /* new default */
-        	else if (preci > 17)
-        		preci = 17;
 
-        	short num = preci;
+    		// count of digts:
+    		// f, F : all digits before dot, preci digits behind. = 1 + preci, add exponent if > 0
+    		// e, E : one digit before dot, preci digits behind dot = 1 + preci
+    		// g, G : preci digits total
+    		int startPos = 1; // first digit
+    		short stopPos = preci + 1; // behind last digit
+    		short leading = 1; // digits until dot is inserted
+    		short dotZero = 0; // insert zeroes after dot
+    		short postZero = 0; // append zeroes at end
+    		short killZero = 0; // kill trailing zeroes
 
-        	// real number
+    		// real number
         	if (!infnan) {
-        		// compute exponent
+        		// compute exponent - a tad slow but ok
         		if (0[(long*)&d] || 1[(long*)&d]) {
 					if (d >= 1) {
 						while (d >= 10000000000) {
 							d *= 0.0000000001;
-							x+=10;
+							exponent+=10;
 						}
 						while (d >= 10) {
 							d *= 0.1;
-							++x;
+							++exponent;
 						}
 					} else  {
 						while (d < 0.0000000001) {
 							d *= 10000000000;
-							x -= 10;
+							exponent -= 10;
 						}
 						while (d < 1) {
 							d *= 10;
-							--x;
+							--exponent;
 						}
 					}
         		}
 
-        		// count of digts:
-        		// f, F : all digits before dot, preci digits behind.
-        		// e, E : one digit before dot, preci digits behind dot
-        		// g, G : preci digits total
-
-        		// count of digits
-        		// f : x + preci
-        		// e : 1 + preci
-        		// g : preci
-        		if (!type) {
-        			num += x;
-        			if (num >= REQUIREDBUFFER)
-        				num = REQUIREDBUFFER;
-        		} else if (type == 'E' || type == 'e') {
-        			++num;
+        		// convert g into e or f
+        		if (type == 'g' || type == 'G') {
+        			int limit = preci + 3;
+        			--preci;
+	    			if (preci >= exponent && exponent >= 0) {
+	        			type = 0;
+	    				preci -= exponent;
+        			} else if (exponent < 0 && limit + exponent + 1 > preci) {
+	        			type = 0;
+	        			preci -= exponent;
+	        		} else {
+	        			type = 'e';
+	        		}
+	    			stopPos = preci + 1;
+	    			killZero = 1;
         		}
-    			if (num <= 0)
-    				num = 1;
 
-//        		printf("num=%d|", num);
+        		// fill it with digits
+        		buffer[0] = '0';
+        		short pos = 1;
+        		if (type == 0) { // f, F
+        			if (exponent >= 0) {
+        				leading += exponent;
+        				stopPos += exponent + 1;
+        			} else {
+        				dotZero = -exponent - 1;
+        				buffer[1] = '0';
+        				if (dotZero > preci) {
+        					dotZero = preci;
+            				buffer[2] = '0'; // mandatory - uninitialized values may break rounding
+            				pos = 3;
+        				} else
+        					pos = 2;
+        				stopPos -= dotZero - 1;
+        			}
+        		} else {
+        			++stopPos; // add one for leading digit
+        		}
+				if (stopPos >= REQUIREDBUFFER) {
+					postZero = stopPos - REQUIREDBUFFER + 1;
+					if (type == 0 && postZero > preci)
+						postZero = preci;
+					stopPos = REQUIREDBUFFER - 1;
+				}
 
-        		// compute the digits
-    			{ short i = 0;
-        		for (; i < num; ++i) {
-        			short z = d;
-        			d = (d - z) * 10;
-        			buffer[i] = '0' + z;
-        		}}
+        		// compute the digits + one more for rounding
+				for (; pos < stopPos; ++pos) {
+					int z = (int)d;
+					d = (d - z) * 10;
+					buffer[pos] = (char)('0' + z);
+				}
 
         		// round up
         		if ( d >= 5.) {
-        			short i = num - 1;
-        			for (; i >= 0; --i) {
-        				if (++buffer[i] <= '9')
+        			--pos;
+        			for (; pos >= startPos; --pos) {
+        				if (++buffer[pos] <= '9')
         					break;
-        				buffer[i] = '0';
+        				buffer[pos] = '0';
         			}
-        			// overflow: start behind .  at 0 and first digit is '1'
-        			if (i < 0) {
-        				++x;
-        				--num;
-        				j = 0;
+        			// overflow
+        			if (pos <= startPos) {
+    					startPos = 0;
+    					if (type != 0) {
+							++exponent;
+							--stopPos;
+            				buffer[0] = '1'; // overflow
+						} else
+    					if (type == 0 && exponent < 0) {
+    						if (dotZero > 0)
+    							--dotZero;
+            				buffer[1] = '1'; // overflow
+    					}
         			}
         		}
 
         		// kill trailing zeroes
-        		if (type == 'g' || type == 'G') {
-        			short i = num - 1;
-        			for (; i > 0; --i) {
-        				if (buffer[i] != '0')
+        		if (killZero != 0) {
+        			int stop = stopPos - 1;
+        			while (stop > startPos) {
+        				if (buffer[stop] != '0')
         					break;
+        				if (type == 0 && stop - startPos == exponent)
+        					break;
+        				--stop;
         			}
-        			// i == count - 1 of digits without trailing zero
-//        			printf("num=%d, preci=%d, i=%d\n", num, preci, i);
-        			if (x >= 0 && x < preci) {
-        				preci = i - x;
-        				if (preci < 0) preci = 0;
-        				num = x + 1 + preci;
-        				type = 0;
-        			} else {
-        				preci = i;
-        				num = i + 1;
-        				type = type == 'g' ? 'e' : 'E';
+        			if (type != 0 && stop - startPos + 5 < width)
+        				width = stop - startPos + preci + 5;
+        			else if (type == 0) {
+        				if (stop + 1 != stopPos && stop - startPos == exponent)
+        					++width;
         			}
-//        			printf("num=%d, preci=%d, i=%d\n", num, preci, i);
+        			stopPos = stop + 1;
         		}
 
         		// calculate width
-        		if (type) {
+        		if (type != 0) {
         			// 1e+00
-        			width -= 5 + preci;
+        			width -= 5 + stopPos - startPos + postZero;
 
-        			if (x < -99) {
+        			if (exponent < -99) {
         				--width;
-        			} else if (x > 99) {
+        			} else if (exponent > 99) {
         				--width;
         			}
         		} else {
-        			// 123.456  -> x = 2, preci = 3
-        			width -= x + 1 + preci ;
+        			// 123.456  -> exponent = 2, preci = 3
+        			if (leading > stopPos - startPos)
+    					width -= leading + dotZero + postZero;
+        			else
+        				width -= stopPos - startPos + dotZero + postZero;
         		}
 
         		// dot?
-        		if (preci > 0 || (flags &ALTERNATEFLAG))
+        		if (preci > 0 || (flags &ALTERNATEFLAG) != 0)
         			--width;
         	}
 
-        	if (sign)
+        	if (sign != 0)
         		--width;
 
-        	//if (width < 0) width = 0;
-
-        //	printf("width=%d\n", width);
-
         	// pad on left side
-        	if (!(flags&LALIGNFLAG))
+        	if ((flags&LALIGNFLAG) == 0)
         		while (--width >= 0)
         			OUT(pad);
 
         	// output sign if set
-        	if (sign)
+        	if (sign != 0)
         		OUT(sign);
 
         	if (infnan) {
@@ -445,57 +481,57 @@ int vfprintf(FILE *stream,const char *format,va_list args)
         		OUT(infnan[1]);
         		OUT(infnan[2]);
         	} else {
-//    			printf("num=%d, preci=%d, i=%d, j=%d\n", num, preci, i, j);
-        		// output the number
-        		OUT(j ? buffer[0] : '1');
+        		// leading digits
+    			while (leading-- > 0 && startPos < stopPos)
+    				OUT(buffer[startPos++]);
 
-        		if (!type) {
-        			for(;j <= x && j < num; ++j)
-        				OUT(buffer[j]);
-        			for (;j <= x; ++j)
-        				OUT('0');
-        		}
+    			// more leading digits than buffer size
+    			while (leading-- > 0)
+    				OUT('0');
 
-        		if (preci || (flags &ALTERNATEFLAG))
+    			// output dot
+        		if (startPos < stopPos || dotZero != 0 || postZero != 0 || (flags &ALTERNATEFLAG) != 0)
         			OUT(__decimalpoint[0]);
 
-        		for(; j < num; ++j) {
-        			OUT(buffer[j]);
-        			--preci;
-        		}
-        		if (!type)
-        			for (;preci > 0; --preci)
-        				OUT('0');
+        		// output zeroes behind dot not in buffer
+        		while (dotZero-- > 0)
+        			OUT('0');
 
-        		if (type) {
+        		// digits somewhere behind dot
+        		for(; startPos < stopPos; ++startPos)
+        			OUT(buffer[startPos]);
+
+        		// output trailing zeroes not in buffer
+        		while (postZero-- > 0)
+        			OUT('0');
+
+        		if (type != 0) {
         			OUT(type);
-        			if (x < 0) {
+        			if (exponent < 0) {
         				OUT('-');
-        				x = -x;
+        				exponent = -exponent;
         			} else
         			OUT('+');
         			--width;
-        			if (x > 99) {
-        				short z = x/100;
+        			if (exponent > 99) {
+        				int z = exponent/100;
         				OUT('0' + z);
-        				x -= z * 100;
+        				exponent -= z * 100;
         				--width;
         			}
-        			short z = x/10;
+        			int z = exponent/10;
         			OUT('0' + z);
-        			x -= z * 10;
+        			exponent -= z * 10;
         			--width;
-        			OUT('0' + x);
+        			OUT('0' + exponent);
         			--width;
         		}
         	}
 
         	// pad on right side
-        	if (flags&LALIGNFLAG)
+        	if ((flags&LALIGNFLAG) != 0)
         		while (--width >= 0)
         			OUT(' ');
-//puts("");
-
 #else
           double v;
           char killzeros=0,sign=0; /* some flags */

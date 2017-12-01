@@ -31,7 +31,7 @@ INSTALL_DATA =	@INSTALL_DATA@
 
 #### End system configuration section ####
 
-V=VER: libnix 2.1 (11.09.2004)
+V=VER: libnix 2.1b (01.12.2017)
 
 CURDIR := $(shell pwd)
 
