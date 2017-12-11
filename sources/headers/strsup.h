@@ -69,19 +69,6 @@ __MY_INLINE__ char *strcpy(char *s1,const char *s2)
   do;while((*s1++=*s2++));
   return s;
 }
-/*
-__MY_INLINE__ char *strcat(char *s1,const char *s2)
-{ char *s=s1;
-
-  do;while(*s++); --s; do;while((*s++=*s2++)); return s1;
-}
-*/
-__MY_INLINE__ int strcmp(const char *s1,const char *s2)
-{ unsigned char *p1=(unsigned char *)s1, *p2=(unsigned char *)s2;
-  unsigned long r,c;
-
-  do;while(r=*p1++,c=*p2++,!(r-=c) && (char)c); return r;
-}
 
 __MY_INLINE__ char *strupr(char *s)
 { unsigned char *s1=(unsigned char *)s;

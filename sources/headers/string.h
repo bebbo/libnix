@@ -56,7 +56,6 @@ int	 memcmp __P((const void *, const void *, size_t));
 void	*memchr __P((const void *, int, size_t));
 size_t	 strlen __P((const char *));
 char	*strcpy __P((char *, const char *));
-int	 strcmp __P((const char *, const char *));
 #else
 #include "strsup.h"
 #endif
@@ -67,6 +66,7 @@ size_t	 strcspn __P((const char *, const char *));
 char	*strerror __P((int));
 char	*strcat __P((char *, const char *));
 char	*strncat __P((char *, const char *, size_t));
+int	 strcmp __P((const char *, const char *));
 int	 strncmp __P((const char *, const char *, size_t));
 char	*strncpy __P((char *, const char *, size_t));
 char	*strpbrk __P((const char *, const char *));
