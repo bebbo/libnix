@@ -69,7 +69,7 @@ libm.a: subdirs $(OBJECTS2) ../../sources/math/Makefile ../../sources/math/filel
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS2)
 	$(RANLIB) $@
-	echo "\$$$(V)" >>$@
+#	echo "\\$$$(V)" >>$@
 
 stdio/vfprintf.o: $(srcdir)/../nix/stdio/vfprintf.c
 	$(CC) $(OPTIONS) $^ -c -o stdio/vfprintf.o

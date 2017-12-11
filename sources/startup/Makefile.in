@@ -22,7 +22,7 @@ OPTIONS=-I$(srcdir)/../headers -O -fomit-frame-pointer
 %.o: %.c $(SUBDIRS)
 	$(CC) $(OPTIONS) -c $(filter-out $(SUBDIRS), $^) 2>&1|tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
-	echo "\$$$(V)" >>$@
+#	echo "\$$$(V)" >>$@
 
 .PHONY: all filelist subdirs clean veryclean
 
@@ -38,31 +38,27 @@ veryclean:
 	-rm *.o
 
 # baserelative resident startup-code
-
 nrcrt0.o: nrcrt0.S
 	$(CC) -c $^
-	echo "\$$$(V)" >>$@
+#	echo "\$$$(V)" >>$@
 
 # large baserelative resident startup-code
-
 nlrcrt0.o: nlrcrt0.S
 	$(CC) -m68020 -c $^
-	echo "\$$$(V)" >>$@
-# baserelative startup code
+#	echo "\$$$(V)" >>$@
 
+# baserelative startup code
 nbcrt0.o: nbcrt0.S
 	$(CC) -c $^
-	echo "\$$$(V)" >>$@
+#	echo "\$$$(V)" >>$@
 
 # large baserelative startup code
-
 nlbcrt0.o: nlbcrt0.S
 	$(CC) -m68020 -c $^
-	echo "\$$$(V)" >>$@
+#	echo "\$$$(V)" >>$@
 
 
 # normal (=large) startup code
-
 ncrt0.o: ncrt0.S
 	$(CC) -c $^
-	echo "\$$$(V)" >>$@
+#	echo "\$$$(V)" >>$@

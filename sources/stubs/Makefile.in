@@ -53,4 +53,4 @@ libstubs.a: subdirs $(OBJECTS2) ../../sources/stubs/Makefile ../../sources/stubs
 	rm -f $@
 	$(AR) -q $@ $(OBJECTS2)
 	$(RANLIB) $@
-	echo "\$$$(V)" >>$@
+#	echo "\\$$$(V)" >>$@

@@ -42,4 +42,4 @@ libstack.a: $(OBJECTS) ../../sources/stack/Makefile ../../sources/stack/filelist
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@
-	echo "\$$$(V)" >>$@
+#	echo "\\$$$(V)" >>$@

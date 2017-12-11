@@ -51,4 +51,4 @@ libnix_main.a: $(OBJECTS) ../../sources/nix_main/Makefile
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@
-	echo "\$$$(V)" >>$@
+#	echo "\\$$$(V)" >>$@

@@ -59,4 +59,4 @@ libnix.a: subdirs $(OBJECTS) ../../sources/nix/Makefile ../../sources/nix/fileli
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@
-	echo "\$$$(V)" >>$@
+#	echo "\\$$$(V)" >>$@

@@ -55,4 +55,4 @@ libsocket.a: subdirs $(OBJECTS) ../../sources/socket/Makefile ../../sources/sock
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@
-	echo "\$$$(V)" >>$@
+#	echo "\\$$$(V)" >>$@

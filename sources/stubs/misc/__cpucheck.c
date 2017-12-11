@@ -47,6 +47,6 @@ ADD2INIT(__cpucheck,-80); /* Highest priority */
 
 #else
 
-int __cpucheck;
+void __cpucheck(){}
 
 #endif

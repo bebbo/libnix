@@ -3,8 +3,8 @@
 #include <inline/exec.h>
 #include <inline/dos.h>
 
-int __nocommandline=1; /* Disable commandline parsing  */
-int __initlibraries=0; /* Disable auto-library-opening */
+void __nocommandline(){}; /* Disable commandline parsing  */
+void __initlibraries(){}; /* Disable auto-library-opening */
 
 struct DosLibrary *DOSBase=NULL;
 
