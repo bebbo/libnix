@@ -12,8 +12,6 @@
 #define __MY_INLINE__ extern inline
 #endif
 
-#define memcpy(s1, s2, n) CopyMem(s2, s1, n)
-
 __MY_INLINE__ void *memmove(void *s1,const void *s2,size_t n)
 { extern void bcopy();
 

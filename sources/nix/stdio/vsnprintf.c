@@ -11,7 +11,7 @@ int vsnprintf(char *s,size_t size,const char *format,va_list args)
     buffer.flags=__SSTR|__SWR;
     buffer.linebufsize=0;
     retval=vfprintf(&buffer,format,args);
-    buffer.outcount++;
+    buffer.outcount = retval;
     fputc('\0',&buffer);
     return retval;
   }

@@ -2,6 +2,9 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT()
 
+AC_ARG_WITH(cross-host,
+[  --with-cross-host=HOST           Configuring with a cross compiler])
+
 AC_PROG_CC(CC, gcc, c1 cc)
 AC_PROG_RANLIB
 AC_CHECK_PROG(AR, ar, ar, ar)

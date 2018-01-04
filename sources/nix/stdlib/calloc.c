@@ -9,9 +9,10 @@ void *calloc(size_t nmemb,size_t size)
   a=(size_t *)(b=malloc(l));
   if(b!=NULL)
   {
-    do
+	size_t * end = a + l/sizeof(size_t);
+	do
       *a++=0;
-    while((l-=sizeof(size_t))!=0);
+	while (a != end);
   }
   return b;
 }

@@ -639,6 +639,7 @@ SHELL'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
+with_cross_host
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1252,6 +1253,11 @@ if test -n "$ac_init_help"; then
 
   cat <<\_ACEOF
 
+Optional Packages:
+  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-cross-host=HOST           Configuring with a cross compiler
+
 Some influential environment variables:
   CC          C compiler command
   CFLAGS      C compiler flags
@@ -1767,6 +1773,13 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
+
+
+
+# Check whether --with-cross-host was given.
+if test "${with_cross_host+set}" = set; then :
+  withval=$with_cross_host;
+fi
 
 
 ac_ext=c
