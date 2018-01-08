@@ -24,8 +24,10 @@ OPTIONS=-I$(srcdir)/../headers -D_SOCKET_IO $(CFLAGS)
 
 REDEF=-D_DOSBase=___DOSBase
 
-%.o: %.c $(SUBDIRS)
-	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRS), $^) -o $*.S 2>&1|tee $*.err
+SUBDIRSP=$(patsubst %,%/.created,$(SUBDIRS))
+
+%.o: %.c $(SUBDIRSP)
+	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRSP), $^) -o $*.S 2>&1|tee $*.err
 	$(CPP) -traditional $(REDEF) $*.S -o $*__2.S
 	$(CC) $(OPTIONS) $*__2.S -c -o $*.o
 	-rm $*.S $*__2.S
@@ -41,17 +43,11 @@ clean:
 veryclean:
 	-rm -rf *
 
-.PHONY: subdirs $(SUBDIRS)
+$(SUBDIRSP):
+	mkdir -p $(@D)
+	echo "" >$@
 
-subdirs: $(SUBDIRS)
-
-$(SUBDIRS):
-	mkdir -p $@
-	
-
-
-
-libsocket.a: subdirs $(OBJECTS) ../../sources/socket/Makefile ../../sources/socket/filelist
+libsocket.a: $(OBJECTS) ../../sources/socket/Makefile ../../sources/socket/filelist
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@

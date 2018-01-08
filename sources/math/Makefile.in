@@ -30,6 +30,7 @@ OBJECTS2=$(OBJECTS) \
          ../nix/stdio/tmpfile.o ../nix/stdio/tmpnam.o
 
 SUBDIRS2=$(SUBDIRS) ../nix/assert ../nix/stdio
+SUBDIRSP=$(patsubst %,%/.created,$(SUBDIRS2))
 
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \
@@ -39,8 +40,8 @@ REDEF=-D_DOSBase=___DOSBase \
       -D_MathIeeeDoubTransBase=___MathIeeeDoubTransBase \
       -D_LocaleBase=___LocaleBase
 
-%.o: %.c $(SUBDIRS2)
-	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRS2), $^) -o $*.S 2>&1|tee $*.err
+%.o: %.c $(SUBDIRSP)
+	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRSP), $^) -o $*.S 2>&1|tee $*.err
 	$(CPP) -traditional $(REDEF) $*.S -o $*__2.S
 	$(CC) $(OPTIONS) $*__2.S -c -o $*.o
 	-rm $*.S $*__2.S
@@ -51,28 +52,23 @@ REDEF=-D_DOSBase=___DOSBase \
 all: libm.a
 
 clean:
-	-rm -rf $(SUBDIRS2)
+	-rm -rf $(SUBDIRS)
 
 veryclean:
 	-rm -rf *
 
-.PHONY: subdirs $(SUBDIRS2)
+$(SUBDIRSP):
+	mkdir -p $(@D)
+	echo "" >$@
 
-subdirs: $(SUBDIRS2)
-
-$(SUBDIRS2):
-	mkdir -p $@
-	
-
-
-libm.a: subdirs $(OBJECTS2) ../../sources/math/Makefile ../../sources/math/filelist
+libm.a: $(OBJECTS2) ../../sources/math/Makefile ../../sources/math/filelist
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS2)
 	$(RANLIB) $@
 #	echo "\\$$$(V)" >>$@
 
-stdio/vfprintf.o: $(srcdir)/../nix/stdio/vfprintf.c
+stdio/vfprintf.o: $(SUBDIRSP) $(srcdir)/../nix/stdio/vfprintf.c
 	$(CC) $(OPTIONS) $^ -c -o stdio/vfprintf.o
 
-stdio/vfscanf.o: $(srcdir)/../nix/stdio/vfscanf.c
+stdio/vfscanf.o: $(SUBDIRSP) $(srcdir)/../nix/stdio/vfscanf.c
 	$(CC) $(OPTIONS) $^ -c -o stdio/vfscanf.o

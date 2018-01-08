@@ -27,8 +27,10 @@ FDFILES		= $(wildcard $(FDPATH)*.fd)
 CLIB		= $(addprefix $(CLIBPATH),$(subst _lib.fd,_protos.h,$(notdir $(fd))))
 STUB		= $(subst _lib.fd,,$(notdir $(fd)))
 
-%.o: %.c $(SUBDIRS)
-	$(CC) $(OPTIONS) -c $(filter-out $(SUBDIRS), $^) -o $@ 2>&1|tee $*.err
+SUBDIRSP=$(patsubst %,%/.created,$(SUBDIRS))
+
+%.o: %.c $(SUBDIRSP)
+	$(CC) $(OPTIONS) -c $(filter-out $(SUBDIRSP), $^) -o $@ 2>&1|tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 
 %.o: %.S
@@ -45,17 +47,12 @@ clean:
 veryclean:
 	-rm -rf *
 
-.PHONY: subdirs $(SUBDIRS)
-
-subdirs: $(SUBDIRS)
-
-$(SUBDIRS):
-	mkdir -p $@
-
-
+$(SUBDIRSP):
+	mkdir -p $(@D)
+	echo "" >$@
 
 #libamiga.a: $(foreach f,$(SUBDIRS),$(CURDIR)/$(f)) $(OBJECTS) libglue.a ../../sources/amiga/Makefile ../../sources/amiga/filelist
-libamiga.a: subdirs $(OBJECTS) newlibglue.a ../../sources/amiga/Makefile ../../sources/amiga/filelist
+libamiga.a: $(OBJECTS) newlibglue.a ../../sources/amiga/Makefile ../../sources/amiga/filelist
 	-rm -f libamiga.a
 #	-cp libglue.a libamiga.a
 	-cp newlibglue.a libamiga.a

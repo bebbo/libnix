@@ -29,8 +29,10 @@ REDEF=-D_DOSBase=___DOSBase \
       -D_MathIeeeDoubTransBase=___MathIeeeDoubTransBase \
       -D_LocaleBase=___LocaleBase
 
-%.o: %.c $(SUBDIRS)
-	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRS), $^) -o $*.S 2>&1|tee $*.err
+SUBDIRSP=$(patsubst %,%/.created,$(SUBDIRS))
+
+%.o: %.c $(SUBDIRSP)
+	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRSP), $^) -o $*.S 2>&1|tee $*.err
 	$(CPP) -traditional $(REDEF) $*.S -o $*__2.S
 	$(CC) $(OPTIONS) $*__2.S -c -o $*.o
 	-rm $*.S $*__2.S
@@ -46,16 +48,11 @@ clean:
 veryclean:
 	-rm -rf *
 
-.PHONY: subdirs $(SUBDIRS)
+$(SUBDIRSP):
+	mkdir -p $(@D)
+	echo "" >$@
 
-subdirs: $(SUBDIRS)
-
-$(SUBDIRS):
-	mkdir -p $@
-	
-
-
-libnix.a: subdirs $(OBJECTS) ../../sources/nix/Makefile ../../sources/nix/filelist
+libnix.a: $(OBJECTS) ../../sources/nix/Makefile ../../sources/nix/filelist
 	-rm -f $@
 	$(AR) -q $@ $(OBJECTS)
 	$(RANLIB) $@

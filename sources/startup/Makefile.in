@@ -19,16 +19,14 @@ AWK =		@AWK@
 
 OPTIONS=-I$(srcdir)/../headers -O -fomit-frame-pointer
 
-%.o: %.c $(SUBDIRS)
-	$(CC) $(OPTIONS) -c $(filter-out $(SUBDIRS), $^) 2>&1|tee $*.err
+%.o: %.c 
+	$(CC) $(OPTIONS) -c $^ 2>&1|tee $*.err
 	-if test ! -s $*.err; then rm $*.err; fi
 #	echo "\$$$(V)" >>$@
 
-.PHONY: all filelist subdirs clean veryclean
+.PHONY: all filelist clean veryclean
 
 all: nrcrt0.o nbcrt0.o nlrcrt0.o nlbcrt0.o ncrt0.o libinit.o libinitr.o devinit.o
-
-subdirs:
 
 filelist:
 
