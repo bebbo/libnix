@@ -2,7 +2,6 @@
 #define _STRSUP_H
 
 #include <sys/types.h>
-#include <proto/exec.h>
 
 #ifndef __NO_INLINE__
 
