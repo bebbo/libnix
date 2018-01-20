@@ -58,67 +58,67 @@ typedef struct __FILE
 #define _IOLBF 1
 #define _IONBF 2
 
-extern FILE *fopen(const char *filename,const char *mode);
-extern FILE *freopen(const char *filename,const char *mode,FILE *stream);
-extern FILE *fdopen(int filedes,const char *mode);
-extern int fclose(FILE *stream);
-extern int ungetc(int c,FILE *stream);
-extern int vsprintf(char *s,const char *format,va_list args);
-extern int vfprintf(FILE *stream,const char *format,va_list args);
-extern int vsscanf(const char *s,const char *format,va_list args);
-extern int vfscanf(FILE *stream,const char *format,va_list args);
-extern int vsnprintf(char *s,size_t size,const char *format,va_list args);
-extern int fseek(FILE *stream,long int offset,int whence);
-extern char *fgets(char *s,int size,FILE *stream);
-extern int fputs(const char *s,FILE *stream);
-extern long ftell(FILE *stream);
-extern int setvbuf(FILE *stream,char *buf,int mode,size_t size);
-extern int fread(void *,size_t,size_t,FILE *);
-extern int fwrite(const void *,size_t,size_t,FILE *);
-extern char *tmpnam(char *buf);
-extern void perror(const char *string);
-extern int puts(const char *s);
-extern int remove(const char *filename);
-extern int rename(const char *old,const char *neww);
-extern FILE *tmpfile(void);
+extern __stdargs FILE *fopen(const char *filename,const char *mode);
+extern __stdargs FILE *freopen(const char *filename,const char *mode,FILE *stream);
+extern __stdargs FILE *fdopen(int filedes,const char *mode);
+extern __stdargs int fclose(FILE *stream);
+extern __stdargs int ungetc(int c,FILE *stream);
+extern __stdargs int vsprintf(char *s,const char *format,va_list args);
+extern __stdargs int vfprintf(FILE *stream,const char *format,va_list args);
+extern __stdargs int vsscanf(const char *s,const char *format,va_list args);
+extern __stdargs int vfscanf(FILE *stream,const char *format,va_list args);
+extern __stdargs int vsnprintf(char *s,size_t size,const char *format,va_list args);
+extern __stdargs int fseek(FILE *stream,long int offset,int whence);
+extern __stdargs char *fgets(char *s,int size,FILE *stream);
+extern __stdargs int fputs(const char *s,FILE *stream);
+extern __stdargs long ftell(FILE *stream);
+extern __stdargs int setvbuf(FILE *stream,char *buf,int mode,size_t size);
+extern __stdargs int fread(void *,size_t,size_t,FILE *);
+extern __stdargs int fwrite(const void *,size_t,size_t,FILE *);
+extern __stdargs char *tmpnam(char *buf);
+extern __stdargs void perror(const char *string);
+extern __stdargs int puts(const char *s);
+extern __stdargs int remove(const char *filename);
+extern __stdargs int rename(const char *old,const char *neww);
+extern __stdargs FILE *tmpfile(void);
 
 /* More bsd headers compatibility */
 
-extern int __swbuf(int c,FILE *stream);
-extern int __srget(FILE *stream);
+extern __stdargs int __swbuf(int c,FILE *stream);
+extern __stdargs int __srget(FILE *stream);
 extern FILE **__sF; /* Standard I/O streams */
 #define stdin  (__sF[0]) /* Other streams are not in __sF */
 #define stdout (__sF[1])
 #define stderr (__sF[2])
 
-extern int fprintf(FILE *stream,const char *format,...);
-extern int fscanf(FILE *stream,const char *format,...);
-extern int printf(const char *format,...);
-extern int scanf(const char *format,...);
-extern int sscanf(const char *s,const char *format,...);
-extern int snprintf(char *s,size_t size,const char *format,...);
-extern int sprintf(char *s,const char *format,...);
+extern __stdargs int fprintf(FILE *stream,const char *format,...);
+extern __stdargs int fscanf(FILE *stream,const char *format,...);
+extern __stdargs int printf(const char *format,...);
+extern __stdargs int scanf(const char *format,...);
+extern __stdargs int sscanf(const char *s,const char *format,...);
+extern __stdargs int snprintf(char *s,size_t size,const char *format,...);
+extern __stdargs int sprintf(char *s,const char *format,...);
 
-extern int getc(FILE *fp);
-extern int putc(int c, FILE * fp);
+extern __stdargs int getc(FILE *fp);
+extern __stdargs int putc(int c, FILE * fp);
 
 /* Inline functions or protos. */
 #ifdef __NO_INLINE__
-extern void clearerr(FILE *stream);
-extern int feof(FILE * fp);
-extern int ferror(FILE *fp);
-extern int fgetc(FILE *stream);
-extern int fgetpos(FILE *stream,fpos_t *pos);
-extern int fileno(FILE *file);
-extern int fputc(int c,FILE *stream);
-extern int fsetpos(FILE *stream,fpos_t *pos);
-extern int getchar();
-extern char *gets(char *s);
-extern int vprintf(const char *format,va_list args);
-extern int putchar(int c);
-extern int vscanf(const char *format,va_list args);
-extern void rewind(FILE *stream);
-extern int setbuf(FILE *stream,char *buf);
+extern __stdargs void clearerr(FILE *stream);
+extern __stdargs int feof(FILE * fp);
+extern __stdargs int ferror(FILE *fp);
+extern __stdargs int fgetc(FILE *stream);
+extern __stdargs int fgetpos(FILE *stream,fpos_t *pos);
+extern __stdargs int fileno(FILE *file);
+extern __stdargs int fputc(int c,FILE *stream);
+extern __stdargs int fsetpos(FILE *stream,fpos_t *pos);
+extern __stdargs int getchar();
+extern __stdargs char *gets(char *s);
+extern __stdargs int vprintf(const char *format,va_list args);
+extern __stdargs int putchar(int c);
+extern __stdargs int vscanf(const char *format,va_list args);
+extern __stdargs void rewind(FILE *stream);
+extern __stdargs int setbuf(FILE *stream,char *buf);
 #else
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
@@ -127,50 +127,50 @@ extern int setbuf(FILE *stream,char *buf);
 #define __MY_INLINE__ extern inline
 #endif
 
-__MY_INLINE__ void clearerr(FILE *stream)
+__MY_INLINE__ __stdargs  void clearerr(FILE *stream)
 { stream->flags&=~(__SERR|__SEOF); }
 
-__MY_INLINE__ int feof(FILE * fp)
+__MY_INLINE__ __stdargs  int feof(FILE * fp)
 { return ((fp)->flags&__SEOF); }
 
-__MY_INLINE__ int ferror(FILE *fp)
+__MY_INLINE__ __stdargs  int ferror(FILE *fp)
 { return ((fp)->flags&__SERR); }
 
-__MY_INLINE__ int fgetc(FILE *stream)
+__MY_INLINE__ __stdargs  int fgetc(FILE *stream)
 { return getc(stream); }
 
-__MY_INLINE__ int fgetpos(FILE *stream,fpos_t *pos)
+__MY_INLINE__ __stdargs  int fgetpos(FILE *stream,fpos_t *pos)
 { *pos=ftell(stream); return 0; }
 
-__MY_INLINE__ int fileno(FILE *file)
+__MY_INLINE__ __stdargs  int fileno(FILE *file)
 { return file->file; }
 
-__MY_INLINE__ int fputc(int c,FILE *stream)
+__MY_INLINE__ __stdargs  int fputc(int c,FILE *stream)
 { return putc(c,stream); }
 
-__MY_INLINE__ int fsetpos(FILE *stream,fpos_t *pos)
+__MY_INLINE__ __stdargs  int fsetpos(FILE *stream,fpos_t *pos)
 { return fseek(stream,*pos,SEEK_SET); }
 
-__MY_INLINE__ int getchar()
+__MY_INLINE__ __stdargs  int getchar()
 { return getc(stdin);
 }
 
-__MY_INLINE__ char *gets(char *s)
+__MY_INLINE__ __stdargs  char *gets(char *s)
 { return fgets(s, 0, stdin); }
 
-__MY_INLINE__ int vprintf(const char *format,va_list args)
+__MY_INLINE__ __stdargs  int vprintf(const char *format,va_list args)
 { return vfprintf(stdout,format,args); }
 
-__MY_INLINE__ int putchar(int c)
+__MY_INLINE__ __stdargs  int putchar(int c)
 { return putc(c, stdout); }
 
-__MY_INLINE__ int vscanf(const char *format,va_list args)
+__MY_INLINE__ __stdargs  int vscanf(const char *format,va_list args)
 { return vfscanf(stdin,format,args); }
 
-__MY_INLINE__ void rewind(FILE *stream)
+__MY_INLINE__ __stdargs  void rewind(FILE *stream)
 { fseek(stream,0,SEEK_SET); }
 
-__MY_INLINE__ int setbuf(FILE *stream,char *buf)
+__MY_INLINE__ __stdargs  int setbuf(FILE *stream,char *buf)
 { return setvbuf(stream,buf,buf?_IOFBF:_IONBF,BUFSIZ); }
 #endif
 
@@ -179,8 +179,8 @@ extern struct MinList __filelist;   /* List of all fopen'ed files */
 extern struct MinList __memorylist; /* List of memory puddles */
 
 #define __fflush fflush
-extern int __fflush(FILE *stream); /* fflush single file */
-extern void __chkabort(void);      /* check for SIGABRT */
+extern __stdargs int __fflush(FILE *stream); /* fflush single file */
+extern __stdargs void __chkabort(void);      /* check for SIGABRT */
 
 /* objects in __filelist */
 struct filenode {
@@ -241,18 +241,18 @@ typedef struct _StdFileDes {
 #define lx_protocol fd.sock.lx_protocol
 #define lx_domain   fd.sock.lx_domain
 
-  ssize_t (*lx_read)(struct _StdFileDes *,void *,size_t);
-  ssize_t (*lx_write)(struct _StdFileDes *,const void *,size_t);
-  int     (*lx_close)(struct _StdFileDes *);
-  int     (*lx_dup)(struct _StdFileDes *);
-  int     (*lx_fstat)(struct _StdFileDes *,struct stat *);
-  int     (*lx_select)(struct _StdFileDes *sfd,int select_cmd,int io_mode,fd_set *,u_long *);
+  ssize_t __stdargs (*lx_read)(struct _StdFileDes *,void *,size_t);
+  ssize_t __stdargs (*lx_write)(struct _StdFileDes *,const void *,size_t);
+  int     __stdargs (*lx_close)(struct _StdFileDes *);
+  int     __stdargs (*lx_dup)(struct _StdFileDes *);
+  int     __stdargs (*lx_fstat)(struct _StdFileDes *,struct stat *);
+  int     __stdargs (*lx_select)(struct _StdFileDes *sfd,int select_cmd,int io_mode,fd_set *,u_long *);
 } StdFileDes;
 
-extern StdFileDes *_lx_fdfromfh(int fh, LX_FILE_TYPE type);
+extern __stdargs StdFileDes *_lx_fdfromfh(int fh, LX_FILE_TYPE type);
 
 #endif /* _SOCKET_IO */
 
-extern StdFileDes *_lx_fhfromfd(int fd);
+extern __stdargs StdFileDes *_lx_fhfromfd(int fd);
 
 #endif /* _HEADERS_STDIO_H */

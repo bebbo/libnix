@@ -50,49 +50,49 @@ typedef	_BSD_SIZE_T_	size_t;
 
 __BEGIN_DECLS
 #ifdef __NO_INLINE__
-void	*memmove __P((void *, const void *, size_t));
-void	*memset __P((void *, int, size_t));
-int	 memcmp __P((const void *, const void *, size_t));
-void	*memchr __P((const void *, int, size_t));
-size_t	 strlen __P((const char *));
-char	*strcpy __P((char *, const char *));
+__stdargs void	*memmove __P((void *, const void *, size_t));
+__stdargs void	*memset __P((void *, int, size_t));
+__stdargs int	 memcmp __P((const void *, const void *, size_t));
+__stdargs void	*memchr __P((const void *, int, size_t));
+__stdargs size_t	 strlen __P((const char *));
+__stdargs char	*strcpy __P((char *, const char *));
 #else
 #include "strsup.h"
 #endif
-void	*memcpy __P((void *, const void *, size_t));
-char	*strchr __P((const char *, int));
-int	 strcoll __P((const char *, const char *));
-size_t	 strcspn __P((const char *, const char *));
-char	*strerror __P((int));
-char	*strcat __P((char *, const char *));
-char	*strncat __P((char *, const char *, size_t));
-int	 strcmp __P((const char *, const char *));
-int	 strncmp __P((const char *, const char *, size_t));
-char	*strncpy __P((char *, const char *, size_t));
-char	*strpbrk __P((const char *, const char *));
-char	*strrchr __P((const char *, int));
-size_t	 strspn __P((const char *, const char *));
-char	*strstr __P((const char *, const char *));
-char	*strtok __P((char *, const char *));
-size_t	 strxfrm __P((char *, const char *, size_t));
+__stdargs void	*memcpy __P((void *, const void *, size_t));
+__stdargs char	*strchr __P((const char *, int));
+__stdargs int	 strcoll __P((const char *, const char *));
+__stdargs size_t	 strcspn __P((const char *, const char *));
+__stdargs char	*strerror __P((int));
+__stdargs char	*strcat __P((char *, const char *));
+__stdargs char	*strncat __P((char *, const char *, size_t));
+__stdargs int	 strcmp __P((const char *, const char *));
+__stdargs int	 strncmp __P((const char *, const char *, size_t));
+__stdargs char	*strncpy __P((char *, const char *, size_t));
+__stdargs char	*strpbrk __P((const char *, const char *));
+__stdargs char	*strrchr __P((const char *, int));
+__stdargs size_t	 strspn __P((const char *, const char *));
+__stdargs char	*strstr __P((const char *, const char *));
+__stdargs char	*strtok __P((char *, const char *));
+__stdargs size_t	 strxfrm __P((char *, const char *, size_t));
 
 /* Nonstandard routines */
 #ifndef _ANSI_SOURCE
-int	 bcmp __P((const void *, const void *, size_t));
-void	 bcopy __P((const void *, void *, size_t));
-void	 bzero __P((void *, size_t));
-int	 ffs __P((int));
-char	*index __P((const char *, int));
-void	*memccpy __P((void *, const void *, int, size_t));
-char	*rindex __P((const char *, int));
-int	 strcasecmp __P((const char *, const char *));
-char	*strdup __P((const char *));
-void	 strmode __P((int, char *));
-int	 strncasecmp __P((const char *, const char *, size_t));
-char	*strsep __P((char **, const char *));
-void	 swab __P((const void *, void *, size_t));
-int	 stricmp __P((const char *, const char *));
-int	 strnicmp __P((const char *, const char *, size_t));
+__stdargs int	 bcmp __P((const void *, const void *, size_t));
+__stdargs void	 bcopy __P((const void *, void *, size_t));
+__stdargs void	 bzero __P((void *, size_t));
+__stdargs int	 ffs __P((int));
+__stdargs char	*index __P((const char *, int));
+__stdargs void	*memccpy __P((void *, const void *, int, size_t));
+__stdargs char	*rindex __P((const char *, int));
+__stdargs int	 strcasecmp __P((const char *, const char *));
+__stdargs char	*strdup __P((const char *));
+__stdargs void	 strmode __P((int, char *));
+__stdargs int	 strncasecmp __P((const char *, const char *, size_t));
+__stdargs char	*strsep __P((char **, const char *));
+__stdargs void	 swab __P((const void *, void *, size_t));
+__stdargs int	 stricmp __P((const char *, const char *));
+__stdargs int	 strnicmp __P((const char *, const char *, size_t));
 #endif 
 __END_DECLS
 

@@ -94,11 +94,11 @@ struct SocketSettings {
 /*
 **
 */
-extern struct SocketSettings *_lx_get_socket_settings(void);
+extern __stdargs struct SocketSettings *_lx_get_socket_settings(void);
 
 /*
 **
 */
-extern StdFileDes *_create_socket(int family, int type, int protocol);
+extern __stdargs StdFileDes *_create_socket(int family, int type, int protocol);
 
 #endif /* _HEADERS_SOCKET_H */

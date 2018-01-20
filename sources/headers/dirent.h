@@ -32,9 +32,9 @@ typedef struct _dirdesc {
 ** prototypes
 */
 
-DIR *opendir(const char *dirname);
-struct dirent *readdir(DIR *dirp);
-void rewinddir(DIR *dirp);
-int closedir(DIR *dirp);
+__stdargs DIR *opendir(const char *dirname);
+__stdargs struct dirent *readdir(DIR *dirp);
+__stdargs void rewinddir(DIR *dirp);
+__stdargs int closedir(DIR *dirp);
 
 #endif /* _HEADERS_DIRENT_H */
