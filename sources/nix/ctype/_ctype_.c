@@ -19,4 +19,4 @@ const unsigned char const __ctype[]=
   0x00,0x00,0x00
 };
 
-const unsigned char *_ctype_=__ctype;
+const unsigned char * const _ctype_=__ctype;
