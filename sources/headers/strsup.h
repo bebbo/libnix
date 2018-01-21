@@ -17,8 +17,8 @@ __MY_INLINE__ __stdargs  void *memmove(void *s1,const void *s2,size_t n)
   bcopy(s2,s1,n); return s1;
 }
 
-__MY_INLINE__ __stdargs  void *memset(void *s,int c,size_t n)
-{ extern void *__memset64(void *s,int c,size_t n);
+__MY_INLINE__ __stdargs void *memset(void *s,int c,size_t n)
+{ extern __stdargs void *__memset64(void *s,int c,size_t n);
   if (n) {
       if (n > 64)
 	return __memset64(s, c, n);
