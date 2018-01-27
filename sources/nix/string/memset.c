@@ -11,7 +11,7 @@ void *__memset64(void *s,int c,size_t n)
     } v;
     v.v = s;
 
-    c *= 0x01010101;
+    c = 0x01010101 * (unsigned char)c;
     if((long)v.l & 1) {
 	*v.c++ = c;
 	n--;
