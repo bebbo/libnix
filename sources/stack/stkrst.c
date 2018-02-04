@@ -19,14 +19,14 @@ asm(
 	"| Race condition ahead! exec might preempt our task at any time storing"
 	"| the current register set on top of the free stack. NEVER set a sp higher"
 	"| than the location of important data."
-	"|"
+	"|\n"
 	"	.comm	___used_stack,8;"		/* pointer to used stackframes */
 	                                    /* pointer to unused stackframes */
 	"	.text;"
 	"	.even;"
 	"	.globl	___stkrst;"
 
-	"__stkrst:;"
+	"___stkrst:;"
 	"	exg	d0,a3;"			/* better use an address register*/
 	"	movel	a2,sp@-;"
 	"	moveml	d0/d1/a0/a1/a5/a6,sp@-;"
