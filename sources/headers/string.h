@@ -54,8 +54,12 @@ __stdargs void	*memmove __P((void *, const void *, size_t));
 __stdargs void	*memset __P((void *, int, size_t));
 __stdargs int	 memcmp __P((const void *, const void *, size_t));
 __stdargs void	*memchr __P((const void *, int, size_t));
-__stdargs size_t	 strlen __P((const char *));
+__stdargs size_t strlen __P((const char *));
+__stdargs size_t strlen_plus_one(const char *string);
 __stdargs char	*strcpy __P((char *, const char *));
+__stdargs char *strupr(char *s);
+__stdargs char *strlwr(char *s);
+__stdargs char *stpcpy(char *dst,const char *src);
 #else
 #include "strsup.h"
 #endif
