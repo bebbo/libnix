@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+extern int __vfprintf_total_size(FILE *stream, const char *fmt, va_list args);
+
 int vsnprintf(char *s,size_t size,const char *format,va_list args) {
 	int retval;
 	FILE buffer;

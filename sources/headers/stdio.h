@@ -177,7 +177,6 @@ __MY_INLINE__ __stdargs  int setbuf(FILE *stream,char *buf)
 /* own stuff */
 extern struct MinList __filelist;   /* List of all fopen'ed files */
 extern struct MinList __memorylist; /* List of memory puddles */
-extern int __vfprintf_total_size(FILE *stream, const char *fmt, va_list args);
 
 #define __fflush fflush
 extern __stdargs int __fflush(FILE *stream); /* fflush single file */

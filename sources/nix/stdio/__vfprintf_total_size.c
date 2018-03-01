@@ -6,6 +6,9 @@
 #include <stdarg.h>
 #include <limits.h>
 
+extern int __vfprintf_total_size(FILE *stream, const char *fmt, va_list args);
+
+
 /* a little macro to make life easier */
 
 #define OUT(c)  do                           \

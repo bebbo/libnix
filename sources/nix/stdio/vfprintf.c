@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+extern int __vfprintf_total_size(FILE *stream, const char *fmt, va_list args);
+
 int vfprintf(FILE *stream, const char *fmt, va_list args)
 {
 	int total_write_size = __vfprintf_total_size(stream, fmt, args);
