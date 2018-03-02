@@ -24,10 +24,10 @@ OPTIONS=-I$(srcdir)/../headers -DFULL_SPECIFIERS $(CFLAGS)
 OBJECTS2=$(OBJECTS) \
          ../nix/assert/__eprintf.o \
          ../nix/stdio/printf.o ../nix/stdio/fprintf.o ../nix/stdio/sprintf.o \
-         ../nix/stdio/vprintf.o ../nix/stdio/vsprintf.o stdio/vfprintf.o \
+         ../nix/stdio/vprintf.o ../nix/stdio/vsprintf.o ../nix/stdio/vfprintf.o \
          ../nix/stdio/scanf.o ../nix/stdio/fscanf.o ../nix/stdio/sscanf.o \
          ../nix/stdio/vscanf.o ../nix/stdio/vsscanf.o stdio/vfscanf.o \
-         ../nix/stdio/tmpfile.o ../nix/stdio/tmpnam.o
+         ../nix/stdio/tmpfile.o ../nix/stdio/tmpnam.o stdio/__vfprintf_total_size.o
 
 SUBDIRS2=$(SUBDIRS) ../nix/assert ../nix/stdio
 SUBDIRSP=$(patsubst %,%/.created,$(SUBDIRS2))
@@ -67,8 +67,8 @@ libm.a: $(OBJECTS2) ../../sources/math/Makefile ../../sources/math/filelist
 	$(RANLIB) $@
 #	echo "\\$$$(V)" >>$@
 
-stdio/vfprintf.o: $(SUBDIRSP) $(srcdir)/../nix/stdio/vfprintf.c
-	$(CC) $(OPTIONS) $^ -c -o stdio/vfprintf.o
+stdio/__vfprintf_total_size.o: $(SUBDIRSP) $(srcdir)/../nix/stdio/__vfprintf_total_size.c
+	$(CC) $(OPTIONS) $^ -c -o stdio/__vfprintf_total_size.o
 
 stdio/vfscanf.o: $(SUBDIRSP) $(srcdir)/../nix/stdio/vfscanf.c
 	$(CC) $(OPTIONS) $^ -c -o stdio/vfscanf.o
