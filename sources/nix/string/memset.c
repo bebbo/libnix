@@ -1,42 +1,56 @@
 #undef __NO_INLINE__
 #include <string.h>
-extern void *memset(void *s,int c,size_t n);
-void *__memset64(void *s,int c,size_t n)
-{
-    union {
-        void *v;
-        char *c;
-        short *s;
-        long *l;
-    } v;
-    v.v = s;
+extern void *memset(void *s, int c, size_t n);
+void *__memset64(void *s, int _c, size_t _n) {
+	register union {
+		void *v;
+		char *c;
+		short *s;
+		long *l;
+	} v __asm("a0");
+	v.v = s;
 
-    c = 0x01010101 * (unsigned char)c;
-    if((long)v.l & 1) {
-	*v.c++ = c;
-	n--;
-    }
-    if((long)v.l & 2) {
-	*v.s++ = c;
-	n-=2;
-    }
-    size_t m;
-    for(m= n / (8 * sizeof(long)); m; --m) {
-	*v.l++ = c;
-	*v.l++ = c;
-	*v.l++ = c;
-	*v.l++ = c;
-	*v.l++ = c;
-	*v.l++ = c;
-	*v.l++ = c;
-	*v.l++ = c;
-    }
-    n &= (8 * sizeof(long)-1);
-    for(m = n / sizeof(long); m; --m)
-	*v.l++ = c;
-    if((n &= sizeof(long) - 1))
-	do;
-	while(*v.c++ = c, --n);
+	register size_t n __asm("d1") = _n;
+	v.c += n;
 
-    return s;
+	register unsigned c __asm("d0") = _c & 0xff;
+	c |= c << 8;
+	c |= c << 16;
+	if ((long) v.l & 1) {
+		--v.c;
+		*v.c = c;
+		n--;
+	}
+	if ((long) v.l & 2) {
+		--v.s;
+		*v.s = c;
+		n -= 2;
+	}
+	size_t m = n / (8 * sizeof(long));
+	__asm("move.l d0,a6" ::: "a6");
+	__asm("move.l d0,d5" ::: "d5");
+	__asm("move.l d0,d6" ::: "d6");
+	__asm("move.l d0,d7" ::: "d7");
+	__asm("move.l d0,a1" ::: "a1");
+	__asm("move.l d0,a2" ::: "a2");
+	__asm("move.l d0,a3" ::: "a3");
+	while (m--) {
+//		*v.l++ = c;
+//		*v.l++ = c;
+//		*v.l++ = c;
+//		*v.l++ = c;
+//		*v.l++ = c;
+//		*v.l++ = c;
+//		*v.l++ = c;
+//		*v.l++ = c;
+			__asm("movem.l d0/d5/d6/d7/a1/a2/a3/a6,-(a0)");
+	}
+	n &= (8 * sizeof(long) - 1);
+	for (m = n / sizeof(long); m; --m)
+		*--v.l = c;
+	if ((n &= sizeof(long) - 1))
+		do
+			; while (*--v.c = c, --n);
+
+	return s;
 }
