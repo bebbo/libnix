@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <exec/lists.h>
 
+extern __stdargs int __fflush(FILE *stream);
+
 int fflush(FILE *stream) /* fflush one or all files */
 { struct MinNode *node,*nextnode;
   int retval;

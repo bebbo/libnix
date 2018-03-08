@@ -178,8 +178,7 @@ __MY_INLINE__ __stdargs  int setbuf(FILE *stream,char *buf)
 extern struct MinList __filelist;   /* List of all fopen'ed files */
 extern struct MinList __memorylist; /* List of memory puddles */
 
-#define __fflush fflush
-extern __stdargs int __fflush(FILE *stream); /* fflush single file */
+extern __stdargs int fflush(FILE *stream); /* fflush single file */
 extern __stdargs void __chkabort(void);      /* check for SIGABRT */
 
 /* objects in __filelist */
