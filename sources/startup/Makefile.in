@@ -37,26 +37,26 @@ veryclean:
 
 # baserelative resident startup-code
 nrcrt0.o: nrcrt0.S
-	$(CC) -c $^
+	$(AS) $^ -o $@
 #	echo "\$$$(V)" >>$@
 
 # large baserelative resident startup-code
 nlrcrt0.o: nlrcrt0.S
-	$(CC) -m68020 -c $^
+	$(AS) -m68020 $^ -o $@
 #	echo "\$$$(V)" >>$@
 
 # baserelative startup code
 nbcrt0.o: nbcrt0.S
-	$(CC) -c $^
+	$(AS)  $^ -o $@
 #	echo "\$$$(V)" >>$@
 
 # large baserelative startup code
 nlbcrt0.o: nlbcrt0.S
-	$(CC) -m68020 -c $^
+	$(AS) -m68020 $^ -o $@
 #	echo "\$$$(V)" >>$@
 
 
 # normal (=large) startup code
 ncrt0.o: ncrt0.S
-	$(CC) -c $^
+	$(AS) $^ -o $@
 #	echo "\$$$(V)" >>$@

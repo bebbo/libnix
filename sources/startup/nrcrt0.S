@@ -3,7 +3,7 @@
 | No bugs known
 |
 | Problem: geta4()
-| I really don´t know how to implement it with multiple starts
+| I really donï¿½t know how to implement it with multiple starts
 |
 | You should use the non-resident startup-code if you need it !
 
@@ -95,7 +95,7 @@ no_reloc:	lea	a4@(0x7ffe:W),a4
 		movel	a4@(___env:W),sp@-
 		movel	a4@(___argv:W),sp@-
 		movel	a4@(___argc:W),sp@-
-		jbsr	_main
+		jsr	_main
 		movel	d0,sp@(4:W)
 
 | exit() entry - get return val, restore stackptr

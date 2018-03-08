@@ -22,17 +22,22 @@ pr_CLI		=	 172
 
 | first entry - init some vars, check for cli or wb start
 
-start:		movel	#___bss_size,d1
+start:
 		jbsr	_geta4
+		movel	a0,a4@(___commandline:W)
+		movel	d0,a4@(___commandlen:W)
+
+		movel	#___bss_size,d1
 		beqs	nobss
+		moveq.l #0,d0
 		lea	a4@(__edata:W),a1
-clrbss: 	clrl	a1@+
+
+clrbss:
+		move.l	d0,a1@+
 		subql	#4,d1
 		bnes	clrbss
 
-nobss:		movel	a0,a4@(___commandline:W)
-		movel	d0,a4@(___commandlen:W)
-
+nobss:
 		movel	sp,a4@(___SaveSP:W)
 		movel	4:W,a6
 		movel	a6,a4@(_SysBase:W)
@@ -60,7 +65,7 @@ fromCLI:	lea	a4@(___INIT_LIST__:W),a2
 		movel	a4@(___env:W),sp@-
 		movel	a4@(___argv:W),sp@-
 		movel	a4@(___argc:W),sp@-
-		jbsr	_main
+		jsr	_main
 		movel	d0,sp@(4:W)
 
 | exit() entry - execute all exit functions, reply wbmsg

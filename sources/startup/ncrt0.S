@@ -16,7 +16,6 @@ pr_CLI		=	 172
 | public symbols
 
 		.globl	__exit
-		.globl	_geta4
 		.text
 
 | first entry - init some vars, check for cli or wb start
@@ -50,7 +49,7 @@ fromCLI:	lea	___INIT_LIST__+4,a2
 		movel	___env,sp@-
 		movel	___argv,sp@-
 		movel	___argc,sp@-
-		jbsr	_main
+		jsr	_main
 		movel	d0,sp@(4:W)
 
 | exit() entry - execute all exit functions, reply wbmsg
@@ -99,11 +98,7 @@ oldpri: 	movel	a3@+,d0
 		movel	d3,a5@
 		cmpl	d2,d3
 		jne	callfuncs
-
-| geta4() doesn´t do anything, but enables you to use
-| one source for both code models
-
-_geta4: 	rts
+		rts
 
 | redirection of _exit
 
