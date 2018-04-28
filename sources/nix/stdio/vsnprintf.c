@@ -7,9 +7,8 @@ int vsnprintf(char *s,size_t size,const char *format,va_list args) {
 	int retval;
 	FILE buffer;
 
-	if ((s == NULL && (int)size != 0) || (size < 0)) {
+	if (!s && size )
 		return EOF;
-	}
 
 	buffer.p=s;
 	buffer.incount=0;
