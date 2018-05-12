@@ -30,15 +30,15 @@ uid_t geteuid(void)
 
 int setuid(uid_t uid)
 {
-  return setreuid((int)uid, (int)uid);
+  return setreuid(uid, uid);
 }
 
 int seteuid(uid_t uid)
 {
-  return setreuid(-1, (int)uid);
+  return setreuid(-1, uid);
 }
 
-int setreuid(int truid, int teuid)
+int setreuid(uid_t truid, uid_t teuid)
 {
   if (truid != -1)
     ruid = (uid_t)truid;
@@ -73,7 +73,7 @@ int setegid(gid_t tgid)
   return setregid(-1, (int)tgid);
 }
 
-int setregid(int trgid, int tegid)
+int setregid(gid_t trgid, gid_t tegid)
 {
   if (trgid != -1)
     rgid = (gid_t)trgid;
@@ -107,7 +107,7 @@ int setlogin(const char *name)
 /*
 **
 */
-int getgroups(int gidsetlen, int *gidset)
+int getgroups(int gidsetlen, gid_t *gidset)
 { struct SocketSettings *lss = _lx_get_socket_settings();
 
   if (lss->lx_network_type == LX_AMITCP)
@@ -130,7 +130,7 @@ int getgroups(int gidsetlen, int *gidset)
   return ngroups;
 }
 
-int setgroups(int gidsetlen, const int *gidset)
+int setgroups(int gidsetlen, const gid_t *gidset)
 { struct SocketSettings *lss = _lx_get_socket_settings();
 
   if (lss->lx_network_type == LX_AMITCP)

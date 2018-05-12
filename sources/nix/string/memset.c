@@ -1,7 +1,5 @@
-#undef __NO_INLINE__
 #include <string.h>
-extern void *memset(void *s, int c, size_t n);
-void *__memset64(void *s, int _c, size_t _n) {
+void *memset(void *s, int _c, size_t _n) {
 	register union {
 		void *v;
 		char *c;

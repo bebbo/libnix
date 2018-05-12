@@ -35,34 +35,33 @@
 
 #ifndef _STRING_H_
 #define	_STRING_H_
-#include <machine/ansi.h>
 
-#ifdef	_BSD_SIZE_T_
-typedef	_BSD_SIZE_T_	size_t;
-#undef	_BSD_SIZE_T_
+#include <sys/cdefs.h>
+#include <sys/types.h>
+
+#ifndef _SIZE_T_DECLARED
+typedef	__size_t	size_t;
+#define	_SIZE_T_DECLARED
 #endif
 
 #ifndef	NULL
 #define	NULL	0
 #endif
 
-#include <sys/cdefs.h>
-
 __BEGIN_DECLS
 #ifdef __NO_INLINE__
 __stdargs void	*memmove __P((void *, const void *, size_t));
-__stdargs void	*memset __P((void *, int, size_t));
 __stdargs int	 memcmp __P((const void *, const void *, size_t));
 __stdargs void	*memchr __P((const void *, int, size_t));
 __stdargs size_t strlen __P((const char *));
 __stdargs size_t strlen_plus_one(const char *string);
 __stdargs char	*strcpy __P((char *, const char *));
-__stdargs char *strupr(char *s);
 __stdargs char *strlwr(char *s);
 __stdargs char *stpcpy(char *dst,const char *src);
 #else
 #include "strsup.h"
 #endif
+__stdargs void	*memset __P((void *, int, size_t));
 __stdargs void	*memcpy __P((void *, const void *, size_t));
 __stdargs char	*strchr __P((const char *, int));
 __stdargs int	 strcoll __P((const char *, const char *));
@@ -79,6 +78,7 @@ __stdargs size_t	 strspn __P((const char *, const char *));
 __stdargs char	*strstr __P((const char *, const char *));
 __stdargs char	*strtok __P((char *, const char *));
 __stdargs size_t	 strxfrm __P((char *, const char *, size_t));
+__stdargs char *strupr(char *s);
 
 /* Nonstandard routines */
 #ifndef _ANSI_SOURCE
@@ -94,7 +94,7 @@ __stdargs char	*strdup __P((const char *));
 __stdargs void	 strmode __P((int, char *));
 __stdargs int	 strncasecmp __P((const char *, const char *, size_t));
 __stdargs char	*strsep __P((char **, const char *));
-__stdargs void	 swab __P((const void *, void *, size_t));
+__stdargs void	 swab __P((const void *, void *, ssize_t));
 __stdargs int	 stricmp __P((const char *, const char *));
 __stdargs int	 strnicmp __P((const char *, const char *, size_t));
 #endif 

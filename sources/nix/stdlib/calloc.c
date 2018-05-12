@@ -2,17 +2,9 @@
 
 void *calloc(size_t nmemb,size_t size)
 {
-  size_t l;
-  size_t *a;
-  void *b;
-  l=(nmemb*size+(sizeof(size_t)-1))&~(sizeof(size_t)-1);
-  a=(size_t *)(b=malloc(l));
+  size_t l=(nmemb*size+(sizeof(size_t)-1))&~(sizeof(size_t)-1);
+  void *b=malloc(l);
   if(b!=NULL)
-  {
-	size_t * end = a + l/sizeof(size_t);
-	do
-      *a++=0;
-	while (a != end);
-  }
+	  memset(b, 0, l);
   return b;
 }

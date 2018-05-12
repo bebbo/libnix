@@ -11,7 +11,10 @@
 
 typedef long fpos_t;
 
-typedef struct __FILE
+#ifndef x__SFILE_DEFINED__
+#define __SFILE_DEFINED__
+
+struct __sFILE
 {
   unsigned char *p;	  /* pointer to actual character */
   int incount;		  /* Bytes left in buffer for reading, writemode: 0 */
@@ -44,7 +47,17 @@ typedef struct __FILE
   int tmpinc;		  /* Stored incount if ungetc pending, otherwise undefined */
   long tmpdir;		  /* lock to directory if temporary file */
   char *name;		  /* filename if temporary file */
-} FILE;
+};
+
+typedef struct __sFILE   __FILE;
+
+#if !defined(__FILE_defined)
+typedef __FILE FILE;
+# define __FILE_defined
+#endif
+#endif
+
+
 
 #ifndef NULL
 #define NULL ((void *)0l)

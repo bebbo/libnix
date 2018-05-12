@@ -1,3 +1,4 @@
+#ifndef __KICK13__
 #include <libraries/locale.h>
 
 /* This is the vector of Locales for the different locale types.
@@ -11,4 +12,5 @@ struct Locale *__localevec[5]=
 
 /* If you need __localevec you need LocaleBase and vice versa.
  */
-struct Library *LocaleBase=NULL;
+extern struct Library *LocaleBase=NULL;
+#endif

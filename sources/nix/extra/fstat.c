@@ -1,10 +1,10 @@
 #include <dos/dosextens.h>
 #include <proto/dos.h>
 
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <strsup.h>
-#include <stdio.h>
 
 extern void __seterrno(void);
 

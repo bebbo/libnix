@@ -20,3 +20,9 @@ const unsigned char const __ctype[]=
 };
 
 const unsigned char * const _ctype_=__ctype;
+
+const char *
+__locale_ctype_ptr (void)
+{
+  return __ctype;
+}

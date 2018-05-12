@@ -8,6 +8,10 @@ signed long strtol(const char *nptr,char **endptr,int base)
 { const char *p=nptr;
   char *q;
   unsigned long r;
+  if(!(nptr && *nptr))
+  { errno=EINVAL;
+    return 0;
+  }
   while(isspace(*p))
     p++;
   r=strtoul(p,&q,base);

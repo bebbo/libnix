@@ -1,18 +1,29 @@
 #include <time.h>
 #include <locale.h>
+#include <wchar.h>
+#ifndef __KICK13__
 #include <libraries/locale.h>
 #include <proto/locale.h>
+
+#define STR(a) \
+(__localevec[LC_TIME-1]==NULL?strings[(a)-1]:GetLocaleStr(__localevec[LC_TIME-1],(a)))
+
+extern struct Locale *__localevec[];
+
+#else
+#define STR(a) (strings[(a)-1])
+#define MON_1 15
+#define ABDAY_1	8	/* Sun */
+#define DAY_1 1
+#define ABMON_1	27	/* Jan */
+#define AM_STR		41	/* AM */
+#endif
 
 #define ADDS(st)  tmp=strftime(s,maxsize-size,(st),timeptr);break;
 
 #define ADDN(a,b) tmp=strfnumb(s,maxsize-size,(a),(b));break;
 
 #define STOR(c)   if(++size<=maxsize)*s++=(c);
-
-#define STR(a) \
-(__localevec[LC_TIME-1]==NULL?strings[(a)-1]:GetLocaleStr(__localevec[LC_TIME-1],(a)))
-
-extern struct Locale *__localevec[];
 
 /* All calendar strings */
 static const unsigned char *const strings[]=
@@ -126,4 +137,9 @@ size_t strftime(char *s,size_t maxsize,const char *format,const struct tm *timep
     size=1;
   }
   return size-1;
+}
+
+
+size_t wcsftime(wchar_t *s,size_t maxsize,const wchar_t *format,const struct tm *timeptr) {
+	return 0;
 }

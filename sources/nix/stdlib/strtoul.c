@@ -13,6 +13,10 @@ unsigned long strtoul(const char *nptr,char **endptr,int base)
       *endptr=(char *)nptr;
     return 0;
   }
+  if(!(nptr && *nptr))
+  { errno=EINVAL;
+    return 0;
+  }
   while(isspace(*p))
     p++;
   if(*p=='-'||*p=='+')

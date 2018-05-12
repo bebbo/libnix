@@ -4,7 +4,7 @@
 #include <errno.h>
 #include <string.h>
 
-int readlink(const char *path, char *buf, int bufsiz) 
+ ssize_t readlink(const char *path, char *buf,  size_t bufsiz)
 {
     struct DevProc *dp = NULL;
     BPTR lock = NULL;

@@ -1,3 +1,4 @@
+#ifndef __KICK13__
 #include <exec/memory.h>
 #include <dos/dostags.h>
 #include <dos/dosextens.h>
@@ -85,3 +86,4 @@ void __initdetach(void)
 }
   
 ADD2INIT(__initdetach,-70); /* A very high priority */
+#endif

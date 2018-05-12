@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <time.h>
 #include <errno.h>
 #include <string.h>
@@ -19,6 +20,8 @@
 */
 extern int    __argc;
 extern char **__argv;
+
+extern int h_errno;
 
 /*
 **
@@ -211,10 +214,10 @@ static int set_socket_stdio(int sock)
 /*
  *  init_inet_daemon.c - obtain socket accepted by the inetd
  *
- *  Copyright © 1994 AmiTCP/IP Group,
+ *  Copyright ï¿½ 1994 AmiTCP/IP Group,
  *       Network Solutions Development Inc.
  *       All rights reserved.
- *  Portions Copyright © 1995 by Jeff Shepherd
+ *  Portions Copyright ï¿½ 1995 by Jeff Shepherd
  */
 
 static int init_inet_daemon(int *argc,char ***argv,struct SocketSettings *lss)
@@ -398,15 +401,19 @@ void __initsocket(void)
      * usergroup.library might open yet - some people bypass the
      * "login" command which loads usergroup.library
      */
+#if 0
     lss->lx_UserGroupBase = OpenLibrary("AmiTCP:libs/usergroup.library",1);
     if (lss->lx_UserGroupBase) {
-      struct TagItem ug_list[] = {
-        { UGT_ERRNOPTR(sizeof(int)), (ULONG)&errno    },
-        { UGT_INTRMASK,              SIGBREAKB_CTRL_C },
-        { TAG_END,TAG_END }
-      };
-      ug_SetupContextTagList(progname, ug_list);
-
+        struct TagItem ug_list[] = {
+          { UGT_ERRNOPTR(sizeof(int)), (ULONG)&errno    },
+          { UGT_INTRMASK,              SIGBREAKB_CTRL_C },
+          { TAG_END,TAG_END }
+        };
+        ug_SetupContextTagList(progname, ug_list);
+#else
+   if (1) {
+	   lss->lx_UserGroupBase = 0;
+#endif
       sock = init_inet_daemon(&__argc, &__argv, lss);
       if (sock >= 0) {
         set_socket_stdio(sock);
@@ -415,7 +422,9 @@ void __initsocket(void)
       network_installed = 1;
       return;
     }
+#if 0
     CloseLibrary(lss->lx_BsdSocketBase);
+#endif
   }
 
   lss->lx_network_type = LX_AS225;

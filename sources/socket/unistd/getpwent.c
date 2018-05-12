@@ -6,6 +6,9 @@
 #define _KERNEL
 #include "socket.h"
 
+struct passwd *getpwnam(const char *name);
+
+
 #define PATH_PASSWD "etc:passwd"
 
 #define MAXLINELENGTH  1024

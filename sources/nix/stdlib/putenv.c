@@ -3,6 +3,10 @@
 #include <dos/var.h>
 #include <proto/dos.h>
 
+#ifndef GVF_LOCAL_ONLY
+#define GVF_LOCAL_ONLY 0x200
+#endif
+
 int setenv(const char *name, const char *value, int overwrite) {
     char *old = getenv(name);
     int retval = 0;
@@ -12,8 +16,8 @@ int setenv(const char *name, const char *value, int overwrite) {
     return retval;
 }
 
-void unsetenv(const char *name) {
-    DeleteVar(name, GVF_LOCAL_ONLY);
+int unsetenv(const char *name) {
+    return -!DeleteVar(name, GVF_LOCAL_ONLY);
 }
 int putenv(const char *str) {
     char *tmp = malloc(strlen(str) + 1);

@@ -10,7 +10,7 @@ int vsnprintf(char *s,size_t size,const char *format,va_list args) {
 	if (!s && size )
 		return EOF;
 
-	buffer.p=s;
+	buffer.p=(unsigned char *)s;
 	buffer.incount=0;
 	buffer.outcount=size-1;
 	buffer.flags=__SSTR|__SWR;

@@ -11,7 +11,7 @@ static inline int tcp_getdomainname(char *domainname, int dsize)
   domainname[dsize-1] = '\0'; return 0;
 }
 
-int getdomainname(char *name, int namelen)
+int getdomainname(char *name, size_t namelen)
 { struct SocketSettings *lss = _lx_get_socket_settings();
 
   switch (lss->lx_network_type) {

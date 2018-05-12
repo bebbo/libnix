@@ -52,7 +52,9 @@ static long _errortable[] = {
   ERROR_UNLOCK_ERROR
   ERROR_BUFFER_OVERFLOW
   ERROR_BREAK*/
+#ifndef __KICK13__
   ERROR_NOT_EXECUTABLE		,EACCES,
+#endif
   0				,EPERM
 };
   

@@ -19,7 +19,7 @@ endif
 
 CURDIR = $(shell pwd)
 
-OPTIONS=-I$(srcdir)/../headers $(CFLAGS) -D__KICK13__
+OPTIONS=-I$(srcdir)/../headers $(CFLAGS) -mcrt=nix13
 
 REDEF=-D_DOSBase=___DOSBase \
       -D_UtilityBase=___UtilityBase \
@@ -30,13 +30,28 @@ REDEF=-D_DOSBase=___DOSBase \
       -D_LocaleBase=___LocaleBase
 
 
-OBJECTS2=$(OBJECTS) \
+OBJECTS2= \
 	amiga/misc/ArgArray.o \
 	misc/swapstack.o \
+    nix/errno/__seterrno.o \
+    nix/extra/basename.o \
 	nix/extra/dirent.o \
+	nix/extra/fstat.o \
+	nix/extra/getcwd.o \
+	nix/extra/readlink.o \
+	nix/extra/stat.o \
+	nix/extra/truncate.o \
+	nix/extra/utimes.o \
+	nix/stdio/rename.o \
+	nix/stdlib/getenv.o \
+	nix/stdlib/putenv.o \
+	nix/stdlib/system.o \
+	nix/string/strcoll.o \
+	nix/string/strxfrm.o \
+	nix/time/strftime.o \
 	nixmain/__nocommandline.o
 
-SUBDIRS2=$(SUBDIRS) amiga/misc misc nix/extra nixmain
+SUBDIRS2=$(SUBDIRS) misc nixmain
 SUBDIRSP=$(patsubst %,%/.created,$(SUBDIRS2))
 
 %.o: %.c $(SUBDIRSP)
@@ -56,24 +71,16 @@ clean:
 veryclean:
 	-rm -rf *
 
+$(OBJECTS2): $(patsubst %.o,$(srcdir)/../../sources/%.c,$(OBJECTS2))
+	mkdir -p $(@D)
+	$(CC) $(OPTIONS) $(patsubst %.o,$(srcdir)/../../sources/%.c,$@) -c -o $@
+
 $(SUBDIRSP):
 	mkdir -p $(@D)
 	echo "" >$@
 	
-libnix13.a:  $(SUBDIRSP) $(OBJECTS2) ../../sources/nix13/Makefile ../../sources/nix13/filelist
+libnix13.a:  $(SUBDIRSP) $(OBJECTS) $(OBJECTS2) ../../sources/nix13/Makefile ../../sources/nix13/filelist
 	-rm -f $@
-	$(AR) -q $@ $(OBJECTS2)
+	$(AR) -q $@ $(OBJECTS) $(OBJECTS2)
 	$(RANLIB) $@
 #	echo "\\$$$(V)" >>$@
-
-amiga/misc/ArgArray.o: $(SUBDIRSP) $(srcdir)/../amiga/misc/ArgArray.c
-	$(CC) $(OPTIONS) $^ -c -o amiga/misc/ArgArray.o
-
-misc/swapstack.o: $(SUBDIRSP) $(srcdir)/../misc/swapstack.c
-	$(CC) $(OPTIONS) $^ -c -o misc/swapstack.o
-
-nix/extra/dirent.o: $(SUBDIRSP) $(srcdir)/../nix/extra/dirent.c
-	$(CC) $(OPTIONS) $^ -c -o nix/extra/dirent.o
-
-nixmain/__nocommandline.o: $(SUBDIRSP) $(srcdir)/../nixmain/__nocommandline.c
-	$(CC) $(OPTIONS) $^ -c -o nixmain/__nocommandline.o

@@ -1,3 +1,4 @@
+#ifndef __KICK13__
 #include <string.h>
 #include <proto/utility.h>
 #include "stabs.h"
@@ -8,3 +9,4 @@ int strnicmp(const char *s1,const char *s2,size_t len)
 }
 
 ALIAS(strncasecmp,strnicmp);
+#endif

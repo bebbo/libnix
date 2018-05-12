@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdarg.h>
 
 void __eprintf(const char *format,...) /* for asserts */

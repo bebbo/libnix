@@ -6,41 +6,6 @@
 #include <proto/dos.h>
 #include "stabs.h"
 
-#if defined(__KICKSTART__) && (__KICKSTART__<=34)
-void * __alloc_vec(unsigned long sz, unsigned long flags)
-{
-  unsigned long * p = (unsigned long *)AllocMem(sz + sizeof(unsigned long), flags);
-  if (!p) return p;
-  *p++ = sz;
-  return p;
-}
-
-void __free_vec(void * q)
-{
-  if (!q)
-    return;
-  unsigned long * p = (unsigned long *)q;
-  unsigned long sz = *--p;
-  FreeMem(p, sz);
-}
-
-void __get_prg_name(char * to, unsigned long len)
-{
-  struct Process * p = FindTask(0);
-  struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(p->pr_CLI);
-  unsigned char const * name = (unsigned char const *)BADDR(cli->cli_CommandName);
-  int slen = *name++;
-  if (slen  < len) {
-    memcpy(to, name, slen);
-    to[slen] = 0;
-  }
-}
-
-#define AllocVec(a,b) __alloc_vec(a,b)
-#define FreeVec(a) __free_vec(a)
-#define GetProgramName(a,b) __get_prg_name(a,b)
-#endif
-
 extern int    __argc; /* Defined in startup */
 extern char **__argv;
 extern char  *__commandline;

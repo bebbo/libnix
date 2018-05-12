@@ -7,13 +7,6 @@
 #include <proto/exec.h>
 #include <proto/dos.h>
 
-#if defined(__KICKSTART__) && (__KICKSTART__<=34)
-void * __alloc_vec(unsigned long sz, unsigned long flags);
-void __free_vec(void *);
-#define AllocVec(a,b) __alloc_vec(a,b)
-#define FreeVec(a) __free_vec(a)
-#endif
-
 #ifdef NEW_ARGARRAY
 static UBYTE **argArray;
 #endif

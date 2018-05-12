@@ -4,6 +4,8 @@
 //
 #include "socket.h"
 
+struct group *getgrnam(const char *name);
+
 /* for AS225 */
 #define PATH_GROUP "inet:db/group"
 

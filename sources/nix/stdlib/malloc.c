@@ -10,7 +10,6 @@
 #include <exec/memory.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <proto/alib.h>
 #include "stabs.h"
 
 extern ULONG _MSTEP;

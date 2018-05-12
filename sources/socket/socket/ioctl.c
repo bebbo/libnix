@@ -8,7 +8,7 @@
 //
 #include "socket.h"
 
-int ioctl(int s, unsigned long cmd, ...)
+__stdargs int ioctl(int s, unsigned long cmd, ...)
 { struct SocketSettings *lss;
   StdFileDes *fp = _lx_fhfromfd(s);
   int arglen,inout,rc;

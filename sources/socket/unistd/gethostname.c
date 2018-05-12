@@ -4,7 +4,7 @@
 //
 #include "socket.h"
 
-int gethostname(char *name, int namelen)
+int gethostname(char *name, size_t namelen)
 { struct SocketSettings *lss = _lx_get_socket_settings();
 
   if (lss->lx_network_type == LX_AMITCP) {
@@ -28,7 +28,7 @@ int gethostname(char *name, int namelen)
 }
 
 int
-sethostname (const char *name, int namelen)
+sethostname (const char *name, size_t namelen)
 {
 #if 0 // XXX
   static char hostname[MAXHOSTNAMELEN] = "localhost";

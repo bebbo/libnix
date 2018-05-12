@@ -4,6 +4,8 @@
 //
 #include "socket.h"
 
+extern int h_errno;
+
 char *hstrerror(int err)
 { static char *const h_errlist[] = {
     "Resolver Error 0 (no error)",

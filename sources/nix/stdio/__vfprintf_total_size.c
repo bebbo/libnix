@@ -1,10 +1,12 @@
-#include <math.h>
-#include <float.h>
-#include <ctype.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <limits.h>
+#include <math.h>
+#include <float.h>
+
+extern __stdargs int __fflush(FILE *stream);
 
 extern int __vfprintf_total_size(FILE *stream, const char *fmt, va_list args);
 
@@ -281,7 +283,6 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args)
         case 'g':
         case 'G':
         {
-#if 1
         	double d;
         	short exponent = 0;
         	char sign = 0;
@@ -537,158 +538,6 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args)
         	if ((flags&LALIGNFLAG) != 0)
         		while (--width >= 0)
         			OUT(' ');
-#else
-          double v;
-          char killzeros=0,sign=0; /* some flags */
-          int ex1,ex2; /* Some temporary variables */
-          size_t size,dnum,dreq;
-          char *udstr=NULL;
-
-          v=va_arg(args,double);
-
-          if(isinf(v))
-          { if(v>0)
-              udstr="+inf";
-            else
-              udstr="-inf";
-          }else if(isnan(v))
-            udstr="NaN";
-
-          if(udstr!=NULL)
-          { size2=strlen(udstr);
-            preci=0;
-            buffer2=udstr;
-            break; }
-
-          if(preci==0xffff) /* old default */
-            preci=6; /* new default */
-          else if (preci > 17)
-            preci = 17;
-
-          if(v<0.0)
-          { sign='-';
-            v=-v;
-          }else
-          { if(flags&SIGNFLAG)
-              sign='+';
-            else if(flags&BLANKFLAG)
-              sign=' ';
-          }
-
-          ex1=0;
-          if(v!=0.0)
-          { ex1=log10(v);
-            if(v<1.0)
-              v=v*pow(10,- --ex1); /* Caution: (int)log10(.5)!=-1 */
-            else
-              v=v/pow(10,ex1);
-            if(v<1.0) /* adjust if we are too low (log10(.1)=-.999999999) */
-            { v*=10.0; /* luckily this cannot happen with FLT_MAX and FLT_MIN */
-              ex1--; } /* The case too high (log(10.)=.999999999) is done later */
-          }
-
-          ex2=preci;
-          if(type=='f')
-            ex2+=ex1;
-          if(tolower(type)=='g')
-            ex2--;
-          v+=.5/pow(10,ex2<MINFLOATSIZE?ex2:MINFLOATSIZE); /* Round up */
-
-          if(v>=10.0) /* Adjusts log10(10.)=.999999999 too */
-          { v/=10.0;
-            ex1++; }
-
-          if(tolower(type)=='g') /* This changes to one of the other types */
-          { if(ex1<(signed long)preci&&ex1>=-4)
-            { type='f';
-              preci-=ex1;
-            }else
-              type=type=='g'?'e':'E';
-            preci--;
-            if(!(flags&ALTERNATEFLAG))
-              killzeros=1; /* set flags to kill trailing zeros */
-          }
-
-          dreq=preci+1; /* Calculate number of decimal places required */
-          if(type=='f')
-            dreq+=ex1;   /* even more before the decimal point */
-
-          dnum=0;
-          while(dnum<dreq&&dnum<MINFLOATSIZE) /* Calculate all decimal places needed */
-//          while(dnum<dreq) /* Calculate all decimal places needed */
-          { buffer[dnum++]=(char)v+'0';
-            v=(v-(double)(char)v)*10.0; }
-
-          if(killzeros) /* Kill trailing zeros if possible */
-            while(preci&&(dreq-->dnum||buffer[dreq]=='0'))
-              preci--;
-
-          if(type=='f')/* Calculate actual size of string (without sign) */
-          { size=preci+1; /* numbers after decimal point + 1 before */
-            if(ex1>0)
-              size+=ex1; /* numbers >= 10 */
-            if(preci||flags&ALTERNATEFLAG)
-              size++; /* 1 for decimal point */
-          }else
-          { size=preci+5; /* 1 for the number before the decimal point, and 4 for the exponent */
-            if(preci||flags&ALTERNATEFLAG)
-              size++;
-            if(ex1>99||ex1<-99)
-              size++; /* exponent needs an extra decimal place */
-          }
-
-          pad=size+(sign!=0);
-          pad=pad>=width?0:width-pad;
-
-          if(sign&&flags&ZEROPADFLAG)
-            OUT(sign);
-
-          if(!(flags&LALIGNFLAG))
-            for(i=0;i<pad;i++)
-              OUT(flags&ZEROPADFLAG?'0':' ');
-
-          if(sign&&!(flags&ZEROPADFLAG))
-            OUT(sign);
-
-          dreq=0;
-          if(type=='f')
-          { if(ex1<0)
-              OUT('0');
-            else
-              while(ex1>=0)
-              { OUT(dreq<dnum?buffer[dreq++]:'0');
-                ex1--; }
-            if(preci||flags&ALTERNATEFLAG)
-            { OUT(__decimalpoint[0]);
-              while(preci--)
-                if(++ex1<0)
-                  OUT('0');
-                else
-                  OUT(dreq<dnum?buffer[dreq++]:'0');
-            }
-          }else
-          { OUT(buffer[dreq++]);
-            if(preci||flags&ALTERNATEFLAG)
-            { OUT(__decimalpoint[0]);
-              while(preci--)
-                OUT(dreq<dnum?buffer[dreq++]:'0');
-            }
-            OUT(type);
-            if(ex1<0)
-            { OUT('-');
-              ex1=-ex1; }
-            else
-              OUT('+');
-            if(ex1>99)
-              OUT(ex1/100+'0');
-            OUT(ex1/10%10+'0');
-            OUT(ex1%10+'0');
-          }
-
-          if(flags&LALIGNFLAG)
-            for(i=0;i<pad;i++)
-              OUT(' ');
-#endif // 0
           width=preci=0; /* Everything already done */
           break;
         }

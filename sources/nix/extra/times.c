@@ -2,6 +2,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/times.h>
+#include <devices/timer.h>
 
 clock_t times(struct tms *tp)
 { struct rusage r;

@@ -1,3 +1,4 @@
+#ifndef __KICK13__
 #include <limits.h>
 #include <locale.h>
 #include <string.h>
@@ -26,6 +27,10 @@ extern long __gmtoffset;
 extern int  __dstflag;
 
 extern struct lconv __lconv;
+
+int __locale_mb_cur_max (void) {
+	return 0xff;
+}
 
 char *setlocale(int category,const char *name)
 { static char *string=NULL;
@@ -187,3 +192,5 @@ void __exitlocale(void)
 
 ADD2INIT(__initlocale,-10);
 ADD2EXIT(__exitlocale,-10);
+#endif
+
