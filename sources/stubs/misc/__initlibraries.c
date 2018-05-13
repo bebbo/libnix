@@ -6,7 +6,6 @@ extern struct lib /* These are the elements pointed to by __LIB_LIST__ */
   char *name;
 } *__LIB_LIST__[];
 
-extern ULONG __oslibversion;
 extern void __request(const char *text);
 extern void exit(int returncode);
 
@@ -23,15 +22,14 @@ static void __openliberror(ULONG version,...)
 
 void __initlibraries(void)
 {
-  ULONG version=__oslibversion;
   struct lib **list=__LIB_LIST__;
   ULONG numbases=(ULONG)*list++;
 
   if(numbases)
     do {
       struct lib *l=*list++;
-      if((l->base=OpenLibrary(l->name,version))==NULL)
-        __openliberror(version,l->name);
+      if((l->base=OpenLibrary(l->name,0))==NULL)
+        __openliberror(0,l->name);
     } while(--numbases);
 }
 
