@@ -56,9 +56,14 @@ void *malloc(size_t size)
   return a;
 }
 
+
+#define NEWLIST(l) ((l)->mlh_Head = (struct MinNode *)&(l)->mlh_Tail, \
+                    (l)->mlh_Tail = NULL, \
+                    (l)->mlh_TailPred = (struct MinNode *)&(l)->mlh_Head)
+
 void __initmalloc(void)
 {
-  NewList((struct List *)&__memorylist);
+  NEWLIST((struct List *)&__memorylist);
   __memsema = AllocMem(sizeof(struct SignalSemaphore), MEMF_PUBLIC | MEMF_CLEAR);
   InitSemaphore(__memsema);
 }
