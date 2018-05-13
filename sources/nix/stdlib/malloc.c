@@ -63,7 +63,7 @@ void *malloc(size_t size)
 
 void __initmalloc(void)
 {
-  NEWLIST((struct List *)&__memorylist);
+  NEWLIST(&__memorylist);
   __memsema = AllocMem(sizeof(struct SignalSemaphore), MEMF_PUBLIC | MEMF_CLEAR);
   InitSemaphore(__memsema);
 }
