@@ -3,7 +3,7 @@
 //
 #include "socket.h"
 
-int bind(int s, const struct sockaddr *name, int namelen)
+int bind(int s, const struct sockaddr *name, socklen_t namelen)
 { struct SocketSettings *lss;
   StdFileDes *fp;
   int oldlen,rc;

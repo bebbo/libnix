@@ -3,7 +3,7 @@
 //
 #include "socket.h"
 
-int getsockopt(int s, int level, int name, void *val, int *valsize)
+int getsockopt(int s, int level, int name, void *val, socklen_t *valsize)
 { struct SocketSettings *lss;
   StdFileDes *fp = _lx_fhfromfd(s);
   int rc;

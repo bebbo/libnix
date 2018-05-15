@@ -3,7 +3,7 @@
 //
 #include "socket.h"
 
-int connect(int s, const struct sockaddr *name, int namelen)
+int connect(int s, const struct sockaddr *name, socklen_t namelen)
 { struct SocketSettings *lss;
   StdFileDes *fp = _lx_fhfromfd(s);
   int oldlen,rc;

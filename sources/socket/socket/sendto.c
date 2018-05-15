@@ -3,7 +3,7 @@
 //
 #include "socket.h"
 
-int sendto(int s, const void *buf, size_t len, int flags, const struct sockaddr *to, int tolen)
+ssize_t sendto(int s, const void *buf, size_t len, int flags, const struct sockaddr *to, socklen_t tolen)
 { struct SocketSettings *lss;
   StdFileDes *fp = _lx_fhfromfd(s);
   int oldlen,rc;

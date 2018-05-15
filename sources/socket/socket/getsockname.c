@@ -3,7 +3,7 @@
 //
 #include "socket.h"
 
-int getsockname(int s, struct sockaddr *asa, int *alen)
+int getsockname(int s, struct sockaddr *asa, socklen_t *alen)
 { struct SocketSettings *lss;
   StdFileDes *fp = _lx_fhfromfd(s);
   int rc;

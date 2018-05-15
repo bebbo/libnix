@@ -3,7 +3,7 @@
 //
 #include "socket.h"
 
-int sendmsg(int s, const struct msghdr *msg, int flags)
+ssize_t sendmsg(int s, const struct msghdr *msg, int flags)
 { struct SocketSettings *lss;
   StdFileDes *fp = _lx_fhfromfd(s);
   int rc;

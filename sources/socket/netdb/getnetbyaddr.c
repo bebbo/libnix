@@ -2,7 +2,7 @@
 //
 #include "socket.h"
 
-struct netent *getnetbyaddr(long net, int type)
+struct netent *getnetbyaddr(in_addr_t net, int type)
 { struct SocketSettings *lss;
 
   switch (lss=_lx_get_socket_settings(),lss->lx_network_type) {

@@ -3,7 +3,7 @@
 //
 #include "socket.h"
 
-int recv(int s, void *buf, size_t len, int flags)
+ssize_t recv(int s, void *buf, size_t len, int flags)
 { struct SocketSettings *lss;
   StdFileDes *fp = _lx_fhfromfd(s);
   int rc;

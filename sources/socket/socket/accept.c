@@ -3,7 +3,7 @@
 //
 #include "socket.h"
 
-int accept(int s, struct sockaddr *name, int *namelen)
+int accept(int s, struct sockaddr *name, socklen_t *namelen)
 { struct SocketSettings *lss = _lx_get_socket_settings();
   StdFileDes *fp,*fp2;
   int rc;

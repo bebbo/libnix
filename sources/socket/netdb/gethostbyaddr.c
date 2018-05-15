@@ -2,7 +2,7 @@
 //
 #include "socket.h"
 
-struct hostent *gethostbyaddr(const char *addr, int len, int type)
+struct hostent *gethostbyaddr(const void *addr, socklen_t len, int type)
 { struct SocketSettings *lss;
 
   switch (lss=_lx_get_socket_settings(),lss->lx_network_type) {
