@@ -112,6 +112,8 @@ extern __stdargs int sscanf(const char *s,const char *format,...);
 extern __stdargs int snprintf(char *s,size_t size,const char *format,...);
 extern __stdargs int sprintf(char *s,const char *format,...);
 
+extern __stdargs int asprintf (char **__restrict strp, const char *__restrict fmt, ...);
+
 extern __stdargs int getc(FILE *fp);
 extern __stdargs int putc(int c, FILE * fp);
 

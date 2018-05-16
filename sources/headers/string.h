@@ -97,6 +97,8 @@ __stdargs char	*strsep __P((char **, const char *));
 __stdargs void	 swab __P((const void *, void *, ssize_t));
 __stdargs int	 stricmp __P((const char *, const char *));
 __stdargs int	 strnicmp __P((const char *, const char *, size_t));
+
+__stdargs char *strerror_r(int errnum, char *buf, size_t buflen);
 #endif 
 __END_DECLS
 
