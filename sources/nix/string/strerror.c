@@ -172,8 +172,8 @@ char *strerror(int eno)
   return(char *)sys_errlist[eno];
 }
 
-char *strerror_r(int errno,char *buffer,size_t buflen)
-{ char *b=buffer,*ptr=strerror(errno);
+char *strerror_r(int errnum, char *buffer, size_t buflen)
+{ char *b=buffer,*ptr=strerror(errnum);
   while(buflen-- > 1)
   { if(!(*b++ = *ptr++))
       break;
