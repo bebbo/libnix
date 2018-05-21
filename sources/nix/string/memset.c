@@ -8,18 +8,29 @@ void *memset(void *s, int _c, size_t _n) {
 	} v __asm("a0");
 	v.v = s;
 
-	register size_t n __asm("d1") = _n;
-	v.c += n;
-
 	register unsigned c __asm("d0") = _c & 0xff;
 	c |= c << 8;
 	c |= c << 16;
-	if ((long) v.l & 1) {
+
+	if (_n && (long) v.l & 1) {
+		*v.c++ = c;
+		_n--;
+	}
+	if (_n > 1 && (long) v.l & 2) {
+		*v.s++ = c;
+		_n -= 2;
+	}
+
+
+	register size_t n __asm("d1") = _n;
+	v.c += n;
+
+	if (n && (long) v.l & 1) {
 		--v.c;
 		*v.c = c;
 		n--;
 	}
-	if ((long) v.l & 2) {
+	if (n > 2 && (long) v.l & 2) {
 		--v.s;
 		*v.s = c;
 		n -= 2;
