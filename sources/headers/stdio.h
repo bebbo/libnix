@@ -11,7 +11,7 @@
 
 typedef long fpos_t;
 
-#ifndef x__SFILE_DEFINED__
+#ifndef __SFILE_DEFINED__
 #define __SFILE_DEFINED__
 
 struct __sFILE
