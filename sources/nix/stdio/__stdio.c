@@ -1,11 +1,21 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include "stabs.h"
 
-static FILE *__files[3];
+extern void exit(int);
+extern void free(void*);
 
-FILE **__sF=__files; /* stdin, stdout, stderr */
+#define STDIN_FILENO 0
+#define STDOUT_FILENO 1
+#define STDERR_FILENO 2
+
+struct _reent
+{
+  int _errno;			/* local copy of errno */
+  FILE *_stdin, *_stdout, *_stderr;	/* XXX */
+} errno;
+
+
+FILE **__sF=&errno._stdin; /* stdin, stdout, stderr */
 
 void __initstdfio(void)
 { FILE **f=__sF, *err;
