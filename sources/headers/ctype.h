@@ -74,13 +74,13 @@ extern int	isxdigit __P ((int));
 extern int	tolower __P ((int));
 extern int	toupper __P ((int));
 
-#if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
+//#if !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
 extern int	isblank __P ((int));
 extern int	isascii __P ((int));
 extern int	toascii __P ((int));
 extern int	_tolower __P ((int));
 extern int	_toupper __P ((int));
-#endif
+//#endif
 __END_DECLS
 
 #define	isdigit(c)	((_ctype_ + 1)[(unsigned char)c] & _N)
@@ -100,9 +100,7 @@ __END_DECLS
 #endif
 
 #if !defined(_ANSI_SOURCE) && !defined (_POSIX_SOURCE)
-#if notyet
 #define isblank(c)	((_ctype_ + 1)[(unsigned char)c] & _B)
-#endif
 #define	isascii(c)	(((c) & ~0177) == 0)
 #define	toascii(c)	((c) & 0177)
 #define isiso(c)	(((c) & ~0377) == 0)
