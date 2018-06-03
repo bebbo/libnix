@@ -1,3 +1,8 @@
-#include "stabs.h"
+#include <exec/execbase.h>
+#include <inline/exec.h>
 
-ALIAS(DeleteTask,RemTask);
+extern struct ExecBase * SysBase;
+
+VOID DeleteTask(struct Task * t) {
+	RemTask(t);
+}
