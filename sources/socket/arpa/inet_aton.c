@@ -44,14 +44,14 @@ static char sccsid[] = "@(#)inet_addr.c 5.10 (Berkeley) 2/24/91";
  * Ascii internet address interpretation routine.
  * The value returned is in network order.
  */
-u_long
+in_addr_t
 inet_addr(const char *cp)
 {
   struct in_addr val;
 
   if (inet_aton(cp, &val))
     return (val.s_addr);
-  return (u_long)-1;
+  return (in_addr_t)-1;
 }
 
 /*
