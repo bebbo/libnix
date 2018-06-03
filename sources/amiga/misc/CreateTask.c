@@ -37,7 +37,8 @@ struct Task *CreateTask(STRPTR name, LONG pri, APTR initpc, ULONG stacksize)
     *p1=stacksize;
   }
 
-  if (!(((unsigned int)ml=AllocEntry((struct MemList *)&nml)) & (1<<31))) {
+  ml=AllocEntry((struct MemList *)&nml);
+  if (!(((unsigned int)ml) & (1<<31))) {
     newtask=ml->ml_ME[0].me_Addr;
     newtask->tc_Node.ln_Type = NT_TASK;
     newtask->tc_Node.ln_Pri  = pri;
