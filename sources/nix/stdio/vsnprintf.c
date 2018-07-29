@@ -10,10 +10,10 @@ int vsnprintf(char *s,size_t size,const char *format,va_list args) {
 	if (!s && size )
 		return EOF;
 
-	buffer.p=(unsigned char *)s;
-	buffer.incount=0;
-	buffer.outcount=size-1;
-	buffer.flags=__SSTR|__SWR;
+	buffer._p=(unsigned char *)s;
+	buffer._r=0;
+	buffer._w=size-1;
+	buffer._flags=__SSTR|__SWR;
 	buffer.linebufsize=0;
 	retval=__vfprintf_total_size(&buffer,format,args);
 	if (retval < size)

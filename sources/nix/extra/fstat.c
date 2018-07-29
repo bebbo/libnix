@@ -51,3 +51,5 @@ int fstat(int d,struct stat *buf)
 
   FreeDosObject(DOS_FIB,fib); return 0;
 }
+
+ALIAS(lstat,stat);

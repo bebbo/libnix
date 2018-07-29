@@ -6,21 +6,21 @@ int __fflush(FILE *stream) /* fflush exactly one file */
 { unsigned char *subbuf;
   long size,subsize;
 
-  if(stream->flags&__SERR) /* Error on stream */
+  if(stream->_flags&__SERR) /* Error on stream */
   { errno=EPERM;
     return EOF; }
-  if(stream->flags&__SWR) /* Works only on output streams */
-  { size=stream->p-stream->buffer; /* calculate size */
-    subbuf=stream->buffer;
+  if(stream->_flags&__SWR) /* Works only on output streams */
+  { size=stream->_p-stream->_bf._base; /* calculate size */
+    subbuf=stream->_bf._base;
     while(size)
     { if((subsize=write(stream->file,subbuf,size))<0)
-      { stream->flags|=__SERR; /* error flag */
+      { stream->_flags|=__SERR; /* error flag */
         return EOF; }
       size-=subsize;
       subbuf+=subsize;
     }
-    stream->flags&=~__SWR; /* unset write state */
-    stream->outcount=0;
+    stream->_flags&=~__SWR; /* unset write state */
+    stream->_w=0;
     stream->linebufsize=0;
   } /* Nothing to be done for input streams */
   return 0;

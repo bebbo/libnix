@@ -1,7 +1,7 @@
 #include "stdio.h"
 
 int getc(FILE *fp)
-{ if (--fp->incount >= 0)
-    return *fp->p++;
+{ if (--fp->_r >= 0)
+    return *fp->_p++;
   return __srget(fp);
 }

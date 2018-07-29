@@ -5,13 +5,13 @@
 int vsprintf(char *s,const char *format,va_list args)
 { int retval;
   FILE buffer;
-  buffer.p=s;
-  buffer.incount=0;
-  buffer.outcount=INT_MAX;
-  buffer.flags=__SSTR|__SWR;
+  buffer._p=s;
+  buffer._r=0;
+  buffer._w=INT_MAX;
+  buffer._flags=__SSTR|__SWR;
   buffer.linebufsize=0;
   retval=vfprintf(&buffer,format,args);
-  buffer.outcount = retval;
+  buffer._w = retval;
   fputc('\0',&buffer);
   return retval;
 }

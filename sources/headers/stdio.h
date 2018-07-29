@@ -14,14 +14,26 @@ typedef long fpos_t;
 #ifndef __SFILE_DEFINED__
 #define __SFILE_DEFINED__
 
+/*
+ * Stdio buffers.
+ *
+ * This and __FILE are defined here because we need them for struct _reent,
+ * but we don't want stdio.h included when stdlib.h is.
+ */
+
+struct __sbuf {
+	unsigned char *_base;
+	int	_size;
+};
+
 struct __sFILE
 {
-  unsigned char *p;	  /* pointer to actual character */
-  int incount;		  /* Bytes left in buffer for reading, writemode: 0 */
-  int outcount; 	  /* Space left in buffer for writing + fp->linebufsize,
+  unsigned char *_p;	  /* pointer to actual character */
+  int _r;		  /* Bytes left in buffer for reading, writemode: 0 */
+  int _w; 	  /* Space left in buffer for writing + fp->linebufsize,
 			   * readmode: 0
 			   */
-  short flags;
+  short _flags;
 #define __SLBF	0x0001	  /* line buffered */
 #define __SNBF	0x0002	  /* unbuffered */
 #define __SRD	0x0004	  /* read mode */
@@ -32,9 +44,12 @@ struct __sFILE
 #define __SSTR	0x0200	  /* sprintf/sscanf buffer */
 #define __SWO	0x8000	  /* write-only mode */
 
+#define	__SRW (__SRD | __SWR) /* different than in newlib! */
+
   short file;		  /* The filehandle */
-  unsigned char *buffer;  /* original buffer pointer */
-  int bufsize;		  /* size of the buffer */
+  struct __sbuf _bf;
+//  unsigned char *buffer;  /* original buffer pointer */
+//  int bufsize;		  /* size of the buffer */
   int linebufsize;	  /* 0 full buffered
 			   * -bufsize line buffered&write mode
 			   * readmode: undefined */
@@ -86,8 +101,8 @@ extern __stdargs char *fgets(char *s,int size,FILE *stream);
 extern __stdargs int fputs(const char *s,FILE *stream);
 extern __stdargs long ftell(FILE *stream);
 extern __stdargs int setvbuf(FILE *stream,char *buf,int mode,size_t size);
-extern __stdargs int fread(void *,size_t,size_t,FILE *);
-extern __stdargs int fwrite(const void *,size_t,size_t,FILE *);
+extern __stdargs size_t fread(void *,size_t,size_t,FILE *);
+extern __stdargs size_t fwrite(const void *,size_t,size_t,FILE *);
 extern __stdargs char *tmpnam(char *buf);
 extern __stdargs void perror(const char *string);
 extern __stdargs int puts(const char *s);
@@ -143,13 +158,13 @@ extern __stdargs int setbuf(FILE *stream,char *buf);
 #endif
 
 __MY_INLINE__ __stdargs  void clearerr(FILE *stream)
-{ stream->flags&=~(__SERR|__SEOF); }
+{ stream->_flags&=~(__SERR|__SEOF); }
 
 __MY_INLINE__ __stdargs  int feof(FILE * fp)
-{ return ((fp)->flags&__SEOF); }
+{ return ((fp)->_flags&__SEOF); }
 
 __MY_INLINE__ __stdargs  int ferror(FILE *fp)
-{ return ((fp)->flags&__SERR); }
+{ return ((fp)->_flags&__SERR); }
 
 __MY_INLINE__ __stdargs  int fgetc(FILE *stream)
 { return getc(stream); }

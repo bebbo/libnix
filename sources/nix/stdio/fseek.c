@@ -4,19 +4,19 @@
 
 int fseek(FILE *stream,long int offset,int whence)
 {
-  if(stream->flags&__SERR) /* Error on stream */
+  if(stream->_flags&__SERR) /* Error on stream */
   { errno=EPERM;
     return EOF; }
-  if(stream->flags&__SWR)
+  if(stream->_flags&__SWR)
     if(__fflush(stream))
       return EOF;
   if(whence==SEEK_CUR)
-    offset-=stream->incount+(stream->tmpp!=NULL?stream->tmpinc:0);
-  stream->incount=0;
+    offset-=stream->_r+(stream->tmpp!=NULL?stream->tmpinc:0);
+  stream->_r=0;
   stream->tmpp=NULL;
-  stream->flags&=~(__SEOF|__SRD);
+  stream->_flags&=~(__SEOF|__SRD);
   if(lseek(stream->file,offset,whence)==EOF)
-  { stream->flags|=__SERR;
+  { stream->_flags|=__SERR;
     return EOF; }
   return 0;
 }

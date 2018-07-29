@@ -10,14 +10,14 @@ FILE *fdopen(int filedes,const char *mode)
   if (mode!=NULL)
   { struct filenode *node = (struct filenode *)calloc(1,sizeof(*node));
     if(node!=NULL)
-    { if((node->FILE.buffer=(char *)malloc(BUFSIZ))!=NULL)
-      { node->FILE.bufsize=BUFSIZ;
+    { if((node->FILE._bf._base=(char *)malloc(BUFSIZ))!=NULL)
+      { node->FILE._bf._size=BUFSIZ;
         node->FILE.file=filedes;
-        node->FILE.flags|=__SMBF; /* Buffer is malloc'ed */
+        node->FILE._flags|=__SMBF; /* Buffer is malloc'ed */
         if(isatty(filedes))
-          node->FILE.flags|=__SLBF; /* set linebuffered flag */
+          node->FILE._flags|=__SLBF; /* set linebuffered flag */
         if(_lx_addflags(filedes,*mode=='a'?O_APPEND:0)&O_WRONLY)
-          node->FILE.flags|=__SWO; /* set write-only flag */
+          node->FILE._flags|=__SWO; /* set write-only flag */
         AddHead((struct List *)&__filelist,(struct Node *)&node->node);
         return &node->FILE;
       }

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int fwrite(const void *ptr,size_t size,size_t nmemb,FILE *stream)
+size_t fwrite(const void *ptr,size_t size,size_t nmemb,FILE *stream)
 {
   signed long subsize;
   unsigned long total;
@@ -12,12 +12,12 @@ int fwrite(const void *ptr,size_t size,size_t nmemb,FILE *stream)
     return total;
   do
   {
-    if(stream->outcount>0)
+    if(stream->_w>0)
     {
-      subsize=total>stream->outcount?stream->outcount:total;
-      memcpy(stream->p,b,subsize);
-      stream->p+=subsize;
-      stream->outcount-=subsize;
+      subsize=total>stream->_w?stream->_w:total;
+      memcpy(stream->_p,b,subsize);
+      stream->_p+=subsize;
+      stream->_w-=subsize;
       b+=subsize;
       total-=subsize;
     }else

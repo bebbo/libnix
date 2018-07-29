@@ -6,7 +6,7 @@ extern int __vfprintf_total_size(FILE *stream, const char *fmt, va_list args);
 int vfprintf(FILE *stream, const char *fmt, va_list args)
 {
 	int total_write_size = __vfprintf_total_size(stream, fmt, args);
-	if(stream->flags & __SERR) {
+	if(stream->_flags & __SERR) {
 		return -1;
 	}
 	return total_write_size;

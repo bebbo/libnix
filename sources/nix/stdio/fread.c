@@ -3,7 +3,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-int fread(void *ptr,size_t size,size_t nmemb,FILE *stream)
+size_t fread(void *ptr,size_t size,size_t nmemb,FILE *stream)
 {
   signed long subsize;
   unsigned long total;
@@ -12,12 +12,12 @@ int fread(void *ptr,size_t size,size_t nmemb,FILE *stream)
     return total;
   do
   {
-    if(stream->incount>0)
+    if(stream->_r>0)
     {
-      subsize=total>stream->incount?stream->incount:total;
-      memcpy(b,stream->p,subsize);
-      stream->p+=subsize;
-      stream->incount-=subsize;
+      subsize=total>stream->_r?stream->_r:total;
+      memcpy(b,stream->_p,subsize);
+      stream->_p+=subsize;
+      stream->_r-=subsize;
       b+=subsize;
       total-=subsize;
     }else

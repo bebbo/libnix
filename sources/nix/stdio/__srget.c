@@ -4,49 +4,49 @@
 
 int __srget(FILE *stream) /* Get next input block */
 {
-  if(stream->flags&(__SERR|__SEOF)) /* Error on stream / EOF */
+  if(stream->_flags&(__SERR|__SEOF)) /* Error on stream / EOF */
   {
-    stream->incount=0;
+    stream->_r=0;
     errno=EPERM;
     return EOF;
   }
-  if(stream->flags&__SWR)
+  if(stream->_flags&__SWR)
   {
     if(__fflush(stream))
       return EOF;
   }else if(stream->tmpp!=NULL) /* File is in ungetc mode */
   {
-    stream->p=stream->tmpp;
-    stream->incount=stream->tmpinc;
+    stream->_p=stream->tmpp;
+    stream->_r=stream->tmpinc;
     stream->tmpp=NULL;
-    if(--stream->incount>=0)
-      return *stream->p++;
+    if(--stream->_r>=0)
+      return *stream->_p++;
   }
-  if(stream->flags&__SSTR) /* it's a sscanf buffer */
+  if(stream->_flags&__SSTR) /* it's a sscanf buffer */
     return EOF;
-  if(stream->flags&(__SNBF|__SLBF)) /* Before reading from line- or unbuffered input file */
+  if(stream->_flags&(__SNBF|__SLBF)) /* Before reading from line- or unbuffered input file */
   {                   /* fflush all line buffered output files (ANSI) */
     struct filenode *fp=(struct filenode *)__filelist.mlh_Head;
     while(fp->node.mln_Succ)
     {
-      if((fp->FILE.flags&(__SWR|__SLBF))==(__SWR|__SLBF))
+      if((fp->FILE._flags&(__SWR|__SLBF))==(__SWR|__SLBF))
         __fflush(&fp->FILE); /* Don't return EOF if this fails */
       fp=(struct filenode *)fp->node.mln_Succ;
     }
   }
-  stream->flags|=__SRD;
-  stream->incount=read(stream->file,stream->buffer,stream->bufsize);
-  if(!stream->incount) /* EOF found */
+  stream->_flags|=__SRD;
+  stream->_r=read(stream->file,stream->_bf._base,stream->_bf._size);
+  if(!stream->_r) /* EOF found */
   {
-    stream->flags|=__SEOF;
+    stream->_flags|=__SEOF;
     return EOF;
-  }else if(stream->incount<0) /* Error */
+  }else if(stream->_r<0) /* Error */
   {
-    stream->incount=0;
-    stream->flags|=__SERR;
+    stream->_r=0;
+    stream->_flags|=__SERR;
     return EOF;
   }
-  stream->incount--;
-  stream->p=stream->buffer;
-  return *stream->p++;
+  stream->_r--;
+  stream->_p=stream->_bf._base;
+  return *stream->_p++;
 }

@@ -16,14 +16,14 @@ struct MinList __filelist = { /* list of open files (fflush() needs also access)
 FILE *fopen(const char *filename,const char *mode)
 { struct filenode *node = (struct filenode *)calloc(1,sizeof(*node));
   if(node!=NULL)
-  { if((node->FILE.buffer=(char *)malloc(BUFSIZ))!=NULL)
-    { node->FILE.bufsize=BUFSIZ;
-      node->FILE.flags|=__SMBF; /* Buffer is malloc'ed */
+  { if((node->FILE._bf._base=(char *)malloc(BUFSIZ))!=NULL)
+    { node->FILE._bf._size=BUFSIZ;
+      node->FILE._flags|=__SMBF; /* Buffer is malloc'ed */
       node->FILE.file = -1;
       if(freopen(filename,mode,&node->FILE)!=NULL)
       { AddHead((struct List *)&__filelist,(struct Node *)&node->node);
         return &node->FILE; }
-      free(node->FILE.buffer);
+      free(node->FILE._bf._base);
     }
     else
       errno=ENOMEM;
@@ -41,9 +41,9 @@ int fclose(FILE *stream)
   { DB( BUG("NULL pointer fclose'd\n"); )
     return EOF; }
   retval=freopen(NULL,NULL,stream)==NULL?EOF:0;
-  if(stream->flags&__SMBF) /* Free buffer if necessary */
-  { free(stream->buffer);
-    stream->buffer=NULL; }
+  if(stream->_flags&__SMBF) /* Free buffer if necessary */
+  { free(stream->_bf._base);
+    stream->_bf._base=NULL; }
   node=(struct filenode *)((struct MinNode *)stream-1);
   Remove((struct Node *)&node->node);
   free(node);

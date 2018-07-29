@@ -25,6 +25,11 @@ char *mktemp(char *buf)
   return buf;
 }
 
+char *mkdtemp(char *buf) {
+	return mktemp(buf);
+}
+
+
 int mkstemp(char *template) {
   char *buf = mktemp(template);
   return open(buf, O_CREAT | O_TRUNC | O_EXCL);

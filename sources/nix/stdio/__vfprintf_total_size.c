@@ -69,16 +69,16 @@ static int ___vfprintf_total_size(FILE *stream,const char *format,va_list args)
   FILE fp;
   int ret;
 
-  fp.outcount    = 0;
-  fp.flags       = stream->flags&~(__SWO|__SWR|__SNBF);
+  fp._w    = 0;
+  fp._flags       = stream->_flags&~(__SWO|__SWR|__SNBF);
   fp.file        = stream->file;
-  fp.buffer      = buf;
-  fp.bufsize     = sizeof(buf);
+  fp._bf._base      = buf;
+  fp._bf._size     = sizeof(buf);
   fp.linebufsize = 0;
   if(((ret=__vfprintf_total_size(&fp,format,args))>=0) && __fflush(&fp))
     ret = -1;
-  if(fp.flags&__SERR)
-    stream->flags|=__SERR;
+  if(fp._flags&__SERR)
+    stream->_flags|=__SERR;
   return ret;
 }
 
@@ -125,7 +125,7 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args)
   size_t outcount=0;
 
   /* optimize unbuffered write-only files */
-  if((stream->flags&(__SWO|__SNBF))==(__SWO|__SNBF)) {
+  if((stream->_flags&(__SWO|__SNBF))==(__SWO|__SNBF)) {
     return ___vfprintf_total_size(stream,format,args);
 	}
 

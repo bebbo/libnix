@@ -56,11 +56,11 @@ FILE *freopen(const char *filename,const char *mode,FILE *stream)
       (void)lseek(file,0,SEEK_END);
 
     /* clear a lot of flags */
-    stream->flags&=~(__SWO|__SERR|__SEOF|__SWR|__SRD|__SNBF|__SLBF);
+    stream->_flags&=~(__SWO|__SERR|__SEOF|__SWR|__SRD|__SNBF|__SLBF);
     if(flags&O_WRONLY)
-      stream->flags|=__SWO; /* set write-only flag */
+      stream->_flags|=__SWO; /* set write-only flag */
     if(isatty(file))
-      stream->flags|=__SLBF; /* set linebuffered flag */
+      stream->_flags|=__SLBF; /* set linebuffered flag */
     stream->file=file;
   }
 
