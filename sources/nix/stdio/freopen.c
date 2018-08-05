@@ -13,7 +13,7 @@ FILE *freopen(const char *filename,const char *mode,FILE *stream)
 
   if (stream->file >= 0)
     close(stream->file);
-  if(stream->name!=NULL) /* file is temporary */
+  if(stream->name!=NULL && (stream->_flags&__BPTRS)==0) /* file is temporary */
   { BPTR cd=CurrentDir(stream->tmpdir); /* cd t: */
     if(!DeleteFile(stream->name))  /* delete file */
     { __seterrno();

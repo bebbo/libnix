@@ -35,7 +35,7 @@ static void _setup_file(StdFileDes *fp)
 /*
 **
 */
-static __inline StdFileDes *_allocfd(void)
+static StdFileDes *_allocfd(void)
 { StdFileDes *fp,**sfd;
   int file,max;
 
@@ -46,7 +46,7 @@ static __inline StdFileDes *_allocfd(void)
   if(file>SHRT_MAX)
   { errno=EMFILE;
     return NULL;
-  }
+  	  }
 
   if(file==max)
   { if((sfd=realloc(stdfiledes,(file+1)*sizeof(fp)))==NULL)
@@ -189,6 +189,59 @@ StdFileDes *_lx_fhfromfd(int d)
       return sfd; }
   return NULL;
 }
+
+
+
+int dup(int oldfd) {
+	if (oldfd < (int) stdfilesize) {
+		StdFileDes *old = stdfiledes[oldfd];
+		if (old && old->lx_inuse) {
+			StdFileDes * neu = _allocfd();
+			int fd = neu->lx_pos;
+			*neu = *old;
+			neu->lx_pos = fd;
+			return fd;
+		}
+	}
+	return -1;
+}
+
+int dup2(int oldfd, int newfd) {
+	if (oldfd < (int) stdfilesize) {
+		StdFileDes *old = stdfiledes[oldfd];
+		if (old && old->lx_inuse) {
+			StdFileDes * neu;
+			if (newfd < (int) stdfilesize) {
+				neu = stdfiledes[newfd];
+				if (neu && neu->lx_inuse)
+					close(newfd);
+			} else
+				neu = 0;
+			if (!neu) {
+				StdFileDes ** sfd = stdfiledes;
+				if (newfd >= stdfilesize) {
+					if((sfd=realloc(stdfiledes,(newfd+1)*sizeof(int)))==NULL)
+					    { errno=ENOMEM;
+					      return -1;
+					    }
+					stdfiledes=sfd;
+					for(;stdfilesize <= newfd;++stdfilesize)
+					  sfd[stdfilesize] = 0;
+				}
+				neu = sfd[newfd] = (StdFileDes *)malloc(sizeof(StdFileDes));
+				if (!neu) { errno=ENOMEM;
+			      return -1;
+			    }
+				neu->lx_pos = newfd;
+			}
+			int fd = neu->lx_pos;
+			*neu = *old;
+			neu->lx_pos = fd;
+			return fd;
+		}
+	}
+}
+
 
 /*
 **

@@ -1,5 +1,5 @@
-#ifndef _HEADERS_STDIO_H
-#define _HEADERS_STDIO_H
+#ifndef _STDIO_H
+#define _STDIO_H
 #include <string.h>
 #include <stdarg.h>
 #include <exec/lists.h>
@@ -45,6 +45,8 @@ struct __sFILE
 #define __SWO	0x8000	  /* write-only mode */
 
 #define	__SRW (__SRD | __SWR) /* different than in newlib! */
+
+#define __BPTRS 0x4000	/* tmpdir and name are BPTRS. */
 
   short file;		  /* The filehandle */
   struct __sbuf _bf;
@@ -132,6 +134,9 @@ extern __stdargs int asprintf (char **__restrict strp, const char *__restrict fm
 extern __stdargs int getc(FILE *fp);
 extern __stdargs int putc(int c, FILE * fp);
 
+extern __stdargs FILE *popen(const char *command, const char *type);
+extern __stdargs int pclose(FILE *stream);
+
 /* Inline functions or protos. */
 #ifdef __NO_INLINE__
 extern __stdargs void clearerr(FILE *stream);
@@ -214,7 +219,7 @@ extern __stdargs void __chkabort(void);      /* check for SIGABRT */
 /* objects in __filelist */
 struct filenode {
   struct MinNode node;
-  FILE FILE;
+  FILE theFILE;
 };
 
 /*
@@ -284,4 +289,4 @@ extern __stdargs StdFileDes *_lx_fdfromfh(int fh, LX_FILE_TYPE type);
 
 extern __stdargs StdFileDes *_lx_fhfromfd(int fd);
 
-#endif /* _HEADERS_STDIO_H */
+#endif /* _STDIO_H */
