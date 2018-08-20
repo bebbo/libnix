@@ -12,7 +12,7 @@ int fflush(FILE *stream) /* fflush one or all files */
   retval=0;
   node=__filelist.mlh_Head;
   while((nextnode=node->mln_Succ)!=NULL)
-  { if(__fflush(&((struct filenode *)node)->FILE))
+  { if(__fflush(&((struct filenode *)node)->theFILE))
       retval=EOF;
     node=nextnode; }
   return retval;

@@ -2,6 +2,8 @@
 #include <errno.h>
 #include <unistd.h>
 
+extern int __fflush(FILE *);
+
 int __srget(FILE *stream) /* Get next input block */
 {
   if(stream->_flags&(__SERR|__SEOF)) /* Error on stream / EOF */
@@ -29,8 +31,8 @@ int __srget(FILE *stream) /* Get next input block */
     struct filenode *fp=(struct filenode *)__filelist.mlh_Head;
     while(fp->node.mln_Succ)
     {
-      if((fp->FILE._flags&(__SWR|__SLBF))==(__SWR|__SLBF))
-        __fflush(&fp->FILE); /* Don't return EOF if this fails */
+      if((fp->theFILE._flags&(__SWR|__SLBF))==(__SWR|__SLBF))
+        __fflush(&fp->theFILE); /* Don't return EOF if this fails */
       fp=(struct filenode *)fp->node.mln_Succ;
     }
   }

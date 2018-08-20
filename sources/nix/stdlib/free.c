@@ -15,6 +15,9 @@ void free(void *ptr)
     return; }
 
   ObtainSemaphore(__memsema);
+
+//  printf("free      %08x: %8d\n", ptr, ((ULONG *)ptr)[-1]); fflush(stdout);
+
   a=(struct MemHeader *)__memorylist.mlh_Head;
   for(;;)
   {

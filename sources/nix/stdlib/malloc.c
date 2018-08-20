@@ -22,6 +22,9 @@ void *malloc(size_t size)
   struct MemHeader *b;
   ULONG size2,*a = NULL;
 
+  if ((int)size <= 0)
+	  return 0;
+
   ObtainSemaphore(__memsema);
   node=__memorylist.mlh_Head;
   size+=sizeof(ULONG);
@@ -53,6 +56,9 @@ void *malloc(size_t size)
 
  end:
   ReleaseSemaphore(__memsema);
+
+//	printf("malloc    %08x: %8d\n", a, size); fflush(stdout);
+
   return a;
 }
 
