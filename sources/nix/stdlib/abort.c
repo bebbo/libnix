@@ -6,5 +6,5 @@ void abort(void)
 {
   raise(SIGABRT);
   fputs("Program aborted\n",stderr);
-  exit(20);
+  exit(127);
 }
