@@ -180,7 +180,7 @@ LibInit(REG(a0,LONG SegList),REG(d0,__LIB lib),REG(a6,struct Library *SysBase))
 
   /* now call user-init */
 
-  if (!__UserLibInit(&lib->LibNode,lib->DataSeg)) {
+  if (__UserLibInit(&lib->LibNode,lib->DataSeg)) {
     FreeMem((UBYTE *)lib-lib->LibNode.lib_NegSize,lib->LibNode.lib_NegSize+lib->LibNode.lib_PosSize);
     lib = NULL;
   }
