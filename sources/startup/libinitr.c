@@ -165,7 +165,7 @@ LibOpen(REG(a6,__LIB lib))
 
     /* now call user-init */
 
-    if (!__UserLibInit(&child->LibNode,dataseg)) {
+    if (__UserLibInit(&child->LibNode,dataseg)) {
       FreeMem((UBYTE *)child-child->LibNode.lib_NegSize,child->LibNode.lib_NegSize+sizeof(*child)+child->DataSize);
       --lib->LibNode.lib_OpenCnt;
       child = NULL;
