@@ -184,6 +184,15 @@ LibOpen(REG(a6,__LIB lib))
 /* initialization function called by MakeLibrary()                            */
 /*                                                                            */
 /******************************************************************************/
+__entrypoint void __restore_a4(void) {
+	__asm("lea ___a4_init,a4");
+}
+
+/******************************************************************************/
+/*                                                                            */
+/* initialization function called by MakeLibrary()                            */
+/*                                                                            */
+/******************************************************************************/
 
 static __inline APTR __GetDataSeg(void)
 { APTR res;
