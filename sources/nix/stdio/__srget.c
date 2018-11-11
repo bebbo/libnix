@@ -2,6 +2,8 @@
 #include <errno.h>
 #include <unistd.h>
 
+#include "__filenode.h"
+
 extern int __fflush(FILE *);
 
 int __srget(FILE *stream) /* Get next input block */

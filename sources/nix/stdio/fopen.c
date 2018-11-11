@@ -8,6 +8,8 @@
 #include "debuglib.h"
 #include "stabs.h"
 
+#include "__filenode.h"
+
 struct MinList __filelist = { /* list of open files (fflush() needs also access) */
   (struct MinNode *)&__filelist.mlh_Tail,
   NULL,

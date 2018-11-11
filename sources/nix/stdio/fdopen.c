@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include "__filenode.h"
+
 FILE *fdopen(int filedes,const char *mode)
 { extern int _lx_addflags(int,int);
   if (mode!=NULL)

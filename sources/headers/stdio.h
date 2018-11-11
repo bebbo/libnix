@@ -2,7 +2,6 @@
 #define _STDIO_H
 #include <string.h>
 #include <stdarg.h>
-#include <exec/lists.h>
 
 /* Adjusted to be compatible with the bsd headers
  * (At least for normal ANSI stuff)
@@ -216,12 +215,6 @@ extern struct MinList __memorylist; /* List of memory puddles */
 extern __stdargs int fflush(FILE *stream); /* fflush single file */
 extern __stdargs void __chkabort(void);      /* check for SIGABRT */
 
-/* objects in __filelist */
-struct filenode {
-  struct MinNode node;
-  FILE theFILE;
-};
-
 /*
 ** FILE/SOCKET abstraction layer
 */
@@ -288,5 +281,7 @@ extern __stdargs StdFileDes *_lx_fdfromfh(int fh, LX_FILE_TYPE type);
 #endif /* _SOCKET_IO */
 
 extern __stdargs StdFileDes *_lx_fhfromfd(int fd);
+
+#define L_tmpnam 8
 
 #endif /* _STDIO_H */

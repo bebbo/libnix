@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <exec/lists.h>
+#include "__filenode.h"
 
 extern __stdargs int __fflush(FILE *stream);
 
