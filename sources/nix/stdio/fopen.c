@@ -21,7 +21,7 @@ FILE *fopen(const char *filename,const char *mode)
   if(node!=NULL)
   { if((node->theFILE._bf._base=(char *)malloc(BUFSIZ))!=NULL)
     { node->theFILE._bf._size=BUFSIZ;
-      node->theFILE._flags|=__SMBF; /* Buffer is malloc'ed */
+      node->theFILE._flags|=__SMBF|__SLBF; /* Buffer is malloc'ed */
       node->theFILE.file = -1;
       if(freopen(filename,mode,&node->theFILE)!=NULL)
       { AddHead((struct List *)&__filelist,(struct Node *)&node->node);
