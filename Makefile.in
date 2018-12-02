@@ -12,6 +12,8 @@
 
 #### Start of system configuration section. ####
 
+CFLAGS = @CFLAGS@
+
 srcdir =	@srcdir@
 VPATH =		@srcdir@
 
@@ -40,23 +42,21 @@ MAK2=$(MAKE) -f $(CURDIR)/sources/Makefile
 #SUBDIRS=startup lib libb lib020 libb020 lib881 libb881 libb32 libb32881 #lib060 libb060 libb32060
 SUBDIRS=startup lib libb lib020 libb020 libb32
 
-CF ?= -Wall -Os -fomit-frame-pointer
-
 all: $(SUBDIRS)
 	cd sources;	$(MAKE) filelists
 	cd startup;	$(MAKE) -f $(CURDIR)/sources/startup/Makefile V="$(V)"
-	cd lib; 	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul"
-	cd libb;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -fbaserel -DSMALL_DATA"
-	cd lib020;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -m68020"
-	cd libb020;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -fbaserel -DSMALL_DATA -m68020"
-	cd libb32;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -fbaserel32 -DSMALL_DATA -m68020"
-#	cd lib881;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -m68020 -m68881"
-#	cd libb881;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -fbaserel -DSMALL_DATA -m68020 -m68881"
-#	cd lib060;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -m68060 -m68881"
-#	cd libb060;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -fbaserel -DSMALL_DATA -m68060 -m68881"
-#	cd libb32881;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -fbaserel32 -DSMALL_DATA -m68020 -m68881"
-#	cd libb32060;	$(MAK2) V="$(V)" CFLAGS="$(CF) -noixemul -fbaserel32 -DSMALL_DATA -m68060 -m68881"
-#	cd libix;	$(MAK2) V="$(V)" CFLAGS="$(CF) -DIXPATHS"
+	cd lib; 	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul"
+	cd libb;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -fbaserel -DSMALL_DATA"
+	cd lib020;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -m68020"
+	cd libb020;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -fbaserel -DSMALL_DATA -m68020"
+	cd libb32;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -fbaserel32 -DSMALL_DATA -m68020"
+#	cd lib881;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -m68020 -m68881"
+#	cd libb881;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -fbaserel -DSMALL_DATA -m68020 -m68881"
+#	cd lib060;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -m68060 -m68881"
+#	cd libb060;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -fbaserel -DSMALL_DATA -m68060 -m68881"
+#	cd libb32881;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -fbaserel32 -DSMALL_DATA -m68020 -m68881"
+#	cd libb32060;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -noixemul -fbaserel32 -DSMALL_DATA -m68060 -m68881"
+#	cd libix;	$(MAK2) V="$(V)" CFLAGS="$(CFLAGS) -DIXPATHS"
 
 $(SUBDIRS):
 	mkdir $@
@@ -66,11 +66,11 @@ libamiga:
 	if [ ! -d libb ] ; then mkdir libb ; else true ; fi
 	if [ ! -d libb32 ] ; then mkdir libb32 ; else true ; fi
 	cd sources;	$(MAK2) filelists
-	cd lib; 	$(MAK2) libamiga CFLAGS="$(CF) -noixemul"
-	cd libb;	$(MAK2) libamiga CFLAGS="$(CF) -noixemul -fbaserel"
-	cd lib020;	$(MAK2) libamiga CFLAGS="$(CF) -noixemul -m68020"
-	cd libb020;	$(MAK2) libamiga CFLAGS="$(CF) -noixemul -fbaserel -DSMALL_DATA -m68020"
-	cd libb32;	$(MAK2) libamiga CFLAGS="$(CF) -noixemul -fbaserel32 -m68020"
+	cd lib; 	$(MAK2) libamiga CFLAGS="$(CFLAGS) -noixemul"
+	cd libb;	$(MAK2) libamiga CFLAGS="$(CFLAGS) -noixemul -fbaserel"
+	cd lib020;	$(MAK2) libamiga CFLAGS="$(CFLAGS) -noixemul -m68020"
+	cd libb020;	$(MAK2) libamiga CFLAGS="$(CFLAGS) -noixemul -fbaserel -DSMALL_DATA -m68020"
+	cd libb32;	$(MAK2) libamiga CFLAGS="$(CFLAGS) -noixemul -fbaserel32 -m68020"
 
 clean:
 	cd lib; 	$(MAK2) clean
