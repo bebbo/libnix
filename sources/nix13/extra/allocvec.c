@@ -1,6 +1,14 @@
 #include <exec/execbase.h>
 #include <inline/exec.h>
 
+#ifdef AllocVec
+#undef AllocVec
+#endif
+
+#ifdef FreeVec
+#undef FreeVec
+#endif
+
 extern struct Execbase * SysBase;
 
 void * AllocVec(unsigned size, unsigned flags) {
