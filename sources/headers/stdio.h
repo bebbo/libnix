@@ -284,4 +284,10 @@ extern __stdargs StdFileDes *_lx_fhfromfd(int fd);
 
 #define L_tmpnam 8
 
+#ifdef __FILENAME_MAX__
+#define FILENAME_MAX    __FILENAME_MAX__
+#else
+#define	FILENAME_MAX	1024
+#endif
+
 #endif /* _STDIO_H */
