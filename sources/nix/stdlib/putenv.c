@@ -7,36 +7,42 @@
 #define GVF_LOCAL_ONLY 0x200
 #endif
 
+extern int __clearenviron();
+extern int __fillenviron();
+
 int setenv(const char *name, const char *value, int overwrite) {
-    char *old = getenv(name);
-    int retval = 0;
-    if (old == NULL || overwrite) {
-		retval = SetVar(name, value, strlen(value), GVF_LOCAL_ONLY) == TRUE ? 0 : -1;
-    }
-    return retval;
+	if (name && *name) {
+		char *old = getenv(name);
+		if (old == NULL || overwrite) {
+			if (SetVar(name, value, strlen(value) + 1, GVF_LOCAL_ONLY)) {
+				__clearenviron();
+				__fillenviron();
+			}
+		}
+		return 0;
+	}
+	errno = EINVAL;
+	return -1;
 }
 
-int unsetenv(const char *name) {
-    return -!DeleteVar(name, GVF_LOCAL_ONLY);
-}
 int putenv(const char *str) {
-    char *tmp = malloc(strlen(str) + 1);
-    int retval = -1;
-    char *pos;
-    if (tmp == NULL) {
-        goto end;
-    }
-    strcpy(tmp, str);
-    pos = strchr(tmp, '=');
-    if (pos == NULL)
-        goto end;
-    *pos++ = '\0';
-
-    retval = setenv(str, pos, 1);
-
-end:
-    if (tmp != NULL)
-        free(tmp);
-    return retval;
+	int retval = -1;
+	if (str && *str) {
+		char *tmp = malloc(strlen(str) + 1);
+		if (!tmp) {
+			errno = ENOMEM;
+		} else {
+			strcpy(tmp, str);
+			char * pos = strchr(tmp, '=');
+			if (pos) {
+				*pos++ = '\0';
+				retval = setenv(tmp, pos, 1);
+			} else
+				errno = EINVAL;
+			free(tmp);
+		}
+	} else
+		errno = EINVAL;
+	return retval;
 }
 
