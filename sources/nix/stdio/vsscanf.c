@@ -5,7 +5,7 @@
 
 int vsscanf(const char *s,const char *format,va_list args)
 { FILE buffer;
-  buffer._p=(char *)s;
+  buffer._p=(unsigned char *)s;
   buffer._r=strlen(s);
   buffer._w=0;
   buffer._flags=__SSTR|__SRD;
