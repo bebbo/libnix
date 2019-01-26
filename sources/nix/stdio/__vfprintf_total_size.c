@@ -494,7 +494,7 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 						stopPos = 1;
 
 						for (unsigned j = 16;j <= 28; j += 12) {
-							for (unsigned i = j; i >= 0; i -= 4) {
+							for (int i = j; i >= 0; i -= 4) {
 								unsigned c = (x >> i) & 0xf;
 								x -= c << i;
 								if (c > 9)
