@@ -18,7 +18,7 @@ int __stat(struct stat *buf,struct FileInfoBlock *fib)
      (fib->fib_Protection&FIBF_OTR_READ?S_IROTH:0)|
      (fib->fib_Protection&FIBF_OTR_WRITE?S_IWOTH:0)|
      (fib->fib_Protection&FIBF_OTR_EXECUTE?S_IXOTH:0);
-   buf->st_nlink=0;
+   buf->st_nlink=1;
    buf->st_uid=fib->fib_OwnerUID;
    buf->st_gid=fib->fib_OwnerGID;
    buf->st_rdev=0;
