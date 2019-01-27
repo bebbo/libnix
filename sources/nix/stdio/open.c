@@ -264,7 +264,11 @@ void __initstdio(void)
         fp->lx_oflags = O_WRONLY;
         _setup_file(fp);
         if((sfd[STDERR_FILENO]=fp=(StdFileDes *)malloc(sizeof(StdFileDes)))) {
-          if((fp->lx_fh=((struct Process *)FindTask(NULL))->pr_CES)==0)
+#ifdef __KICK13__
+            if((fp->lx_fh=Output())==0)
+#else
+            if((fp->lx_fh=((struct Process *)FindTask(NULL))->pr_CES)==0)
+#endif
             if(_WBenchMsg||(fp->lx_fh=stderrdes=Open("*",MODE_OLDFILE))==0)
               fp->lx_fh=sfd[STDOUT_FILENO]->lx_fh;
           fp->lx_pos    = STDERR_FILENO;

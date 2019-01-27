@@ -43,6 +43,7 @@ OBJECTS2= \
 	nix/extra/truncate.o \
 	nix/extra/utimes.o \
 	nix/stdio/rename.o \
+	nix/stdio/open.o \
 	nix/stdlib/getenv.o \
 	nix/stdlib/putenv.o \
 	nix/stdlib/system.o \
