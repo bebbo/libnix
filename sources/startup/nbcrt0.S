@@ -24,20 +24,21 @@ pr_CLI		=	 172
 
 start:
 		jbsr	_geta4
-		movel	a0,a4@(___commandline:W)
-		movel	d0,a4@(___commandlen:W)
 
 		movel	#___bss_size,d1
 		beqs	nobss
-		moveq.l #0,d0
+		moveq.l #0,d2
 		lea	a4@(__edata:W),a1
 
 clrbss:
-		move.l	d0,a1@+
+		move.l	d2,a1@+
 		subql	#4,d1
 		bnes	clrbss
 
 nobss:
+		movel	a0,a4@(___commandline:W)
+		movel	d0,a4@(___commandlen:W)
+
 		movel	sp,a4@(___SaveSP:W)
 		movel	4:W,a6
 		movel	a6,a4@(_SysBase:W)
