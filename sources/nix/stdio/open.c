@@ -267,7 +267,7 @@ void __initstdio(void)
         	struct Process * proc = (struct Process *)FindTask(NULL);
 #ifdef __KICK13__
         	struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(proc->pr_CLI);
-        	fp->lx_fh = (BPTR)BADDR(cli->cli_StandardOutput);
+        	fp->lx_fh = cli->cli_StandardOutput;
             if(fp->lx_fh==0)
 #else
             if((fp->lx_fh=(proc)->pr_CES)==0)
