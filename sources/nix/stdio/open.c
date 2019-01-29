@@ -264,10 +264,13 @@ void __initstdio(void)
         fp->lx_oflags = O_WRONLY;
         _setup_file(fp);
         if((sfd[STDERR_FILENO]=fp=(StdFileDes *)malloc(sizeof(StdFileDes)))) {
+        	struct Process * proc = (struct Process *)FindTask(NULL);
 #ifdef __KICK13__
-            if((fp->lx_fh=Output())==0)
+        	struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(proc->pr_CLI);
+        	fp->lx_fh = (BPTR)BADDR(cli->cli_StandardOutput);
+            if(fp->lx_fh==0)
 #else
-            if((fp->lx_fh=((struct Process *)FindTask(NULL))->pr_CES)==0)
+            if((fp->lx_fh=(proc)->pr_CES)==0)
 #endif
             if(_WBenchMsg||(fp->lx_fh=stderrdes=Open("*",MODE_OLDFILE))==0)
               fp->lx_fh=sfd[STDOUT_FILENO]->lx_fh;
