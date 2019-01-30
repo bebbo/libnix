@@ -11,189 +11,191 @@
 #include "stabs.h"
 
 /*
-**
-*/
+ **
+ */
 extern void __seterrno(void);
 
 /*
-**
-*/
+ **
+ */
 static StdFileDes **stdfiledes;
-static unsigned long stdfilesize=0;
-static long stderrdes=0; /* The normal Amiga shell sets no process->pr_CES stream -
-                          * we use Open("*",MODE_NEWFILE) in this case
-                          */
+static long stdfilesize;
+static long stderrdes; /* The normal Amiga shell sets no process->pr_CES stream -
+ * we use Open("*",MODE_NEWFILE) in this case
+ */
 
 /*
-**
-*/
-static void _setup_file(StdFileDes *fp)
-{ fp->lx_inuse  = 1;
-  fp->lx_isatty = IsInteractive(fp->lx_fh) ? -1 : 0;
+ **
+ */
+static void _setup_file(StdFileDes *fp) {
+	fp->lx_inuse = 1;
+	fp->lx_isatty = IsInteractive(fp->lx_fh) ? -1 : 0;
 }
 
 /*
-**
-*/
-static StdFileDes *_allocfd(void)
-{ StdFileDes *fp,**sfd;
-  int file,max;
+ **
+ */
+static StdFileDes *_allocfd(void) {
+	StdFileDes *fp, **sfd;
+	int file, max;
 
-  for(sfd=stdfiledes,max=stdfilesize,file=0;file<max;sfd++,file++)
-    if(!sfd[0] || (!sfd[0]->lx_inuse && !sfd[0]->lx_sys))
-      break;
+	for (sfd = stdfiledes, max = stdfilesize, file = 0; file < max;
+			sfd++, file++)
+		if (!sfd[0] || (!sfd[0]->lx_inuse && !sfd[0]->lx_sys))
+			break;
 
-  if(file>SHRT_MAX)
-  { errno=EMFILE;
-    return NULL;
-  	  }
+	if (file > SHRT_MAX) {
+		errno = EMFILE;
+		return NULL;
+	}
 
-  if(file==max)
-  { if((sfd=realloc(stdfiledes,(file+1)*sizeof(fp)))==NULL)
-    { errno=ENOMEM;
-      return NULL;
-    }
-    stdfiledes=sfd;
-    stdfilesize++;
-    *(sfd=&sfd[file]) = 0;
-  }
+	if (file == max) {
+		if ((sfd = realloc(stdfiledes, (file + 1) * sizeof(fp))) == NULL) {
+			errno = ENOMEM;
+			return NULL;
+		}
+		stdfiledes = sfd;
+		stdfilesize++;
+		*(sfd = &sfd[file]) = 0;
+	}
 
-  if((fp=sfd[0])==NULL)
-  { if((sfd[0]=fp=malloc(sizeof(*fp)))==NULL)
-    { errno=ENOMEM;
-      return NULL;
-    }
-    fp->lx_pos = file;
-  }
+	if ((fp = sfd[0]) == NULL) {
+		if ((sfd[0] = fp = malloc(sizeof(*fp))) == NULL) {
+			errno = ENOMEM;
+			return NULL;
+		}
+		fp->lx_pos = file;
+	}
 
-  return fp;
+	return fp;
 }
 
 /*
-**
-*/
-int open(const char *path,int flags,...)
-{ extern char *__amigapath(const char *path);
-  StdFileDes *sfd;
+ **
+ */
+int open(const char *path, int flags, ...) {
+	extern char *__amigapath(const char *path);
+	StdFileDes *sfd;
 
 #ifdef IXPATHS
-  if((path=__amigapath(path))==NULL)
-    return -1;
+	if((path=__amigapath(path))==NULL)
+	return -1;
 #endif
 
-  if ((sfd=_allocfd())) {
-    sfd->lx_sys=0;
-    sfd->lx_oflags=flags;
-    if ((sfd->lx_fh=Open((char *)path,flags&O_TRUNC?MODE_NEWFILE:
-                         flags&(O_WRONLY|O_RDWR)?MODE_READWRITE:MODE_OLDFILE))) {
-      _setup_file(sfd); return sfd->lx_pos;
-    }
-    __seterrno();
-    sfd->lx_inuse = 0;
-  }
+	if ((sfd = _allocfd())) {
+		sfd->lx_sys = 0;
+		sfd->lx_oflags = flags;
+		if ((sfd->lx_fh =
+				Open((char * )path,
+						flags&O_TRUNC?MODE_NEWFILE: flags&(O_WRONLY|O_RDWR)?MODE_READWRITE:MODE_OLDFILE))) {
+			_setup_file(sfd);
+			return sfd->lx_pos;
+		}
+		__seterrno();
+		sfd->lx_inuse = 0;
+	}
 
-  return -1;
+	return -1;
 }
 
-int close(int d)
-{ StdFileDes *sfd = _lx_fhfromfd(d);
+int close(int d) {
+	StdFileDes *sfd = _lx_fhfromfd(d);
 
-  if (sfd) {
-    if (!(sfd->lx_inuse-=1)) {
-      if (sfd->lx_pos=d,!sfd->lx_sys) {
-        if (!Close(sfd->lx_fh)) {
-          __seterrno(); return EOF;
-        }
-      }
-    }
-    else {
-      stdfiledes[d] = 0;
-    }
-  }
+	if (sfd) {
+		if (!(sfd->lx_inuse -= 1)) {
+			if (sfd->lx_pos = d, !sfd->lx_sys) {
+				if (!Close(sfd->lx_fh)) {
+					__seterrno();
+					return EOF;
+				}
+			}
+		} else {
+			stdfiledes[d] = 0;
+		}
+	}
 
-  return 0;
+	return 0;
 }
 
-ssize_t read(int d,void *buf,size_t nbytes)
-{ StdFileDes *sfd = _lx_fhfromfd(d);
+ssize_t read(int d, void *buf, size_t nbytes) {
+	StdFileDes *sfd = _lx_fhfromfd(d);
 
-  if (sfd) {
-    long r;
-    __chkabort();
-    if((r=Read(sfd->lx_fh,buf,nbytes))!=EOF)
-      return r;
-    __seterrno();
-  }
+	if (sfd) {
+		long r;
+		__chkabort();
+		if ((r = Read(sfd->lx_fh, buf, nbytes)) != EOF)
+			return r;
+		__seterrno();
+	}
 
-  return EOF;
+	return EOF;
 }
 
-ssize_t write(int d,const void *buf,size_t nbytes)
-{ StdFileDes *sfd = _lx_fhfromfd(d);
+ssize_t write(int d, const void *buf, size_t nbytes) {
+	StdFileDes *sfd = _lx_fhfromfd(d);
 
-  if (sfd) {
-    long r;
-    __chkabort();
-    switch((sfd->lx_oflags&O_APPEND)!=0) {
-      case 1:
-        if(!sfd->lx_isatty&&(Seek(sfd->lx_fh,0,OFFSET_END)==EOF))
-          break;
-      default:
-        if((r=Write(sfd->lx_fh,(char *)buf,nbytes))!=EOF)
-          return r;
-    }
-    __seterrno();
-  }
+	if (sfd) {
+		long r;
+		__chkabort();
+		switch ((sfd->lx_oflags & O_APPEND) != 0) {
+		case 1:
+			if (!sfd->lx_isatty && (Seek(sfd->lx_fh,0,OFFSET_END) == EOF))
+				break;
+		default:
+			if ((r = Write(sfd->lx_fh, (char * )buf, nbytes)) != EOF)
+				return r;
+		}
+		__seterrno();
+	}
 
-  return EOF;
+	return EOF;
 }
 
-off_t lseek(int d,off_t offset,int whence)
-{ StdFileDes *sfd = _lx_fhfromfd(d);
+off_t lseek(int d, off_t offset, int whence) {
+	StdFileDes *sfd = _lx_fhfromfd(d);
 
-  if (sfd) {
-    long r,file=sfd->lx_fh;
-    __chkabort();
-    if (Seek(file,offset,whence==SEEK_SET?OFFSET_BEGINNING:
-                         whence==SEEK_END?OFFSET_END:OFFSET_CURRENT)!=EOF)
-      if ((r=Seek(file,0,OFFSET_CURRENT))!=EOF)
-        return r;
-    __seterrno();
-  }
+	if (sfd) {
+		long r, file = sfd->lx_fh;
+		__chkabort();
+		if (Seek(file,offset,whence==SEEK_SET?OFFSET_BEGINNING:
+				whence==SEEK_END?OFFSET_END:OFFSET_CURRENT) != EOF)
+			if ((r = Seek(file, 0, OFFSET_CURRENT)) != EOF)
+				return r;
+		__seterrno();
+	}
 
-  return EOF;
+	return EOF;
 }
 
-int isatty(int d)
-{ StdFileDes *sfd = _lx_fhfromfd(d);
+int isatty(int d) {
+	StdFileDes *sfd = _lx_fhfromfd(d);
 
-  return sfd?sfd->lx_isatty:0;
-}
-
-/*
-**
-*/
-int _lx_addflags(int d,int oflags)
-{ StdFileDes *sfd = _lx_fhfromfd(d);
-
-  return sfd?sfd->lx_oflags|=oflags:0;
+	return sfd ? sfd->lx_isatty : 0;
 }
 
 /*
-** convert fd to a StdFileDes
-*/
-StdFileDes *_lx_fhfromfd(int d)
-{ if(d<(int)stdfilesize)
-  { StdFileDes *sfd=stdfiledes[d];
-    if(sfd&&sfd->lx_inuse)
-      return sfd; }
-  return NULL;
+ **
+ */
+int _lx_addflags(int d, int oflags) {
+	StdFileDes *sfd = _lx_fhfromfd(d);
+
+	return sfd ? sfd->lx_oflags |= oflags : 0;
 }
 
-
+/*
+ ** convert fd to a StdFileDes
+ */
+StdFileDes *_lx_fhfromfd(int d) {
+	if (d < stdfilesize) {
+		StdFileDes *sfd = stdfiledes[d];
+		if (sfd && sfd->lx_inuse)
+			return sfd;
+	}
+	return NULL;
+}
 
 int dup(int oldfd) {
-	if (oldfd < (int) stdfilesize) {
+	if (oldfd < stdfilesize) {
 		StdFileDes *old = stdfiledes[oldfd];
 		if (old && old->lx_inuse) {
 			StdFileDes * neu = _allocfd();
@@ -207,11 +209,11 @@ int dup(int oldfd) {
 }
 
 int dup2(int oldfd, int newfd) {
-	if (oldfd < (int) stdfilesize) {
+	if (oldfd < stdfilesize) {
 		StdFileDes *old = stdfiledes[oldfd];
 		if (old && old->lx_inuse) {
 			StdFileDes * neu;
-			if (newfd < (int) stdfilesize) {
+			if (newfd < stdfilesize) {
 				neu = stdfiledes[newfd];
 				if (neu && neu->lx_inuse)
 					close(newfd);
@@ -220,18 +222,20 @@ int dup2(int oldfd, int newfd) {
 			if (!neu) {
 				StdFileDes ** sfd = stdfiledes;
 				if (newfd >= stdfilesize) {
-					if((sfd=realloc(stdfiledes,(newfd+1)*sizeof(int)))==NULL)
-					    { errno=ENOMEM;
-					      return -1;
-					    }
-					stdfiledes=sfd;
-					for(;stdfilesize <= newfd;++stdfilesize)
-					  sfd[stdfilesize] = 0;
+					if ((sfd = realloc(stdfiledes, (newfd + 1) * sizeof(int)))
+							== NULL) {
+						errno = ENOMEM;
+						return -1;
+					}
+					stdfiledes = sfd;
+					for (; stdfilesize <= newfd; ++stdfilesize)
+						sfd[stdfilesize] = 0;
 				}
-				neu = sfd[newfd] = (StdFileDes *)malloc(sizeof(StdFileDes));
-				if (!neu) { errno=ENOMEM;
-			      return -1;
-			    }
+				neu = sfd[newfd] = (StdFileDes *) malloc(sizeof(StdFileDes));
+				if (!neu) {
+					errno = ENOMEM;
+					return -1;
+				}
 				neu->lx_pos = newfd;
 			}
 			int fd = neu->lx_pos;
@@ -242,62 +246,85 @@ int dup2(int oldfd, int newfd) {
 	}
 }
 
-
 /*
-**
-*/
-void __initstdio(void)
-{ extern struct WBStartup *_WBenchMsg;
-  StdFileDes *fp,**sfd;
+ **
+ */
+void __initstdio(void) {
+	extern struct WBStartup *_WBenchMsg;
+	StdFileDes *fp, **sfd;
 
-  if((stdfiledes=sfd=(StdFileDes **)malloc(3*sizeof(StdFileDes *)))) {
-    if((sfd[STDIN_FILENO]=fp=(StdFileDes *)malloc(sizeof(StdFileDes)))) {
-      fp->lx_fh     = Input();
-      fp->lx_pos    = STDIN_FILENO;
-      fp->lx_sys    = -1;
-      fp->lx_oflags = O_RDONLY;
-      _setup_file(fp);
-      if((sfd[STDOUT_FILENO]=fp=(StdFileDes *)malloc(sizeof(StdFileDes)))) {
-        fp->lx_fh     = Output();
-        fp->lx_pos    = STDOUT_FILENO;
-        fp->lx_sys    = -1;
-        fp->lx_oflags = O_WRONLY;
-        _setup_file(fp);
-        if((sfd[STDERR_FILENO]=fp=(StdFileDes *)malloc(sizeof(StdFileDes)))) {
-        	struct Process * proc = (struct Process *)FindTask(NULL);
+	if ((stdfiledes = sfd = (StdFileDes **) malloc(3 * sizeof(StdFileDes *)))) {
+		if ((sfd[STDIN_FILENO] = fp = (StdFileDes *) malloc(sizeof(StdFileDes)))) {
+			fp->lx_fh = Input();
+			fp->lx_pos = STDIN_FILENO;
+			fp->lx_sys = -1;
+			fp->lx_oflags = O_RDONLY;
+			_setup_file(fp);
+			if ((sfd[STDOUT_FILENO] = fp = (StdFileDes *) malloc(
+					sizeof(StdFileDes)))) {
+				fp->lx_fh = Output();
+				fp->lx_pos = STDOUT_FILENO;
+				fp->lx_sys = -1;
+				fp->lx_oflags = O_WRONLY;
+				_setup_file(fp);
+				if ((sfd[STDERR_FILENO] = fp = (StdFileDes *) malloc(
+						sizeof(StdFileDes)))) {
+					struct Process * proc = (struct Process *) FindTask(NULL);
 #ifdef __KICK13__
-        	struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(proc->pr_CLI);
-        	fp->lx_fh = cli->cli_StandardOutput;
-            if(fp->lx_fh==0)
+					struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(proc->pr_CLI);
+					fp->lx_fh = cli->cli_StandardOutput;
+					if(fp->lx_fh==0)
 #else
-            if((fp->lx_fh=(proc)->pr_CES)==0)
+					if ((fp->lx_fh = (proc)->pr_CES) == 0)
 #endif
-            if(_WBenchMsg||(fp->lx_fh=stderrdes=Open("*",MODE_OLDFILE))==0)
-              fp->lx_fh=sfd[STDOUT_FILENO]->lx_fh;
-          fp->lx_pos    = STDERR_FILENO;
-          fp->lx_sys    = -1;
-          fp->lx_oflags = O_WRONLY;
-          _setup_file(fp);
-          stdfilesize += 3; return;
-        }
-      }
-    }
-  }
-  exit(20);
+						if (_WBenchMsg
+								|| (fp->lx_fh = stderrdes = Open("*",
+										MODE_OLDFILE)) == 0)
+							fp->lx_fh = sfd[STDOUT_FILENO]->lx_fh;
+					fp->lx_pos = STDERR_FILENO;
+					fp->lx_sys = -1;
+					fp->lx_oflags = O_WRONLY;
+					_setup_file(fp);
+					stdfilesize += 3;
+
+#define STDIN_FILENO 0
+#define STDOUT_FILENO 1
+#define STDERR_FILENO 2
+
+					{
+						FILE **f = __sF, *err;
+
+						if (((*f++ = fdopen(STDIN_FILENO, "r")) == NULL)
+								|| ((*f++ = fdopen(STDOUT_FILENO, "w")) == NULL)
+								|| ((*f = err = fdopen(STDERR_FILENO, "w"))
+										== NULL))
+							exit(20);
+						free(err->_bf._base);
+						err->_flags &= ~(__SMBF | __SLBF);
+						err->_flags |= __SNBF;
+						err->_bf._base = err->unget;
+					}
+
+					return;
+				}
+			}
+		}
+	}
+	exit(20);
 }
-ADD2INIT(__initstdio,-30);
+ADD2INIT(__initstdio, -30);
 
-void __exitstdio(void)
-{ int i,max;
+void __exitstdio(void) {
+	int i, max;
 
-  for(max=stdfilesize,i=0;i<max;i++) {
-    StdFileDes *sfd = stdfiledes[i];
-    if(sfd && sfd->lx_inuse) {
-      close(i);
-    }
-  }
+	for (max = stdfilesize, i = 0; i < max; i++) {
+		StdFileDes *sfd = stdfiledes[i];
+		if (sfd && sfd->lx_inuse) {
+			close(i);
+		}
+	}
 
-  if(stderrdes)
-    Close(stderrdes);
+	if (stderrdes)
+		Close(stderrdes);
 }
-ADD2EXIT(__exitstdio,-30);
+ADD2EXIT(__exitstdio, -30);
