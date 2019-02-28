@@ -7,6 +7,7 @@
 #include <fcntl.h>
 
 extern void __seterrno(void);
+extern int __fflush(FILE *stream);
 
 FILE *freopen(const char *filename,const char *mode,FILE *stream)
 { int error=__fflush(stream);

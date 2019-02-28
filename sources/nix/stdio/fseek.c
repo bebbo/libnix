@@ -2,6 +2,8 @@
 #include <errno.h>
 #include <unistd.h>
 
+int __fflush(FILE *stream);
+
 int fseek(FILE *stream,long int offset,int whence)
 {
   if(stream->_flags&__SERR) /* Error on stream */

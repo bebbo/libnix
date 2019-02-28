@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int __fflush(FILE *stream);
+
 int setvbuf(FILE *stream,char *buf,int mode,size_t size)
 { short flags=stream->_flags&~(__SNBF|__SLBF);
   if(mode==_IONBF)

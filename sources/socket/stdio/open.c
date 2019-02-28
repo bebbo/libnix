@@ -214,7 +214,7 @@ static void *_setup_file(StdFileDes *fp)
 /*
 **
 */
-StdFileDes *_allocfd(void)
+StdFileDes *__allocfd(void)
 { StdFileDes *fp,**sfd;
   int file,max;
 
@@ -262,7 +262,7 @@ int open(const char *path,int flags,...)
     return -1;
 #endif
 
-  if ((sfd=_allocfd())) {
+  if ((sfd=__allocfd())) {
     sfd->lx_sys=0;
     sfd->lx_oflags=flags;
     if ((sfd->lx_fh=Open((char *)path,flags&O_TRUNC?MODE_NEWFILE:

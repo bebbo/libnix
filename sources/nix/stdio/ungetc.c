@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <errno.h>
 
+int __fflush(FILE *stream);
+
 int ungetc(int c,FILE *stream)
 {
   if(c==EOF)

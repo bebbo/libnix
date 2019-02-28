@@ -10,37 +10,44 @@
 #include <unistd.h>
 #include "stabs.h"
 
+#include "__filenode.h"
+
 /*
- **
+ * SBF: I put all functions into this file which are linked anyway if stdio is used.
  */
+
 extern void __seterrno(void);
 
+// hack: errno is here seen as int, and it's defined as struct in __sf.c
+// stdin, stdout, stderr are attached to errno.
+FILE **__sF = (FILE **) (&errno + 1); /* stdin, stdout, stderr */
+
 /*
- **
+ ** the internal storage
  */
-static StdFileDes **stdfiledes;
-static long stdfilesize;
-static long stderrdes; /* The normal Amiga shell sets no process->pr_CES stream -
+StdFileDes **__stdfiledes;
+unsigned __stdfilesize;
+/* The normal Amiga shell sets no process->pr_CES stream -
  * we use Open("*",MODE_NEWFILE) in this case
  */
+static long stderrdes;
 
 /*
  **
  */
-static void _setup_file(StdFileDes *fp) {
+static inline void _setup_file(StdFileDes *fp) {
 	fp->lx_inuse = 1;
 	fp->lx_isatty = IsInteractive(fp->lx_fh) ? -1 : 0;
 }
 
-/*
- **
+/**
+ * Reuse or allocate a StdFileDes object.
  */
-static StdFileDes *_allocfd(void) {
+StdFileDes *__allocfd(void) {
 	StdFileDes *fp, **sfd;
 	int file, max;
 
-	for (sfd = stdfiledes, max = stdfilesize, file = 0; file < max;
-			sfd++, file++)
+	for (sfd = __stdfiledes, max = __stdfilesize, file = 0; file < max; sfd++, file++)
 		if (!sfd[0] || (!sfd[0]->lx_inuse && !sfd[0]->lx_sys))
 			break;
 
@@ -50,12 +57,12 @@ static StdFileDes *_allocfd(void) {
 	}
 
 	if (file == max) {
-		if ((sfd = realloc(stdfiledes, (file + 1) * sizeof(fp))) == NULL) {
+		if ((sfd = realloc(__stdfiledes, (file + 1) * sizeof(fp))) == NULL) {
 			errno = ENOMEM;
 			return NULL;
 		}
-		stdfiledes = sfd;
-		stdfilesize++;
+		__stdfiledes = sfd;
+		__stdfilesize++;
 		*(sfd = &sfd[file]) = 0;
 	}
 
@@ -68,103 +75,6 @@ static StdFileDes *_allocfd(void) {
 	}
 
 	return fp;
-}
-
-/*
- **
- */
-int open(const char *path, int flags, ...) {
-	extern char *__amigapath(const char *path);
-	StdFileDes *sfd;
-
-#ifdef IXPATHS
-	if((path=__amigapath(path))==NULL)
-	return -1;
-#endif
-
-	if ((sfd = _allocfd())) {
-		sfd->lx_sys = 0;
-		sfd->lx_oflags = flags;
-		if ((sfd->lx_fh =
-				Open((char * )path,
-						flags&O_TRUNC?MODE_NEWFILE: flags&(O_WRONLY|O_RDWR)?MODE_READWRITE:MODE_OLDFILE))) {
-			_setup_file(sfd);
-			return sfd->lx_pos;
-		}
-		__seterrno();
-		sfd->lx_inuse = 0;
-	}
-
-	return -1;
-}
-
-int close(int d) {
-	StdFileDes *sfd = _lx_fhfromfd(d);
-
-	if (sfd) {
-		if (!(sfd->lx_inuse -= 1)) {
-			if (sfd->lx_pos = d, !sfd->lx_sys) {
-				if (!Close(sfd->lx_fh)) {
-					__seterrno();
-					return EOF;
-				}
-			}
-		} else {
-			stdfiledes[d] = 0;
-		}
-	}
-
-	return 0;
-}
-
-ssize_t read(int d, void *buf, size_t nbytes) {
-	StdFileDes *sfd = _lx_fhfromfd(d);
-
-	if (sfd) {
-		long r;
-		__chkabort();
-		if ((r = Read(sfd->lx_fh, buf, nbytes)) != EOF)
-			return r;
-		__seterrno();
-	}
-
-	return EOF;
-}
-
-ssize_t write(int d, const void *buf, size_t nbytes) {
-	StdFileDes *sfd = _lx_fhfromfd(d);
-
-	if (sfd) {
-		long r;
-		__chkabort();
-		switch ((sfd->lx_oflags & O_APPEND) != 0) {
-		case 1:
-			if (!sfd->lx_isatty && (Seek(sfd->lx_fh,0,OFFSET_END) == EOF))
-				break;
-		default:
-			if ((r = Write(sfd->lx_fh, (char * )buf, nbytes)) != EOF)
-				return r;
-		}
-		__seterrno();
-	}
-
-	return EOF;
-}
-
-off_t lseek(int d, off_t offset, int whence) {
-	StdFileDes *sfd = _lx_fhfromfd(d);
-
-	if (sfd) {
-		long r, file = sfd->lx_fh;
-		__chkabort();
-		if (Seek(file,offset,whence==SEEK_SET?OFFSET_BEGINNING:
-				whence==SEEK_END?OFFSET_END:OFFSET_CURRENT) != EOF)
-			if ((r = Seek(file, 0, OFFSET_CURRENT)) != EOF)
-				return r;
-		__seterrno();
-	}
-
-	return EOF;
 }
 
 int isatty(int d) {
@@ -182,69 +92,144 @@ int _lx_addflags(int d, int oflags) {
 	return sfd ? sfd->lx_oflags |= oflags : 0;
 }
 
-/*
- ** convert fd to a StdFileDes
+/**
+ * convert fd to a StdFileDes
  */
 StdFileDes *_lx_fhfromfd(int d) {
-	if (d < stdfilesize) {
-		StdFileDes *sfd = stdfiledes[d];
+	if ((unsigned) d < __stdfilesize) {
+		StdFileDes *sfd = __stdfiledes[d];
 		if (sfd && sfd->lx_inuse)
 			return sfd;
 	}
 	return NULL;
 }
 
-int dup(int oldfd) {
-	if (oldfd < stdfilesize) {
-		StdFileDes *old = stdfiledes[oldfd];
-		if (old && old->lx_inuse) {
-			StdFileDes * neu = _allocfd();
-			int fd = neu->lx_pos;
-			*neu = *old;
-			neu->lx_pos = fd;
-			return fd;
+/**
+ * open a file
+ *
+ * @return the file descriptor.
+ */
+int open(const char *path, int flags, ...) {
+	extern char *__amigapath(const char *path);
+	StdFileDes *sfd;
+
+#ifdef IXPATHS
+	if((path=__amigapath(path))==NULL)
+	return -1;
+#endif
+
+	if ((sfd = __allocfd())) {
+		sfd->lx_sys = 0;
+		sfd->lx_oflags = flags;
+		if ((sfd->lx_fh = Open((char * )path, flags&O_TRUNC?MODE_NEWFILE: flags&(O_WRONLY|O_RDWR)?MODE_READWRITE:MODE_OLDFILE))) {
+			_setup_file(sfd);
+			return sfd->lx_pos;
 		}
+		__seterrno();
+		sfd->lx_inuse = 0;
 	}
+
 	return -1;
 }
 
-int dup2(int oldfd, int newfd) {
-	if (oldfd < stdfilesize) {
-		StdFileDes *old = stdfiledes[oldfd];
-		if (old && old->lx_inuse) {
-			StdFileDes * neu;
-			if (newfd < stdfilesize) {
-				neu = stdfiledes[newfd];
-				if (neu && neu->lx_inuse)
-					close(newfd);
-			} else
-				neu = 0;
-			if (!neu) {
-				StdFileDes ** sfd = stdfiledes;
-				if (newfd >= stdfilesize) {
-					if ((sfd = realloc(stdfiledes, (newfd + 1) * sizeof(int)))
-							== NULL) {
-						errno = ENOMEM;
-						return -1;
-					}
-					stdfiledes = sfd;
-					for (; stdfilesize <= newfd; ++stdfilesize)
-						sfd[stdfilesize] = 0;
-				}
-				neu = sfd[newfd] = (StdFileDes *) malloc(sizeof(StdFileDes));
-				if (!neu) {
-					errno = ENOMEM;
-					return -1;
-				}
-				neu->lx_pos = newfd;
-			}
-			int fd = neu->lx_pos;
-			*neu = *old;
-			neu->lx_pos = fd;
-			return fd;
-		}
-	}
+/**
+ * Open the file stream for the file descriptor.
+ */
+FILE *fdopen(int filedes,const char *mode)
+{ extern int _lx_addflags(int,int);
+  if (mode!=NULL)
+  { struct filenode *node = (struct filenode *)calloc(1,sizeof(*node));
+    if(node!=NULL)
+    { if((node->theFILE._bf._base=(char *)malloc(BUFSIZ))!=NULL)
+      { node->theFILE._bf._size=BUFSIZ;
+        node->theFILE.file=filedes;
+        node->theFILE._flags|=__SMBF; /* Buffer is malloc'ed */
+        if(isatty(filedes))
+          node->theFILE._flags|=__SLBF; /* set linebuffered flag */
+        if(_lx_addflags(filedes,*mode=='a'?O_APPEND:0)&O_WRONLY)
+          node->theFILE._flags|=__SWO; /* set write-only flag */
+        AddHead((struct List *)&__filelist,(struct Node *)&node->node);
+        return &node->theFILE;
+      }
+      else
+        errno=ENOMEM;
+      free(node);
+    }
+    else
+      errno=ENOMEM;
+  }
+  return NULL;
 }
+
+
+/**
+ * Reopen a file.
+ *
+ * @return file stream.
+ */
+FILE *freopen(const char *filename, const char *mode, FILE *stream) {
+	int error = __fflush(stream);
+
+	if (stream->file >= 0)
+		close(stream->file);
+	if (stream->name != NULL && (stream->_flags & __BPTRS) == 0) /* file is temporary */
+	{
+		BPTR cd = CurrentDir(stream->tmpdir); /* cd t: */
+		if (!DeleteFile(stream->name)) /* delete file */
+		{
+			__seterrno();
+			error = 1;
+		}
+		free(stream->name); /* free filename */
+		stream->name = NULL;
+		UnLock(CurrentDir(cd)); /* cd back, unlock t: */
+	}
+	stream->file = 0;
+
+	if (error)
+		return NULL;
+
+	if (filename != NULL) {
+		long file, flags = O_RDONLY;
+		char ch;
+		if (mode == NULL)
+			return NULL;
+		if (ch = *mode++, ch != 'r')
+			if (flags = O_WRONLY | O_CREAT | O_TRUNC, ch != 'w')
+				if (flags = O_WRONLY | O_CREAT | O_APPEND, ch != 'a')
+					return NULL;
+		if ((ch = *mode++)) {
+			if (ch == '+') {
+				if ((ch = *mode++) && (ch != 'b' || *mode))
+					return NULL;
+				flags = (flags & ~O_ACCMODE) | O_RDWR;
+			} else if (ch != 'b')
+				return NULL;
+			else if ((ch = *mode++)) {
+				if (ch != '+' || *mode)
+					return NULL;
+				flags = (flags & ~O_ACCMODE) | O_RDWR;
+			}
+		}
+
+		if ((file = open(filename, flags, 0777)) < 0)
+			return NULL;
+
+		if (flags & O_APPEND)
+			Seek(__stdfiledes[stream->file]->lx_fh, 0, OFFSET_END);
+
+		/* clear a lot of flags */
+		stream->_flags &= ~(__SWO | __SERR | __SEOF | __SWR | __SRD | __SNBF | __SLBF);
+		if (flags & O_WRONLY)
+			stream->_flags |= __SWO; /* set write-only flag */
+		if (isatty(file))
+			stream->_flags |= __SLBF; /* set linebuffered flag */
+		stream->file = file;
+	}
+
+	return stream;
+}
+
 
 /*
  **
@@ -253,22 +238,20 @@ void __initstdio(void) {
 	extern struct WBStartup *_WBenchMsg;
 	StdFileDes *fp, **sfd;
 
-	if ((stdfiledes = sfd = (StdFileDes **) malloc(3 * sizeof(StdFileDes *)))) {
+	if ((__stdfiledes = sfd = (StdFileDes **) malloc(3 * sizeof(StdFileDes *)))) {
 		if ((sfd[STDIN_FILENO] = fp = (StdFileDes *) malloc(sizeof(StdFileDes)))) {
 			fp->lx_fh = Input();
 			fp->lx_pos = STDIN_FILENO;
 			fp->lx_sys = -1;
 			fp->lx_oflags = O_RDONLY;
 			_setup_file(fp);
-			if ((sfd[STDOUT_FILENO] = fp = (StdFileDes *) malloc(
-					sizeof(StdFileDes)))) {
+			if ((sfd[STDOUT_FILENO] = fp = (StdFileDes *) malloc(sizeof(StdFileDes)))) {
 				fp->lx_fh = Output();
 				fp->lx_pos = STDOUT_FILENO;
 				fp->lx_sys = -1;
 				fp->lx_oflags = O_WRONLY;
 				_setup_file(fp);
-				if ((sfd[STDERR_FILENO] = fp = (StdFileDes *) malloc(
-						sizeof(StdFileDes)))) {
+				if ((sfd[STDERR_FILENO] = fp = (StdFileDes *) malloc(sizeof(StdFileDes)))) {
 					struct Process * proc = (struct Process *) FindTask(NULL);
 #ifdef __KICK13__
 					struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(proc->pr_CLI);
@@ -277,15 +260,13 @@ void __initstdio(void) {
 #else
 					if ((fp->lx_fh = (proc)->pr_CES) == 0)
 #endif
-						if (_WBenchMsg
-								|| (fp->lx_fh = stderrdes = Open("*",
-										MODE_OLDFILE)) == 0)
+						if (_WBenchMsg || (fp->lx_fh = stderrdes = Open("*", MODE_OLDFILE)) == 0)
 							fp->lx_fh = sfd[STDOUT_FILENO]->lx_fh;
 					fp->lx_pos = STDERR_FILENO;
 					fp->lx_sys = -1;
 					fp->lx_oflags = O_WRONLY;
 					_setup_file(fp);
-					stdfilesize += 3;
+					__stdfilesize += 3;
 
 #define STDIN_FILENO 0
 #define STDOUT_FILENO 1
@@ -294,10 +275,7 @@ void __initstdio(void) {
 					{
 						FILE **f = __sF, *err;
 
-						if (((*f++ = fdopen(STDIN_FILENO, "r")) == NULL)
-								|| ((*f++ = fdopen(STDOUT_FILENO, "w")) == NULL)
-								|| ((*f = err = fdopen(STDERR_FILENO, "w"))
-										== NULL))
+						if (((*f++ = fdopen(STDIN_FILENO, "r")) == NULL) || ((*f++ = fdopen(STDOUT_FILENO, "w")) == NULL) || ((*f = err = fdopen(STDERR_FILENO, "w")) == NULL))
 							exit(20);
 						free(err->_bf._base);
 						err->_flags &= ~(__SMBF | __SLBF);
@@ -312,13 +290,75 @@ void __initstdio(void) {
 	}
 	exit(20);
 }
-ADD2INIT(__initstdio, -30);
+
+
+/**
+ * Close the file descriptor d.
+ *
+ * Located here since it's called from __exitstdio
+ */
+int close(int d) {
+	StdFileDes *sfd = _lx_fhfromfd(d);
+
+	if (sfd) {
+		if (!(sfd->lx_inuse -= 1)) {
+			if (sfd->lx_pos = d, !sfd->lx_sys) {
+				if (!Close(sfd->lx_fh)) {
+					__seterrno();
+					return EOF;
+				}
+			}
+		} else {
+			__stdfiledes[d] = 0;
+		}
+	}
+
+	return 0;
+}
+
+/**
+ * Close the file handle stream.
+ *
+ * Located here since it's called from __exitstdio
+ */
+
+int fclose(FILE *stream) {
+	struct filenode *node;
+	int retval;
+	if (!stream) {
+		return EOF;
+	}
+	retval = freopen(NULL, NULL, stream) == NULL ? EOF : 0;
+	if (stream->_flags & __SMBF) /* Free buffer if necessary */
+	{
+		free(stream->_bf._base);
+		stream->_bf._base = NULL;
+	}
+
+	if (stream->_flags & __BPTRS) {
+		Close((BPTR )stream->name);
+		Close((BPTR )stream->tmpdir);
+	}
+
+	node = (struct filenode *) ((struct MinNode *) stream - 1);
+	Remove((struct Node * )&node->node);
+	free(node);
+	return retval;
+}
+
+struct MinList __filelist = { /* list of open files (fflush() needs also access) */
+(struct MinNode *) &__filelist.mlh_Tail,
+NULL, (struct MinNode *) &__filelist.mlh_Head };
 
 void __exitstdio(void) {
-	int i, max;
+	struct MinNode *node;
+	while ((node = __filelist.mlh_Head)->mln_Succ != NULL) {
+		fclose(&((struct filenode *) node)->theFILE);
+	}
 
-	for (max = stdfilesize, i = 0; i < max; i++) {
-		StdFileDes *sfd = stdfiledes[i];
+	int i, max;
+	for (max = __stdfilesize, i = 0; i < max; i++) {
+		StdFileDes *sfd = __stdfiledes[i];
 		if (sfd && sfd->lx_inuse) {
 			close(i);
 		}
@@ -327,4 +367,6 @@ void __exitstdio(void) {
 	if (stderrdes)
 		Close(stderrdes);
 }
+
+ADD2INIT(__initstdio, -30);
 ADD2EXIT(__exitstdio, -30);

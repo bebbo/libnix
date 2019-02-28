@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <dos/dos.h>
 #include <utility/tagitem.h>
 #include <proto/dos.h>

@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+extern void __seterrno(void);
+
 __stdargs int ftruncate(int d, off_t pos)
 { StdFileDes *sfd = _lx_fhfromfd(d);
 

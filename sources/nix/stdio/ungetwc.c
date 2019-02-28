@@ -3,6 +3,8 @@
 #include <errno.h>
 #include <wchar.h>
 
+int __fflush(FILE *stream);
+
 wint_t ungetwc(wint_t c, FILE *stream) {
 	if (c == EOF)
 		return EOF;

@@ -29,12 +29,7 @@ REDEF=-D_DOSBase=___DOSBase \
 
 #Use private library bases to avoid naming collisions
 %.o: %.c
-	$(CC) $(OPTIONS) -S $^ -o $*.S 2>&1|tee $*.err
-	$(CPP) -traditional $(REDEF) $*.S -o $*__2.S
-	$(CC) $(OPTIONS) $*__2.S -c -o $*.o
-	-rm $*.S $*__2.S
-	-if test ! -s $*.err; then rm $*.err; fi
-#	echo "\$$$(V)" >>$*.o
+	$(CC) $(OPTIONS) -c $^ -o $*.o
 
 .PHONY: all filelist clean veryclean
 

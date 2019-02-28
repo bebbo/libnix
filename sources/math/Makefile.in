@@ -41,11 +41,7 @@ REDEF=-D_DOSBase=___DOSBase \
       -D_LocaleBase=___LocaleBase
 
 %.o: %.c $(SUBDIRSP)
-	$(CC) $(OPTIONS) -S $(filter-out $(SUBDIRSP), $^) -o $*.S 2>&1|tee $*.err
-	$(CPP) -traditional $(REDEF) $*.S -o $*__2.S
-	$(CC) $(OPTIONS) $*__2.S -c -o $*.o
-	-rm $*.S $*__2.S
-	-if test ! -s $*.err; then rm $*.err; fi
+	$(CC) $(OPTIONS) -c $(filter-out $(SUBDIRSP), $^) -o $*.o
 
 .PHONY: all clean veryclean
 

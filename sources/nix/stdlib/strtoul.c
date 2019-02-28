@@ -4,6 +4,8 @@
 #include <limits.h>
 #include <stdlib.h>
 
+extern int iswxdigit(wint_t c);
+
 unsigned long strtoul(const char *nptr, char **endptr, int base) {
 	const char *p = nptr, *q;
 	char c = 0;
