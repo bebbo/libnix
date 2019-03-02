@@ -22,7 +22,7 @@ void *malloc(size_t size)
   struct MemHeader *b;
   ULONG size2,*a = NULL;
 
-  if ((int)size <= 0)
+  if ((int)size < 0)
 	  return 0;
 
   ObtainSemaphore(__memsema);
