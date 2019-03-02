@@ -1,10 +1,12 @@
 #include <stdio.h>
-#include <ctype.h>
+//#include <ctype.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <limits.h>
 #include <math.h>
 #include <float.h>
+
+#define isdigit(x) ((unsigned)(x - '0') <= 9)
 
 // a union to handle the
 union _d_bits {
