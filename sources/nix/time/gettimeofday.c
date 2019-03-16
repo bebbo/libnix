@@ -1,0 +1,10 @@
+#include <time.h>
+#include <proto/dos.h>
+#include <proto/timer.h>
+
+#define TimerBase DOSBase->dl_TimeReq->tr_node.io_Device
+
+int gettimeofday(struct timeval *tv, struct timezone *tz) {
+	GetSysTime(tv);
+	return 0;
+}
