@@ -10,7 +10,12 @@
 #include <unistd.h>
 #include "stabs.h"
 
-#include "__filenode.h"
+/* objects in __filelist */
+#include <exec/lists.h>
+struct filenode {
+  struct MinNode node;
+  FILE theFILE;
+};
 
 /*
  * SBF: I put all functions into this file which are linked anyway if stdio is used.

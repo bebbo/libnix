@@ -33,92 +33,13 @@ REDEF=-D_DOSBase=___DOSBase \
 OBJECTS2= \
 	amiga/misc/ArgArray.o \
 	misc/swapstack.o \
-    nix/errno/__seterrno.o \
-    nix/extra/basename.o \
 	nix/extra/dirent.o \
-	nix/extra/fdtofh.o \
-	nix/extra/fstat.o \
-	nix/extra/getcwd.o \
-	nix/extra/readlink.o \
-	nix/extra/stat.o \
-	nix/extra/truncate.o \
-	nix/extra/utimes.o \
-	nix/stdio/__errno.o \
-	nix/stdio/__fflush.o \
-	nix/stdio/__srget.o \
-	nix/stdio/__swbuf.o \
-	nix/stdio/__vfprintf_total_size.o \
-	nix/stdio/clearerr.o \
-	nix/stdio/dup.o \
-	nix/stdio/dup2.o \
-	nix/stdio/feof.o \
-	nix/stdio/ferror.o \
-	nix/stdio/fflush.o \
-	nix/stdio/fgetc.o \
-	nix/stdio/fgetpos.o \
-	nix/stdio/fgets.o \
-	nix/stdio/fgetwc.o \
-	nix/stdio/fileno.o \
-	nix/stdio/fopen.o \
-	nix/stdio/fprintf.o \
-	nix/stdio/fputc.o \
-	nix/stdio/fputs.o \
-	nix/stdio/fputwc.o \
-	nix/stdio/fread.o \
-	nix/stdio/fscanf.o \
-	nix/stdio/fseek.o \
-	nix/stdio/fsetpos.o \
-	nix/stdio/ftell.o \
-	nix/stdio/ftruncate.o \
-	nix/stdio/fwrite.o \
-	nix/stdio/getc.o \
-	nix/stdio/getchar.o \
-	nix/stdio/gets.o \
-	nix/stdio/getwc.o \
-	nix/stdio/ioctl.o \
-	nix/stdio/lseek.o \
-	nix/stdio/mblen.o \
-	nix/stdio/mbstowcs.o \
-	nix/stdio/mbtowc.o \
-	nix/stdio/open.o \
-	nix/stdio/perror.o \
-	nix/stdio/printf.o \
-	nix/stdio/putc.o \
-	nix/stdio/putchar.o \
-	nix/stdio/puts.o \
-	nix/stdio/putwc.o \
-	nix/stdio/read.o \
-	nix/stdio/remove.o \
-	nix/stdio/rename.o \
-	nix/stdio/rewind.o \
-	nix/stdio/scanf.o \
-	nix/stdio/setbuf.o \
-	nix/stdio/setvbuf.o \
-	nix/stdio/snprintf.o \
-	nix/stdio/sprintf.o \
-	nix/stdio/sscanf.o \
-	nix/stdio/stpncpy.o \
-	nix/stdio/tmpfile.o \
-	nix/stdio/tmpnam.o \
-	nix/stdio/ungetc.o \
-	nix/stdio/ungetwc.o \
-	nix/stdio/vfprintf.o \
-	nix/stdio/vfscanf.o \
-	nix/stdio/vprintf.o \
-	nix/stdio/vscanf.o \
-	nix/stdio/vsnprintf.o \
-	nix/stdio/vsprintf.o \
-	nix/stdio/vsscanf.o \
-	nix/stdio/wcstombs.o \
-	nix/stdio/wctomb.o \
-	nix/stdio/write.o \
-	nix/stdlib/getenv.o \
-	nix/stdlib/putenv.o \
 	nix/stdlib/system.o \
 	nix/string/strcoll.o \
 	nix/string/strxfrm.o \
 	nix/time/strftime.o \
-	nixmain/__nocommandline.o
+	nixmain/__nocommandline.o \
+	nix20/stdio/open.o 
 
 SUBDIRS2=$(SUBDIRS) misc nixmain
 SUBDIRSP=$(patsubst %,%/.created,$(SUBDIRS2))
