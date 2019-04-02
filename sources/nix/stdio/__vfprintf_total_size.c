@@ -82,8 +82,6 @@ static const char flagc[] = { '#', '0', '-', ' ', '+' };
  */
 #define HAS_PRECI 32
 
-extern unsigned char *__decimalpoint;
-
 static int ___vfprintf_total_size(FILE *stream, const char *format,
 		va_list args) {
 	unsigned char buf[64];
@@ -310,6 +308,9 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 			case 'E':
 			case 'g':
 			case 'G': {
+
+				extern unsigned char *__decimalpoint;
+
 				union _d_bits d;
 				short exponent = 0;
 				char sign = 0;

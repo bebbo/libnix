@@ -53,4 +53,5 @@ int dup2(int oldfd, int newfd) {
 			return fd;
 		}
 	}
+	return -1;
 }

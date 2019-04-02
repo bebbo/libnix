@@ -52,6 +52,7 @@ static ssize_t _file_write(StdFileDes *sfd,const void *buf,size_t nbytes)
     default:
       if((r=Write(sfd->lx_fh,(char *)buf,nbytes))!=EOF)
         return r;
+      break;
   }
   __seterrno(); return EOF;
 }
