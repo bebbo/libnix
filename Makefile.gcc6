@@ -41,7 +41,7 @@ all: info lib libb libm020 libm020bb libm020bb32
 lib: lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
 	@mkdir -p $@
 	$(MAKE) one kind=$@
-	-@cp $(PREFIX)/m68k-amigaos/lib/libstubs.a lib
+	@if [ -e $(PREFIX)/m68k-amigaos/lib/libstubs.a ]; then cp $(PREFIX)/m68k-amigaos/lib/libstubs.a lib; fi
 	$(MAKE) -C $@ kind=lib libstubs.a lib=stubs
 		
 libb:
@@ -69,7 +69,7 @@ install: install_lib install_libb install_libm020 install_libm020bb install_libm
 	
 install_lib:
 	$(MAKE) install_one kind=lib to=""
-	mv $(PREFIX)/m68k-amigaos/libnix/lib/libstubs.a c 
+	mv $(PREFIX)/m68k-amigaos/libnix/lib/libstubs.a $(PREFIX)/m68k-amigaos/lib/ 
 install_libb:
 	$(MAKE) install_one kind=libb to="libb/"
 install_libm020:
