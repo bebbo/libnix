@@ -12,6 +12,7 @@ _LVOWaitPort	=	-384
 
 pr_MsgPort	=	  92
 pr_CLI		=	 172
+ThisTask    =    276
 
 | public symbols
 
@@ -43,9 +44,7 @@ nobss:
 		movel	4:W,a6
 		movel	a6,a4@(_SysBase:W)
 
-		subal	a1,a1
-		jsr	a6@(_LVOFindTask:W)
-		movel	d0,a3
+		movel	a6@(ThisTask:W),a3
 		tstl	a3@(pr_CLI:W)
 		bne	fromCLI
 

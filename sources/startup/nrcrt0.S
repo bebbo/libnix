@@ -20,6 +20,7 @@ _LVOCopyMemQuick =	-630
 
 pr_MsgPort	=	  92
 pr_CLI		=	 172
+ThisTask    =    276
 
 ERROR_NO_FREE_STORE =	 103
 
@@ -35,9 +36,7 @@ start:		movel	a0,d3
 
 		movel	4:W,a6
 
-		subal	a1,a1
-		jsr	a6@(_LVOFindTask:W)
-		movel	d0,a3
+		movel	a6@(ThisTask:W),a3
 		tstl	a3@(pr_CLI:W)
 		subal	a2,a2
 		bne	fromCLI

@@ -3,7 +3,7 @@
 | No bugs known
 |
 | Problem: geta4()
-| I really don´t know how to implement it with multiple starts
+| I really donï¿½t know how to implement it with multiple starts
 |
 | You should use the non-resident startup-code if you need it !
 
@@ -20,6 +20,7 @@ _LVOCopyMemQuick =	-630
 
 pr_MsgPort	=	  92
 pr_CLI		=	 172
+ThisTask    =    276
 
 ERROR_NO_FREE_STORE =	 103
 
@@ -35,9 +36,7 @@ start:		movel	a0,d3
 
 		movel	4:W,a6
 
-		subal	a1,a1
-		jsr	a6@(_LVOFindTask:L)
-		movel	d0,a3
+		movel	a6@(ThisTask:W),a3
 		tstl	a3@(pr_CLI:L)
 		subal	a2,a2
 		bne	fromCLI
