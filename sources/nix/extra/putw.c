@@ -1,6 +1,6 @@
 /* Write a long word to a file */
 
-#include <stdio.h>
+#include "stdio.h"
 
 int putw(int w, FILE *f)
 {

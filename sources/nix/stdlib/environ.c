@@ -78,7 +78,7 @@ int clearenv(void) {
 		if (n->ln_Type != LV_VAR)
 			continue;
 
-		DeleteVar(n->ln_Name, 0);
+		DeleteVar((CONST_STRPTR)n->ln_Name, 0);
 	}
 	__clearenviron();
 	return 0;

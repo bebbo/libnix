@@ -6,6 +6,12 @@
 #include <proto/icon.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
+#include <stddef.h>
+
+#ifdef __KICK13__
+#include <stdlib.h>
+#define StrToLong(a,b) *(b) = atol(a)
+#endif
 
 #ifdef NEW_ARGARRAY
 static UBYTE **argArray;

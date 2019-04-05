@@ -1,8 +1,9 @@
-#include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
 
-#include "__filenode.h"
+#include "stdio.h"
+
+#include "../../../sources/nix/stdio/__filenode.h"
 
 extern int __fflush(FILE *);
 

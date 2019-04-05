@@ -6,6 +6,32 @@
 #include <proto/dos.h>
 #include "stabs.h"
 
+#ifdef __KICK13__
+#include <exec/execbase.h>
+#include <dos/dosextens.h>
+
+extern struct ExecBase * SysBase;
+
+extern void * AllocVec(unsigned, int);
+extern void FreeVec(void *);
+extern int GetProgramName(char * to, unsigned len);
+
+BPTR SelectInput(BPTR in) {
+	struct Process * proc = (struct Process *)SysBase->ThisTask;
+	BPTR ret = proc->pr_CIS;
+	proc->pr_CIS = in;
+	return ret;
+}
+
+BPTR SelectOutput(BPTR out) {
+	struct Process * proc = (struct Process *)SysBase->ThisTask;
+	BPTR ret = proc->pr_COS;
+	proc->pr_COS = out;
+	return ret;
+}
+
+#endif
+
 extern int    __argc; /* Defined in startup */
 extern char **__argv;
 extern char  *__commandline;

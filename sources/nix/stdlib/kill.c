@@ -12,7 +12,7 @@ int kill(pid_t pid, int signo) {
 	errno = 0;
 
 	Forbid();
-	struct Task *task = FindCliProc(pid);
+	struct Task *task = (struct Task *) FindCliProc(pid);
 
 	if (task == FindTask(NULL)) {
 		Permit();

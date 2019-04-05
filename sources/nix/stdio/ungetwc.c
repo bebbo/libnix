@@ -1,12 +1,12 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <wchar.h>
+#include "stdio.h"
 
 int __fflush(FILE *stream);
 
 wint_t ungetwc(wint_t c, FILE *stream) {
-	if (c == EOF)
+	if (c == (wint_t)EOF)
 		return EOF;
 	if (stream->_flags & __SERR)/* Error on stream */
 	{
@@ -32,12 +32,12 @@ wint_t ungetwc(wint_t c, FILE *stream) {
 			stream->_flags |= __SRD;
 		}
 	}
-	if (stream->_r >= 4 + 1 - sizeof(wint_t)) /* ungetc buffer overflow */
+	if ((wint_t)stream->_r >= 4 + 1 - sizeof(wint_t)) /* ungetc buffer overflow */
 		return EOF;
 	stream->_r += sizeof(wint_t);
 
 	wint_t cc = c;
-	for (int i = 0; i < sizeof(wint_t); ++i) {
+	for (size_t i = 0; i < sizeof(wint_t); ++i) {
 		*--stream->_p = cc;
 		cc >>= 8;
 	}

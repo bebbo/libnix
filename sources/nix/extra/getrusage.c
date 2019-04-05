@@ -25,7 +25,7 @@ ADD2INIT(__inittimer,1);
 int getrusage(int who, struct rusage *rusage)
 {
   static struct rusage r0 =
-    { {0, 0}, {0, 0}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    { { 0, 0 }, { 0, 0 } };
   long clock[2];
   int status = 0;
 

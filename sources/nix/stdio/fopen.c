@@ -1,5 +1,4 @@
 #include <errno.h>
-#include <stdio.h>
 #include <stdlib.h> /* If you use normal file I/O,
                        the memory functions don't count that much on memory */
 #include <exec/lists.h>
@@ -8,13 +7,15 @@
 #include "debuglib.h"
 #include "stabs.h"
 
-#include "__filenode.h"
+#include "stdio.h"
+
+#include "../../../sources/nix/stdio/__filenode.h"
 extern struct MinList __filelist;
 
 FILE *fopen(const char *filename,const char *mode)
 { struct filenode *node = (struct filenode *)calloc(1,sizeof(*node));
   if(node!=NULL)
-  { if((node->theFILE._bf._base=(char *)malloc(BUFSIZ))!=NULL)
+  { if((node->theFILE._bf._base=(unsigned char *)malloc(BUFSIZ))!=NULL)
     { node->theFILE._bf._size=BUFSIZ;
       node->theFILE._flags|=__SMBF|__SLBF; /* Buffer is malloc'ed */
       node->theFILE.file = -1;

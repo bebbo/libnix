@@ -1,8 +1,9 @@
+
 #define DEVICES_TIMER_H
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <stdio.h>
+#include "stdio.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -20,6 +21,10 @@ ssize_t read(int d, void *buf, size_t nbytes) {
 	if (sfd) {
 		long r;
 		__chkabort();
+
+		if (sfd->lx_fx)
+			return sfd->lx_fx->lx_read(sfd, buf, nbytes);
+
 		if ((r = Read(sfd->lx_fh, buf, nbytes)) != EOF)
 			return r;
 		__seterrno();

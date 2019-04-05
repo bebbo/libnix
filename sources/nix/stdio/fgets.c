@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "stdio.h"
 
 char *fgets(char *s,int n,FILE *stream)
 { char *s2=s;

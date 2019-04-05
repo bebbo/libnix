@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <wchar.h>
+#include "stdio.h"
 
 #undef getwc
 

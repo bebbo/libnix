@@ -1,5 +1,7 @@
 *~
 .DS_Store
-.project
-.settings
-Debug
+lib
+libb
+libm020
+libm020bb
+libm020bb32

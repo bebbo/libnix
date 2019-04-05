@@ -17,12 +17,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <errno.h>
+#include "stdio.h"
 
 #ifndef VA_COPY
 # ifdef HAVE_VA_COPY

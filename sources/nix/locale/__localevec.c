@@ -7,10 +7,6 @@
  * or setlocale is never referenced.
  */
 
-struct Locale *__localevec[5]=
-{ NULL,NULL,NULL,NULL,NULL };
+struct Locale *__localevec[5] = { 0, 0, 0, 0, 0 };
 
-/* If you need __localevec you need LocaleBase and vice versa.
- */
-extern struct Library *LocaleBase=NULL;
 #endif

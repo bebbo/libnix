@@ -1,13 +1,14 @@
+#include <exec/execbase.h>
+#include <exec/tasks.h>
+#include <proto/exec.h>
 #include <dos/dos.h>
 #include <dos/dosextens.h>
-#include <exec/execbase.h>
-#include <proto/exec.h>
+#include <string.h>
 
-extern struct ExecBase * SysBase;
 
 int GetProgramName(char * to, unsigned len) {
 	struct Process * process = (struct Process *) SysBase->ThisTask;
-	struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(process->pr_CLI);
+	struct CommandLineInterface * cli = (struct CommandLineInterface *) BADDR(process->pr_CLI);
 	if (cli) {
 		unsigned char * bname = (unsigned char *) BADDR(cli->cli_CommandName);
 		if (*bname < len - 1) {
@@ -21,18 +22,4 @@ int GetProgramName(char * to, unsigned len) {
 	if (to && len)
 		*to = 0;
 	return DOSFALSE;
-}
-
-BPTR SelectInput(BPTR p) {
-	struct Process * process = (struct Process *) SysBase->ThisTask;
-	BPTR r = process->pr_CIS;
-	process->pr_CIS = p;
-	return r;
-}
-
-BPTR SelectOutput(BPTR p) {
-	struct Process * process = (struct Process *) SysBase->ThisTask;
-	BPTR r = process->pr_COS;
-	process->pr_COS = p;
-	return r;
 }

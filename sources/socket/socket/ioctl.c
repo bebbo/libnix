@@ -1,3 +1,4 @@
+#include "stdio.h"
 #include <errno.h>
 #include <stdarg.h>
 #include <sys/types.h>
@@ -15,7 +16,7 @@ __stdargs int ioctl(int s, unsigned long cmd, ...)
   caddr_t data;
   va_list va;
 
-  if (fp->lx_type == LX_FILE) {
+  if (fp->lx_flags & LX_FILE) {
     errno = EBADF; return -1;
   }
   

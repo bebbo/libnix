@@ -13,7 +13,7 @@ void bcopy(const void *s1, void *s2, size_t n) {
 	if (!n)
 		return;
 
-	v1.v = s1;
+	v1.v = (void *)s1;
 	v2.v = s2;
 
 	if (s2 < s1) {
@@ -45,8 +45,7 @@ void bcopy(const void *s1, void *s2, size_t n) {
 			if (!n)
 				return;
 		}
-		do
-			; while (*v2.c++ = *v1.c++, --n);
+		while (*v2.c++ = *v1.c++, --n){}
 	} else {
 		v1.c += n;
 		v2.c += n;
@@ -78,7 +77,6 @@ void bcopy(const void *s1, void *s2, size_t n) {
 			if (!n)
 				return;
 		}
-		do
-			; while (*--v2.c = *--v1.c, --n);
+		while (*--v2.c = *--v1.c, --n){}
 	}
 }

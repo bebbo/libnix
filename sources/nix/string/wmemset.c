@@ -7,7 +7,7 @@ wchar_t *wmemset(wchar_t *s, wchar_t _c, size_t _n) {
 	if (_n) {
 		register unsigned c __asm("d0") = _c;
 		register size_t n __asm("d1") = _n;
-		wchar_t * v __asm("a0") = s + n;
+		register wchar_t * v __asm("a0") = s + n;
 
 		size_t m = n / 8;
 		if (m) {

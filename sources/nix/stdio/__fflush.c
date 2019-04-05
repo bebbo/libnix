@@ -1,6 +1,6 @@
-#include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
+#include "stdio.h"
 
 int __fflush(FILE *stream) /* fflush exactly one file */
 { unsigned char *subbuf;

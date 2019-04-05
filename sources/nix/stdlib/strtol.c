@@ -1,8 +1,8 @@
-#include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
+#include "stdio.h"
 
 signed long strtol(const char *nptr,char **endptr,int base)
 { const char *p=nptr;
@@ -12,7 +12,7 @@ signed long strtol(const char *nptr,char **endptr,int base)
   { errno=EINVAL;
     return 0;
   }
-  while(isspace(*p))
+  while(isspace((int)*p))
     p++;
   r=strtoul(p,&q,base);
   if(endptr!=NULL)

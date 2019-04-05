@@ -1,7 +1,7 @@
 #include <proto/exec.h>
 #include "stabs.h"
-#include <stdio.h>
 #include <string.h>
+#include "stdio.h"
 
 extern struct lib /* These are the elements pointed to by __LIB_LIST__ */
 { struct Library *base;
@@ -19,7 +19,7 @@ static void __openliberror(ULONG version, char const * ln)
   strcpy(buf, "can't load ");
   strcat(buf, ln);
   strcat(buf, "\n");
-  fputs(stderr, buf);
+  fputs(buf, stderr);
   exit(20);
 }
 

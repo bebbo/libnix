@@ -1,20 +1,27 @@
 #include <dos/dosextens.h>
 #include <proto/dos.h>
 
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <strsup.h>
+#include "stdio.h"
 
 extern void __seterrno(void);
 
 int fstat(int d,struct stat *buf)
 { extern int __stat(struct stat *buf,struct FileInfoBlock *fib);
-  StdFileDes *fp = _lx_fhfromfd(d);
+  StdFileDes *sfd = _lx_fhfromfd(d);
   struct FileInfoBlock *fib;
   LONG pos,len,fh;
 
-  if (fp && (fh=fp->lx_fh)) {
+  if (!sfd)
+	  return -1;
+
+	if (sfd->lx_fx)
+		return sfd->lx_fx->lx_fstat(sfd, buf);
+
+
+  if (sfd && (fh=sfd->lx_fh)) {
     if ((fib=(struct FileInfoBlock *)AllocDosObject(DOS_FIB,NULL)) == NULL) {
       __seterrno(); return -1;
     }

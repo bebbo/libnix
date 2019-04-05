@@ -1,6 +1,6 @@
-#include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
+#include "stdio.h"
 
 long ftell(FILE *stream)
 { long pos;

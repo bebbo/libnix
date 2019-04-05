@@ -6,7 +6,7 @@
 #include <proto/locale.h>
 
 #define STR(a) \
-(__localevec[LC_TIME-1]==NULL?strings[(a)-1]:GetLocaleStr(__localevec[LC_TIME-1],(a)))
+(__localevec[LC_TIME-1]==NULL?strings[(a)-1]:(char *)GetLocaleStr(__localevec[LC_TIME-1],(a)))
 
 extern struct Locale *__localevec[];
 
@@ -26,7 +26,7 @@ extern struct Locale *__localevec[];
 #define STOR(c)   if(++size<=maxsize)*s++=(c);
 
 /* All calendar strings */
-static const unsigned char *const strings[]=
+static const char * strings[]=
 { "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",
   "Sun","Mon","Tue","Wed","Thu","Fri","Sat",
   "January","February","March","April","May","June",

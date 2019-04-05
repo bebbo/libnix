@@ -45,7 +45,8 @@ Supporting OS subroutines required (only if enabled): <<close>>, <<fstat>>,
 
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
+
+#include "stdio.h"
 
 #ifndef HAVE_ASSERT_FUNC
 /* func can be NULL, in which case no function information is given.  */

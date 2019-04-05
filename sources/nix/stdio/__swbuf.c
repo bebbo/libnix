@@ -1,5 +1,7 @@
-#include <stdio.h>
 #include <errno.h>
+#include "stdio.h"
+
+extern int __fflush(FILE *);
 
 int __swbuf(int c, FILE *stream) /* Get next output block */
 {

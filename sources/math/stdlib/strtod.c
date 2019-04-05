@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "stdio.h"
 
 double strtod(const char *nptr,char **endptr)
 { double a;

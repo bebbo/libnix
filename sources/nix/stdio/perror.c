@@ -1,6 +1,6 @@
-#include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include "stdio.h"
 
 void perror(const char *string)
 { int err=errno;

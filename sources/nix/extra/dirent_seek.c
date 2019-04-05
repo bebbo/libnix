@@ -5,7 +5,7 @@
 static long Hash(struct dirent *e)
 {
   unsigned short buf[256], i, j, k, h = 0;
-  const unsigned char * p = e->d_name;
+  const char * p = (const char *)e->d_name;
   long l = e->d_namlen;
   
   for(i = 0; i < 256; ++i)

@@ -1,11 +1,11 @@
 #include <string.h>
-#include <stdio.h>
 #include <errno.h>
 #include <sys/utsname.h>
 
 #include <proto/exec.h>
 #include <proto/wb.h>
 #include <exec/execbase.h>
+#include "stdio.h"
 
 extern struct Library * WorkbenchBase;
 
@@ -16,7 +16,7 @@ int uname (struct utsname * uname) {
 	strcpy(uname->sysname, "AmigaOS");
 	strcpy(uname->nodename, "alive");
 
-	struct Library * versionLibrary = OpenLibrary("version.library", 0);
+	struct Library * versionLibrary = OpenLibrary((CONST_STRPTR)"version.library", 0);
 	if (versionLibrary) {
 		sprintf(uname->version, "%d.%d", versionLibrary->lib_Version, versionLibrary->lib_Revision);
 		CloseLibrary(versionLibrary);

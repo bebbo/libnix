@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <sys/syslimits.h>
+#include "stdio.h"
 
 /* NOTE: NOT thread-safe */
 FILE *tmpfile(void)

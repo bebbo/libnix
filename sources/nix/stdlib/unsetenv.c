@@ -7,7 +7,7 @@ extern int __clearenviron();
 extern int __fillenviron();
 
 int unsetenv(const char *name) {
-	if (name && *name && DeleteVar(name, 0)) {
+	if (name && *name && DeleteVar((CONST_STRPTR)name, 0)) {
     	__clearenviron();
     	__fillenviron();
     	return 0;

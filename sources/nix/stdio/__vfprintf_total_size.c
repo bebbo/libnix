@@ -1,12 +1,10 @@
-#include <stdio.h>
-//#include <ctype.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <limits.h>
 #include <math.h>
 #include <float.h>
-
-#define isdigit(x) ((unsigned)(x - '0') <= 9)
+#include "stdio.h"
 
 // a union to handle the
 union _d_bits {
@@ -156,7 +154,7 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 			static const char uppertabel[] = { '0', '1', '2', '3', '4', '5',
 					'6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 			short width = 0;
-			short preci = 0x7fff;
+			unsigned short preci = 0x7fff;
 			short flags = 0; /* Specifications */
 			char type, subtype = 'i';
 			char buffer1[2]; /* Signs and that like */
@@ -164,7 +162,7 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 			char *buffer2 = buffer; /* So we can set this to any other strings */
 			size_t size1 = 0, size2 = 0; /* How many chars in buffer? */
 			const char *ptr = format + 1; /* pointer to format string */
-			short i, pad; /* Some temporary variables */
+			unsigned short i, pad; /* Some temporary variables */
 
 			do /* read flags */
 				for (i = 0; i < sizeof(flagc); i++)
@@ -301,6 +299,9 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 				break;
 
 #ifdef FULL_SPECIFIERS
+				extern unsigned char *__decimalpoint;
+
+
 			case 'a':
 			case 'A':
 			case 'f':
@@ -308,13 +309,10 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 			case 'E':
 			case 'g':
 			case 'G': {
-
-				extern unsigned char *__decimalpoint;
-
 				union _d_bits d;
 				short exponent = 0;
 				char sign = 0;
-				char const * infnan = 0;
+				const char * infnan = 0;
 				char pad = (flags & ZEROPADFLAG) ? '0' : ' ';
 
 				if (type == 'f' || type == 'F')

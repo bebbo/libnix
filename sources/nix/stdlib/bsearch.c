@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include "stdio.h"
 
 /* sample compar function: int cmp(void *a,void *b){ return *(int *)a-*(int *)b; } */
 

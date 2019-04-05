@@ -1,204 +1,182 @@
-/*	$NetBSD: fnmatch.c,v 1.20 2003/08/07 16:42:48 agc Exp $	*/
-
-/*
- * Copyright (c) 1989, 1993, 1994
- *	The Regents of the University of California.  All rights reserved.
- *
- * This code is derived from software contributed to Berkeley by
- * Guido van Rossum.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
+/**
+ * Coded by Stefan "Bebbo" Franke in 2019. Replacement for all that copyrighted stuff.
  */
-
-#include <sys/cdefs.h>
-#if defined(LIBC_SCCS) && !defined(lint)
-#if 0
-static char sccsid[] = "@(#)fnmatch.c	8.2 (Berkeley) 4/16/94";
-#else
-__RCSID("$NetBSD: fnmatch.c,v 1.20 2003/08/07 16:42:48 agc Exp $");
-#endif
-#endif /* LIBC_SCCS and not lint */
-
-/*
- * Function fnmatch() as specified in POSIX 1003.2-1992, section B.6.
- * Compares a filename or pathname to a pattern.
- */
-
-#include <assert.h>
 #include <ctype.h>
-#include "fnmatch.h"
+#include <fnmatch.h>
 #include <string.h>
+#include "stdio.h"
 
-#ifdef __weak_alias
-__weak_alias(fnmatch,_fnmatch)
-#endif
+typedef int (*fxtype)(int);
 
-#define	EOS	'\0'
+#define FX(a) {#a, is##a}
+struct __fx {
+	const char * name;
+	fxtype fx;
+} const data[] = { FX(alnum), FX(alpha), FX(blank), FX(cntrl), FX(digit), FX(lower), FX(print), FX(punct), FX(space), FX(upper), FX(xdigit), };
 
-static const char *rangematch __P((const char *, int, int));
-
-static __inline__ int foldcase(int ch, int flags)
-{
-	if ((flags & FNM_CASEFOLD) != 0 && isupper(ch))
-		return (tolower(ch));
-	return (ch);
-}
-
-#define	FOLDCASE(ch, flags)	foldcase((unsigned char)(ch), (flags))
-
-int
-fnmatch(pattern, string, flags)
-	const char *pattern, *string;
-	int flags;
-{
-	const char *stringstart;
-	char c, test;
-
-	//assert(pattern != NULL);
-	//assert(string != NULL);
-	if(pattern == NULL || string == NULL)
-	  return -666;
-
-	for (stringstart = string;;)
-		switch (c = FOLDCASE(*pattern++, flags)) {
-		case EOS:
-			if ((flags & FNM_LEADING_DIR) && *string == '/')
-				return (0);
-			return (*string == EOS ? 0 : FNM_NOMATCH);
-		case '?':
-			if (*string == EOS)
-				return (FNM_NOMATCH);
-			if (*string == '/' && (flags & FNM_PATHNAME))
-				return (FNM_NOMATCH);
-			if (*string == '.' && (flags & FNM_PERIOD) &&
-			    (string == stringstart ||
-			    ((flags & FNM_PATHNAME) && *(string - 1) == '/')))
-				return (FNM_NOMATCH);
-			++string;
-			break;
-		case '*':
-			c = FOLDCASE(*pattern, flags);
-			/* Collapse multiple stars. */
-			while (c == '*')
-				c = FOLDCASE(*++pattern, flags);
-
-			if (*string == '.' && (flags & FNM_PERIOD) &&
-			    (string == stringstart ||
-			    ((flags & FNM_PATHNAME) && *(string - 1) == '/')))
-				return (FNM_NOMATCH);
-
-			/* Optimize for pattern with * at end or before /. */
-			if (c == EOS) {
-				if (flags & FNM_PATHNAME)
-					return ((flags & FNM_LEADING_DIR) ||
-					    strchr(string, '/') == NULL ?
-					    0 : FNM_NOMATCH);
-				else
-					return (0);
-			} else if (c == '/' && flags & FNM_PATHNAME) {
-				if ((string = strchr(string, '/')) == NULL)
-					return (FNM_NOMATCH);
-				break;
-			}
-
-			/* General case, use recursion. */
-			while ((test = FOLDCASE(*string, flags)) != EOS) {
-				if (!fnmatch(pattern, string,
-					     flags & ~FNM_PERIOD))
-					return (0);
-				if (test == '/' && flags & FNM_PATHNAME)
-					break;
-				++string;
-			}
-			return (FNM_NOMATCH);
-		case '[':
-			if (*string == EOS)
-				return (FNM_NOMATCH);
-			if (*string == '/' && flags & FNM_PATHNAME)
-				return (FNM_NOMATCH);
-			if ((pattern =
-			    rangematch(pattern, FOLDCASE(*string, flags),
-				       flags)) == NULL)
-				return (FNM_NOMATCH);
-			++string;
-			break;
-		case '\\':
-			if (!(flags & FNM_NOESCAPE)) {
-				if ((c = FOLDCASE(*pattern++, flags)) == EOS) {
-					c = '\\';
-					--pattern;
-				}
-			}
-			/* FALLTHROUGH */
-		default:
-			if (c != FOLDCASE(*string++, flags))
-				return (FNM_NOMATCH);
-			break;
-		}
-	/* NOTREACHED */
-}
-
-static const char *
-rangematch(pattern, test, flags)
-	const char *pattern;
-	int test, flags;
-{
-	int negate, ok;
-	char c, c2;
-
-	//assert(pattern != NULL);
-	if(pattern == NULL)
-	  return NULL;
-
-	/*
-	 * A bracket expression starting with an unquoted circumflex
-	 * character produces unspecified results (IEEE 1003.2-1992,
-	 * 3.13.2).  This implementation treats it like '!', for
-	 * consistency with the regular expression syntax.
-	 * J.T. Conklin (conklin@ngai.kaleida.com)
-	 */
-	if ((negate = (*pattern == '!' || *pattern == '^')) != 0)
-		++pattern;
-	
-	for (ok = 0; (c = FOLDCASE(*pattern++, flags)) != ']';) {
-		if (c == '\\' && !(flags & FNM_NOESCAPE))
-			c = FOLDCASE(*pattern++, flags);
-		if (c == EOS)
-			return (NULL);
-		if (*pattern == '-' 
-		    && (c2 = FOLDCASE(*(pattern+1), flags)) != EOS &&
-		        c2 != ']') {
-			pattern += 2;
-			if (c2 == '\\' && !(flags & FNM_NOESCAPE))
-				c2 = FOLDCASE(*pattern++, flags);
-			if (c2 == EOS)
-				return (NULL);
-			if (c <= test && test <= c2)
-				ok = 1;
-		} else if (c == test)
-			ok = 1;
+/**
+ * Search the matching ctype function.
+ */
+static fxtype lookup(const char * name, size_t len) {
+//	printf("%s %d, %d, %d\n", name, len, sizeof(data), sizeof(struct __fx));
+	if (len == 5) {
+		for (size_t i = 0; i < sizeof(data) / sizeof(struct __fx) - 1; ++i)
+			if (0 == strncmp(data[i].name, name, 5))
+				return data[i].fx;
+	} else if (len == 6) {
+		int i = sizeof(data) / sizeof(struct __fx) - 1;
+		if (0 == strncmp(data[i].name, name, 6))
+			return data[i].fx;
 	}
-	return (ok == negate ? NULL : pattern);
+	return 0;
+}
+
+
+#define FLAG_PATHNAME (flags & FNM_PATHNAME)
+#define	FLAG_NOESCAPE (flags & FNM_NOESCAPE)
+#define FLAG_INPERIOD (flags & FNM_PERIOD)
+#define FLAG_CASEFOLD (flags & FNM_CASEFOLD)
+
+int fnmatch(const char *pattern, const char *string, int flags) {
+	short period = FLAG_INPERIOD;
+	unsigned char c = *string;
+	unsigned char p = *pattern;
+	while (c && p) {
+//		if (flags & 0x8000)
+//			fprintf(stderr, "%s == %s\n", pattern, string);
+		if (FLAG_CASEFOLD)
+			c = tolower(c);
+		switch (p) {
+			case '*':
+				if ((FLAG_PATHNAME && c == '/') || (period && c == '.')) {
+					--string;
+					break;
+				}
+				// try with '*' and rest of string
+				if (!fnmatch(pattern, string + 1, flags))
+					return 0;
+
+				// skip the '*'
+				--string;
+				break;
+			case '?':
+				// skip the '?' if match isn't allowed
+				if ((FLAG_PATHNAME && c == '/') || (period && c == '.'))
+					--string;
+				break;
+			case '[': {
+				if (c == '/' && FLAG_PATHNAME)
+					return FNM_NOMATCH;
+
+				const char * start = pattern;
+
+				p = *++pattern;
+
+				short not = 0;
+				if (p == '!') {
+					not = 1;
+					p = *++pattern;
+				}
+
+				// unterminated '[' -> compare as characters
+				if (!p) {
+					pattern = start;
+					p = *pattern;
+					break;
+				}
+
+				short match = 0;
+				do {
+					if (!p) {
+						match = not;
+						break;
+					}
+					// character classes
+					if (p == '[' && pattern[1] == ':') {
+						const char * name = pattern += 2;
+						while (*pattern && *pattern != ':')
+							++pattern;
+						fxtype is = lookup(name, pattern - name);
+						if (*pattern == 0) {
+							match = not;
+							break;
+						}
+						if (*++pattern != ']') {
+							match = not;
+							break;
+						}
+						if (FLAG_CASEFOLD && is == isupper)
+							is = islower;
+						if (is)
+							match |= is(c);
+					} else
+					// range handling
+					if (pattern[1] == '-' && pattern[2] != ']') {
+						pattern += 2;
+						unsigned char to = *pattern;
+						if (to == '\\' && !FLAG_NOESCAPE)
+							to = *++pattern;
+						while (!match && p <= to) {
+							if (!period || c == '.') {
+								if (FLAG_CASEFOLD && tolower(p) == c)
+									match = 1;
+								else if (p == c) {
+									match = 1;
+								}
+							}
+							++p;
+						}
+					} else {
+						if (!period || c != '.') {
+							if (FLAG_CASEFOLD)
+								p = tolower(p);
+							match |= p == c;
+						}
+					}
+					p = *++pattern;
+				} while (p != ']' || pattern[1] == '-');
+
+				// goto next char if ok
+				if (match != not)
+					break;
+
+				// no match - try to apply this as character compare - fall through to character compare
+				pattern = start;
+				p = *pattern;
+			}
+				/* no break */
+			case '\\':
+				// recompare because of fall through - could be something else
+				if (p == '\\') {
+					if (!FLAG_NOESCAPE && pattern[1]) {
+						p = *++pattern;
+					}
+				}
+				/* no break */
+			default:
+				// to character compare
+				if (FLAG_CASEFOLD) {
+					if (tolower(p) != c)
+						return FNM_NOMATCH;
+				} else if (p != c)
+					return FNM_NOMATCH;
+				break;
+		}
+
+		// reset dynamic period switch
+		if (FLAG_PATHNAME && c == '/')
+			period = FLAG_INPERIOD;
+		else
+			period = 0;
+		// matched
+		p = *++pattern;
+		c = *++string;
+	}
+
+	while (p == '*')
+		p = *++pattern;
+
+//	if (flags & 0x8000)
+//		fprintf(stderr, "->%d\n", !!(p || c));
+	return p | c;
 }

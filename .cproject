@@ -1,67 +1,98 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
-		<cconfiguration id="cdt.managedbuild.config.gnu.cross.lib.debug.1486615466">
-			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cross.lib.debug.1486615466" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+		<cconfiguration id="cdt.managedbuild.config.gnu.cross.lib.debug.931328088.125240087">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cross.lib.debug.931328088.125240087" moduleId="org.eclipse.cdt.core.settings" name="nix">
 				<externalSettings>
 					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/libnix4"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/libnix"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/libnix/Debug"/>
-						<entry flags="RESOLVED" kind="libraryFile" name="libnix" srcPrefixMapping="" srcRootPath=""/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/libnix4/nix"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/libnix4"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/libnix"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="nix" srcPrefixMapping="" srcRootPath=""/>
 					</externalSetting>
 				</externalSettings>
 				<extensions>
 					<extension id="de.bb.eclipse.cdt-amiga.Amiga" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.cross.lib.debug.1486615466" name="Debug" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="cdt.managedbuild.config.gnu.cross.lib.debug">
-					<folderInfo id="cdt.managedbuild.config.gnu.cross.lib.debug.1486615466." name="/" resourcePath="">
-						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.lib.debug.1294411704" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.lib.debug">
-							<option id="cdt.managedbuild.option.gnu.cross.prefix.251056516" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="m68k-amigaos-" valueType="string"/>
-							<option id="cdt.managedbuild.option.gnu.cross.path.112273501" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" value="d:\msys64\opt\amiga\bin" valueType="string"/>
-							<targetPlatform archList="all" binaryParser="de.bb.eclipse.cdt-amiga.Amiga" id="cdt.managedbuild.targetPlatform.gnu.cross.1374186861" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
-							<builder buildPath="${workspace_loc:/libnix}/Debug" command="make" id="cdt.managedbuild.builder.gnu.cross.1300497064" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.1629859857" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
-								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.947779357" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" valueType="enumerated"/>
-								<option defaultValue="gnu.c.debugging.level.max" id="gnu.c.compiler.option.debugging.level.1395962520" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
-								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.2106620256" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libnix/sources/headers}&quot;"/>
+				<configuration artifactExtension="a" artifactName="nix" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="build libnix.a" errorParsers="org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="cdt.managedbuild.config.gnu.cross.lib.debug.931328088.125240087" name="nix" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="cdt.managedbuild.config.gnu.cross.lib.debug">
+					<folderInfo id="cdt.managedbuild.config.gnu.cross.lib.debug.931328088.125240087." name="/" resourcePath="">
+						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.lib.debug.351213039" name="Cross GCC" nonInternalBuilderId="cdt.managedbuild.builder.gnu.cross" superClass="cdt.managedbuild.toolchain.gnu.cross.lib.debug">
+							<option id="cdt.managedbuild.option.gnu.cross.prefix.399326393" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="m68k-amigaos-" valueType="string"/>
+							<option id="cdt.managedbuild.option.gnu.cross.path.587129650" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" value="D:\msys64\opt\amiga\bin" valueType="string"/>
+							<targetPlatform archList="all" binaryParser="de.bb.eclipse.cdt-amiga.Amiga" id="cdt.managedbuild.targetPlatform.gnu.cross.696677269" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
+							<builder arguments="-f Makefile.gcc6 SHELL=d:/msys64/opt/amiga/bin/sh.exe" buildPath="d:/develop/workspaces/amiga/libnix4" command="make" id="cdt.managedbuild.builder.gnu.cross.1062458588" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" superClass="cdt.managedbuild.builder.gnu.cross"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.403026519" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
+								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1063600622" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.size" valueType="enumerated"/>
+								<option defaultValue="gnu.c.debugging.level.max" id="gnu.c.compiler.option.debugging.level.292667248" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.dialect.std.1346660017" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.dialect.flags.987916199" name="Other dialect flags" superClass="gnu.c.compiler.option.dialect.flags" useByScannerDiscovery="true" value="-noixemul" valueType="string"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.984682682" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:${ProjDirPath}/sources/headers}&quot;"/>
 								</option>
-								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.13004735" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+								<option id="gnu.c.compiler.option.optimization.flags.1164940076" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" useByScannerDiscovery="false" value="-fomit-frame-pointer" valueType="string"/>
+								<option id="gnu.c.compiler.option.misc.other.1050859272" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c " valueType="string"/>
+								<option id="gnu.c.compiler.option.warnings.pedantic.2111355381" name="Pedantic (-pedantic)" superClass="gnu.c.compiler.option.warnings.pedantic" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.warnings.extrawarn.766747688" name="Extra warnings (-Wextra)" superClass="gnu.c.compiler.option.warnings.extrawarn" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1188803423" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1422515994" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
-								<option id="gnu.cpp.compiler.option.optimization.level.1184752922" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-								<option defaultValue="gnu.cpp.compiler.debugging.level.max" id="gnu.cpp.compiler.option.debugging.level.621500456" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1345895546" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
+								<option id="gnu.cpp.compiler.option.optimization.level.1554150293" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+								<option defaultValue="gnu.cpp.compiler.debugging.level.max" id="gnu.cpp.compiler.option.debugging.level.551815030" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.1933552104" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1819462224" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.903764986" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
-							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.1221171700" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
-								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.both.asm.option.include.paths.92101745" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libnix/sources/headers}&quot;"/>
-								</option>
-								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1144610723" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.522113915" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1787053122" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.archiver.845892525" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
+							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.584732587" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
+								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1630397590" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/amiga"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/misc"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix13"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix_main"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nixmain"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/amiga/misc"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math/extra"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math/stdio"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math/stdlib"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math/trans"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/assert"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/ctype"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/errno"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/extra"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/locale"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/math"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/misc"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/setjmp"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/signal"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/stdio"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/stdlib"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/string"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/time"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix13/extra"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix13/math"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20/extra"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20/math"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20/stdio"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/arpa"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/extra"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/netdb"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/socket"/>
+						<entry excluding="math" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/stdio"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/stdio/math"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/unistd"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/stack"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/startup"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/stubs"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/stubs/libbases"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/stubs/libnames"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/stubs/misc"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/stubs/stubs"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -71,17 +102,23 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="libnix.cdt.managedbuild.target.gnu.cross.lib.1175789304" name="Static Library" projectType="cdt.managedbuild.target.gnu.cross.lib"/>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="nix">
+			<resource resourceType="PROJECT" workspacePath="/libnix"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/libnix"/>
+		</configuration>
+	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.lib.debug.1486615466;cdt.managedbuild.config.gnu.cross.lib.debug.1486615466.;cdt.managedbuild.tool.gnu.cross.c.compiler.1629859857;cdt.managedbuild.tool.gnu.c.compiler.input.13004735">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
-	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
-	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Debug">
-			<resource resourceType="PROJECT" workspacePath="/libnix"/>
-		</configuration>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.cross.lib.debug.931328088.125240087;cdt.managedbuild.config.gnu.cross.lib.debug.931328088.125240087.;cdt.managedbuild.tool.gnu.cross.c.compiler.403026519;cdt.managedbuild.tool.gnu.c.compiler.input.1188803423">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 	</storageModule>
 </cproject>

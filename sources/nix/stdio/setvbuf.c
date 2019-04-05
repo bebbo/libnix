@@ -1,6 +1,6 @@
 #include <errno.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include "stdio.h"
 
 int __fflush(FILE *stream);
 
@@ -26,7 +26,7 @@ int setvbuf(FILE *stream,char *buf,int mode,size_t size)
       flags|=__SMBF;
     else
       flags&=~__SMBF;
-    stream->_bf._base=buf;
+    stream->_bf._base=(unsigned char *)buf;
     stream->_bf._size=size;
   } /* Need not adjust outcount, since setvbuf affects only the NEXT full buffer */
   stream->_flags=flags; return 0;

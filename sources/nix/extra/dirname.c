@@ -1,4 +1,5 @@
 #include <proto/dos.h>
+#include <string.h>
 
 char *dirname(char *path) {
 	if (!path || !*path)

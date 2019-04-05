@@ -1,9 +1,11 @@
+#include "stdio.h"
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
 #include <devices/timer.h>
+#include <dos/dosextens.h>
 #include <proto/exec.h>
 #include "debuglib.h"
 #include "select.h"
@@ -104,14 +106,14 @@ static inline int lx_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, stru
 
   for (i = 0; i < nfd; i++) {
     if (ifd && FD_ISSET(i, ifd) && (f = _lx_fhfromfd(i))) {
-      if (!f->lx_read || !f->lx_select)
+      if (!f->lx_fx)
         FD_CLR(i, ifd);
       else
         ++waitin;
     }
 
     if (ofd && FD_ISSET(i, ofd) && (f = _lx_fhfromfd(i))) {
-      if (!f->lx_write || !f->lx_select)
+	if (!f->lx_fx)
         FD_CLR(i, ofd);
       else
         ++waitout;
@@ -120,7 +122,7 @@ static inline int lx_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, stru
     if (efd && FD_ISSET(i, efd) && (f = _lx_fhfromfd(i))) {
       /* question: can an exceptional condition also occur on a 
        * write-only fd?? */
-      if (!f->lx_read || !f->lx_select)
+    	if (!f->lx_fx)
         FD_CLR(i, efd);
       else
         ++waitexc;
@@ -167,11 +169,11 @@ static inline int lx_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, stru
       /* have all watched files get prepared for selecting */
       for (i = 0; i < nfd; i++) {
         if (ifd && FD_ISSET (i, ifd) && (f = _lx_fhfromfd(i)))
-          wait_sigs |= f->lx_select (f, SELCMD_PREPARE, SELMODE_IN, &netin, &net_nfds);
+          wait_sigs |= f->lx_fx->lx_select (f, SELCMD_PREPARE, SELMODE_IN, &netin, &net_nfds);
         if (ofd && FD_ISSET (i, ofd) && (f = _lx_fhfromfd(i)))
-          wait_sigs |= f->lx_select (f, SELCMD_PREPARE, SELMODE_OUT, &netout, &net_nfds);
+          wait_sigs |= f->lx_fx->lx_select (f, SELCMD_PREPARE, SELMODE_OUT, &netout, &net_nfds);
         if (efd && FD_ISSET (i, efd) && (f = _lx_fhfromfd(i)))
-          wait_sigs |= f->lx_select (f, SELCMD_PREPARE, SELMODE_EXC, &netexc, &net_nfds);
+          wait_sigs |= f->lx_fx->lx_select (f, SELCMD_PREPARE, SELMODE_EXC, &netexc, &net_nfds);
       }
 
       /* now wait for all legally possible signals, this includes BSD
@@ -214,21 +216,21 @@ static inline int lx_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, stru
     /* collect information from the file descriptors */
     for (i = 0; i < nfd; i++) {    
       if (ifd && FD_ISSET (i, ifd) && (f = _lx_fhfromfd(i))
-          && f->lx_select (f, cmd, SELMODE_IN, &netin, NULL)) {
+          && f->lx_fx->lx_select (f, cmd, SELMODE_IN, &netin, NULL)) {
         DB( BUG("Select: fd %ld, has data ready for reading\n", i); )
         FD_SET (i, &readyin);
         ++readydesc;
       }
 
       if (ofd && FD_ISSET (i, ofd) && (f = _lx_fhfromfd(i))
-          && f->lx_select (f, cmd, SELMODE_OUT, &netout, NULL)) {
+          && f->lx_fx->lx_select (f, cmd, SELMODE_OUT, &netout, NULL)) {
         DB( BUG("Select: fd %ld, has data ready for writing\n", i); )
         FD_SET (i, &readyout);
         ++readydesc;
       }
 
       if (efd && FD_ISSET (i, efd) && (f = _lx_fhfromfd(i))
-          && f->lx_select (f, cmd, SELMODE_EXC, &netexc, NULL)) {
+          && f->lx_fx->lx_select (f, cmd, SELMODE_EXC, &netexc, NULL)) {
         DB( BUG("Select: fd %ld, has an exception\n", i); )
         FD_SET (i, &readyexc);
         ++readydesc;

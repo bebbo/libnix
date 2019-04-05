@@ -8,7 +8,7 @@ int scandir(const char *dirname,struct dirent ***namelist,
 {
 	register struct dirent *d, *p, **names;
 	register size_t nitems;
-	long arraysz;
+	size_t arraysz;
 	DIR *dirp;
 	int successful = 0;
 	int rc = 0;
@@ -59,12 +59,12 @@ cleanup:
 	closedir(dirp);
 	if (successful) {
 		if (nitems && dcomp != NULL)
-			qsort(names, nitems, sizeof(struct dirent *), (void *)dcomp);
+			qsort(names, nitems, sizeof(struct dirent *), (int (*)(const void *,const void *))dcomp);
 		*namelist = names;
 		rc = nitems;
 	} else {  /* We were unsuccessful, clean up storage and return -1.  */
 		if ( names ) {
-			int i;
+			size_t i;
 			for (i=0; i < nitems; i++ )
 				free( names[i] );
 			free( names );
@@ -80,5 +80,5 @@ cleanup:
  */
 int alphasort(const struct dirent **d1,const struct dirent **d2)
 {
-  return(strcmp((*d1)->d_name, (*d2)->d_name));
+  return(strcmp((const char *)(*d1)->d_name, (const char *)(*d2)->d_name));
 }

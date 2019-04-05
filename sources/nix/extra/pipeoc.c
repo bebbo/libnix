@@ -39,7 +39,7 @@
  * should the program terminate abnormally.
  */
 #ifndef __KICK13__
-#include <stdio.h>
+#include "stdio.h"
 //#include <ios1.h>
 //#include <error.h>
 #include <string.h>
@@ -119,8 +119,8 @@ const char *mode;
     {NP_Entry, (Tag) ChildEntry},
     {NP_Cli, TRUE},
     {NP_StackSize, 4096},
-    {NP_Input, NULL},
-    {NP_Output, NULL},
+    {NP_Input, 0},
+    {NP_Output, 0},
     {NP_CloseInput, FALSE},
     {NP_CloseOutput, FALSE},
     {TAG_DONE, 0}
@@ -184,7 +184,7 @@ const char *mode;
    * but it doesn't need sprintf and therefore makes programs that don't
    * use printf a lot shorter.
    */
-  strcpy (PipeName, "PIPE:00000000_0");
+  strcpy ((char*)PipeName, "PIPE:00000000_0");
   NextChar = PipeName + 12;
   ProcAddress = (ULONG) ThisProcess;
   while (ProcAddress != 0) {
@@ -206,7 +206,7 @@ const char *mode;
    * while the parent's side is opened with fopen ().
    */
   ChildPipe = Open (PipeName, ChildPipeMode);
-  ParentPipe = fopen (PipeName, mode);
+  ParentPipe = fopen ((const char*)PipeName, mode);
   if (ChildPipeMode == MODE_NEWFILE) {
     NewProcTags[3].ti_Data = Input ();
     NewProcTags[4].ti_Data = ChildPipe;
@@ -218,7 +218,7 @@ const char *mode;
     NewProcTags[5].ti_Data = TRUE;
     NewProcTags[6].ti_Data = FALSE;
   }
-  if (ChildPipe == NULL || ParentPipe == NULL) {
+  if (ChildPipe == 0 || ParentPipe == 0) {
     errno = EPIPE;
     goto cleanup;
   }
@@ -229,7 +229,7 @@ const char *mode;
     errno = ENOMEM;
     goto cleanup;
   }
-  strcpy (PipeToUse->pfd_Msg.sm_Cmd, command);
+  strcpy ((char *)PipeToUse->pfd_Msg.sm_Cmd, command);
   PipeToUse->pfd_Msg.sm_Msg.mn_ReplyPort = CreateMsgPort ();
   if (PipeToUse->pfd_Msg.sm_Msg.mn_ReplyPort == NULL) {
     errno = ENOMEM;
@@ -340,7 +340,7 @@ static int __saveds ChildEntry ()
   /* We need to open this library, because we don't inherit it from our
    * parent process.
    */
-  DOSBase = (struct DosLibrary *) OpenLibrary ("dos.library", DOS_VERSION);
+  DOSBase = (struct DosLibrary *) OpenLibrary ((CONST_STRPTR)"dos.library", DOS_VERSION);
 
   /* Get the childs process structure. */
   ChildProc = (struct Process *) FindTask (NULL);

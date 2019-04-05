@@ -5,6 +5,56 @@
 #include <stdlib.h>
 #include "stabs.h"
 
+#if defined(__KICK13__) //|| 1
+#include <exec/execbase.h>
+
+extern struct ExecBase * SysBase;
+
+extern void * AllocVec(unsigned, int);
+extern void FreeVec(void *);
+
+#pragma GCC push_options
+#pragma GCC optimize ("-Os")
+
+register ULONG * a7 __asm("sp");
+
+// keeps d0/d1/a0/a1 free for local use.
+static __attribute((noinline))  __entrypoint void __StackSwap(register struct StackSwapStruct * newStack asm("a2"), register struct ExecBase * SysBase asm("a6")) {
+	Forbid();
+
+	struct Task * task = SysBase->ThisTask;
+
+	ULONG * lower = newStack->stk_Lower;
+	newStack->stk_Lower = task->tc_SPLower;
+	task->tc_SPLower = lower;
+
+	// copy stack frame with ret,a2,a6,ret,memmarker
+	ULONG * upper = (ULONG *)newStack->stk_Upper;
+	newStack->stk_Upper = (ULONG)task->tc_SPUpper;
+	task->tc_SPUpper = upper;
+
+	ULONG * sp = newStack->stk_Pointer + 4;
+	newStack->stk_Pointer = (APTR)a7;
+
+	*--sp = a7[3];
+	*--sp = a7[2];
+	*--sp = a7[1];
+	*--sp = a7[0];
+
+	a7 = sp;
+
+	Permit();
+}
+
+// performs the push/pop of a2/a6
+void StackSwap(struct StackSwapStruct * newStack) {
+	__StackSwap(newStack, SysBase);
+}
+#pragma GCC pop_options
+
+#endif
+
+
 /*
  * swapstack.c
  *

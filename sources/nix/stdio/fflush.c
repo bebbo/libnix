@@ -1,5 +1,6 @@
-#include <stdio.h>
-#include "__filenode.h"
+#include "stdio.h"
+
+#include "../../../sources/nix/stdio/__filenode.h"
 
 extern __stdargs int __fflush(FILE *stream);
 

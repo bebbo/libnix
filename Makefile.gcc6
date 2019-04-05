@@ -1,0 +1,162 @@
+# simple libnix Makefile.gcc6 - for Bebbo's gcc-6
+
+PREFIX ?= /opt/amiga
+
+CC = m68k-amigaos-gcc
+AR = m68k-amigaos-ar
+AS = m68k-amigaos-as
+
+uname := $(shell uname)
+root ?= $(shell echo $$PWD)
+export root
+
+MAKEFILES=$(root)/Makefile.gcc6
+
+# special path handling for msys2 started from Eclipse
+ifneq (,$(findstring MSYS_NT,$(uname)))
+ifneq (,$(findstring /cygdrive/,$(root)))
+troot := $(root)
+tdrive := $(word 2,$(subst /, ,$(troot)))
+root = $(subst /cygdrive/$(tdrive)/,$(tdrive):/,$(troot))
+endif
+endif
+
+ifeq (,$(libname))
+libname=$(lib)
+endif
+
+mcrt = -noixemul
+-include $(root)/sources/$(lib)/steal.me
+
+CFLAGS = -Os -fomit-frame-pointer
+CFLAGS += -I$(root)/sources/headers
+CFLAGS += $(mcrt)
+
+.PHONY: all one rest clean install install_one
+
+.PHONY: lib libb libm020 libm020bb libm020bb32
+all: info lib libb libm020 libm020bb libm020bb32
+
+# the desired kinds to be build
+lib: lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
+	@mkdir -p $@
+	$(MAKE) one kind=$@
+	-@cp $(PREFIX)/m68k-amigaos/lib/libstubs.a lib
+	$(MAKE) -C $@ kind=lib libstubs.a lib=stubs
+		
+libb:
+	@mkdir -p $@
+	$(MAKE) one kind=$@ flags="-fbaserel"
+
+libm020:
+	@mkdir -p $@
+	$(MAKE) one kind=$@ flags="-m68020"
+
+libm020bb:
+	@mkdir -p $@
+	$(MAKE) one kind=$@ flags="-fbaserel -m68020"
+
+libm020bb32:
+	@mkdir -p $@
+	$(MAKE) one kind=$@ flags="-fbaserel32 -m68020"
+
+# the libs to build for each kind
+one: libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack
+
+# install all kinds into the prefix
+.PHONY: install_lib install_libb install_libm020 install_libm020bb install_libm020bb32
+install: install_lib install_libb install_libm020 install_libm020bb install_libm020bb32
+	
+install_lib:
+	$(MAKE) install_one kind=lib to=""
+	mv $(PREFIX)/m68k-amigaos/libnix/lib/libstubs.a c 
+install_libb:
+	$(MAKE) install_one kind=libb to="libb/"
+install_libm020:
+	$(MAKE) install_one kind=libm020 to="libm020/"
+install_libm020bb:
+	$(MAKE) install_one kind=libm020bb to="libm020/libb/"
+install_libm020bb32:
+	$(MAKE) install_one kind=libm020bb32 to="libm020/libb32/"
+
+# install the files for the given $(kind) into $(to)
+install_one:
+	mkdir -p $(PREFIX)/m68k-amigaos/libnix/lib/$(to)
+	cp $(kind)/*.a $(PREFIX)/m68k-amigaos/libnix/lib/$(to)
+	cp $(kind)/*.o $(PREFIX)/m68k-amigaos/libnix/lib/$(to)
+
+# startup stuff
+.PHONY: libdir
+libdir:
+	@mkdir -p lib
+
+lib/devinit.o: $(root)/sources/startup/devinit.c libdir
+	$(CC) -c $(CFLAGS) $(flags) $< -o $@
+
+lib/libinit.o: $(root)/sources/startup/libinit.c libdir
+	$(CC) -c $(CFLAGS) $(flags) $< -o $@
+
+lib/libinitr.o: $(root)/sources/startup/libinitr.c libdir
+	$(CC) -c $(CFLAGS) $(flags) $< -o $@
+
+lib/ncrt0.o: $(root)/sources/startup/ncrt0.s libdir
+	$(AS) $< -o $@
+
+lib/nbcrt0.o: $(root)/sources/startup/nbcrt0.s libdir
+	$(AS) $< -o $@
+
+lib/nlbcrt0.o: $(root)/sources/startup/nlbcrt0.s libdir
+	$(AS) $< -o $@
+
+lib/nrcrt0.o: $(root)/sources/startup/nrcrt0.s libdir
+	$(AS) $< -o $@
+
+lib/nlrcrt0.o: $(root)/sources/startup/nlrcrt0.s libdir
+	$(AS) $< -o $@
+
+.PHONY: libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack
+libnix:
+	$(MAKE) -C $(kind) rest libnix.a lib=nix
+libnix13:
+	$(MAKE) -C $(kind) rest libnix13.a lib=nix13
+libnix20:
+	$(MAKE) -C $(kind) rest libnix20.a lib=nix20
+libnixmain:
+	$(MAKE) -C $(kind) rest libnixmain.a lib=nixmain
+libnix_main:
+	$(MAKE) -C $(kind) rest libnix_main.a lib=nix_main
+libm:
+	$(MAKE) -C $(kind) rest libm.a lib=math libname=m
+libsocket:
+	$(MAKE) -C $(kind) rest libsocket.a lib=socket
+libstack:
+	$(MAKE) -C $(kind) rest libstack.a lib=stack
+
+
+rest: swapstack.o detach.o
+
+swapstack.o: $(root)/sources/misc/swapstack.c
+	$(CC) -c $(CFLAGS) $(flags) $^ -o $@
+
+detach.o: $(root)/sources/misc/detach.c
+	$(CC) -c $(CFLAGS) $(flags) $^ -o $@
+
+# build the lib base on $(lib), $(kind) and $(flags)
+lib$(libname).a: $(shell find $(root)/sources/$(lib)/* -name '*.c') $(stolen)
+	@mkdir -p $(lib)
+	@echo compiling for $(kind)/$@ using $(CC) -c $(CFLAGS) $(flags)
+	@touch --date=@0 $(lib)/stamp && if [ -e $@ ]; then touch -r $@ $(lib)/stamp; fi
+	@cd $(lib) && $(CC) -c $(CFLAGS) $(flags) $$(find $^ -newer stamp)
+	@#echo archive $(kind)/$@
+	@$(AR) rcs $@ $$(find ./$(lib)/* -name '*.o' -newer $(lib)/stamp)
+
+
+# cleanup
+clean:
+	find * -name '*.o' -delete
+	find * -name '*.a' -delete
+	find * -name stamp -delete
+
+info:
+	@echo "$(uname)"
+	@echo "root=$(root)"

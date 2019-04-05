@@ -1,8 +1,8 @@
-#include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
+#include "stdio.h"
 
 extern int iswxdigit(wint_t c);
 
@@ -20,13 +20,13 @@ unsigned long strtoul(const char *nptr, char **endptr, int base) {
 		errno = EINVAL;
 		return 0;
 	}
-	while (isspace(*p))
+	while (isspace((int)*p))
 		p++;
 	if (*p == '-' || *p == '+')
 		c = *p++;
 	if (base == 0) {
 		if (p[0] == '0') {
-			if (tolower(p[1]) == 'x' && isxdigit(p[2])) {
+			if (tolower((int)p[1]) == 'x' && isxdigit((int)p[2])) {
 				p += 2;
 				base = 16;
 			} else
@@ -40,9 +40,9 @@ unsigned long strtoul(const char *nptr, char **endptr, int base) {
 	q = p;
 	for (;;) {
 		int a;
-		if (!isalnum(*q))
+		if (!isalnum((int)*q))
 			break;
-		a = isdigit(*q) ? *q - '0' : tolower(*q) - ('a' - 10);
+		a = isdigit((int)*q) ? *q - '0' : tolower((int)*q) - ('a' - 10);
 		if (a >= base)
 			break;
 		if (r > (ULONG_MAX - a) / base || r * base > ULONG_MAX - a) {

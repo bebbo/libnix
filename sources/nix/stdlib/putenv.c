@@ -14,7 +14,7 @@ int setenv(const char *name, const char *value, int overwrite) {
 	if (name && *name) {
 		char *old = getenv(name);
 		if (old == NULL || overwrite) {
-			if (SetVar(name, value, strlen(value) + 1, GVF_LOCAL_ONLY)) {
+			if (SetVar((CONST_STRPTR )name, (CONST_STRPTR )value, strlen(value) + 1, GVF_LOCAL_ONLY)) {
 				__clearenviron();
 				__fillenviron();
 			}

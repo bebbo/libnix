@@ -1,9 +1,9 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <limits.h>
 #include <ctype.h>
 #include <math.h>
+#include "stdio.h"
 
 
 
@@ -15,8 +15,6 @@
 #define NEXT(c) ((c)=fgetc(stream),size++,incount++)
 #define PREV(c) do{if((c)!=EOF)ungetc((c),stream);size--;incount--;}while(0)
 #define VAL(a)  ((a)&&size<=width)
-
-extern unsigned char *__decimalpoint;
 
 #ifdef FULL_SPECIFIERS
 static const unsigned char undef[3][sizeof(double)] = /* Undefined numeric values, IEEE */
@@ -208,6 +206,8 @@ int vfscanf(FILE *stream, const char *format, va_list args) {
 						v = v * 10.0 + (c - '0');
 						NEXT(c);
 					}
+
+					extern unsigned char *__decimalpoint;
 
 					if (VAL(c == __decimalpoint[0])) {
 						double dp = 0.1;
@@ -402,7 +402,7 @@ int vfscanf(FILE *stream, const char *format, va_list args) {
 			}
 			format = ptr;
 		} else {
-			if (isspace(*format)) {
+			if (isspace((int)*format)) {
 				do
 					NEXT(c); while (isspace(c));
 				PREV(c);

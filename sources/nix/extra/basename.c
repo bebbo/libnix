@@ -11,7 +11,7 @@ char *basename(char *path) {
 	while (--p > path && *p == '/') {
 		*p = 0;
 	}
-	p = (char *)FilePart(path);
+	p = (char *)FilePart((CONST_STRPTR)path);
 	if (!*p)
 		return "/";
 	return p;

@@ -37,7 +37,7 @@ static char sccsid[] = "@(#)inet_addr.c 5.10 (Berkeley) 2/24/91";
 
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <stdio.h>
+#include "stdio.h"
 
 char *
 inet_ntoa(struct in_addr in)

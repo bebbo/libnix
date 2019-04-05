@@ -1,18 +1,18 @@
 #include <errno.h>
-#include <stdio.h>
 #include <proto/dos.h>
+#include "stdio.h"
 
 extern void __seterrno(void);
-extern char *__amigapath(const char *path);
 
 int remove(const char *filename)
 { 
 #ifdef IXPATHS
+	extern char *__amigapath(const char *path);
   if((filename=__amigapath(filename))==NULL)
     return -1;
 #endif
 
-  if(DeleteFile((char *)filename))
+  if(DeleteFile((CONST_STRPTR)filename))
     return 0;
   else
   { __seterrno(); return -1; }

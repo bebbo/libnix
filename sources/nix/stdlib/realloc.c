@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <proto/exec.h>
-#include <stdio.h>
+
+#include "stdio.h"
 
 void *realloc(void *ptr,size_t size)
 {

@@ -1,5 +1,6 @@
 #include <wctype.h>
 #include <errno.h>
+#include <string.h>
 
 /* valid values for wctype_t */
 #define WC_ALNUM	1

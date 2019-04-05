@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "stdio.h"
 
 double atof(const char *nptr)
 { double a;

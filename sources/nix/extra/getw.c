@@ -1,7 +1,7 @@
 /* Read a long word into a file -- returns EOF on error, or when the word
    that was read is equal to EOF!!! */
 
-#include <stdio.h>
+#include "stdio.h"
 
 int getw(FILE *f)
 {

@@ -1,0 +1,24 @@
+# __vfprint_total_size.c is compiled different
+CFLAGS += -DFULL_SPECIFIERS
+
+# add these files into current lib
+  stolen = $(root)/sources/nix/assert/__eprintf.c \
+          $(root)/sources/nix/stdio/vprintf.c \
+          $(root)/sources/nix/stdio/fprintf.c \
+          $(root)/sources/nix/stdlib/assert.c \
+          $(root)/sources/nix/stdio/vfprintf.c \
+          $(root)/sources/nix/stdio/vsprintf.c \
+          $(root)/sources/nix/stdio/sprintf.c \
+          $(root)/sources/nix/stdio/vsnprintf.c \
+          $(root)/sources/nix/stdio/snprintf.c \
+          $(root)/sources/nix/stdio/printf.c \
+          $(root)/sources/nix/stdio/vsprintf.c \
+          $(root)/sources/nix/stdio/scanf.c \
+          $(root)/sources/nix/stdio/fscanf.c \
+          $(root)/sources/nix/stdio/sscanf.c \
+          $(root)/sources/nix/stdio/vscanf.c \
+          $(root)/sources/nix/stdio/vsscanf.c \
+          $(root)/sources/nix/stdio/vfscanf.c \
+          $(root)/sources/nix/stdio/tmpfile.c \
+          $(root)/sources/nix/stdio/tmpnam.c \
+          $(root)/sources/nix/stdio/__vfprintf_total_size.c

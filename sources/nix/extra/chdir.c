@@ -28,7 +28,7 @@ void __initchdir(void)
 {
   BPTR fl;
 
-  if (!(fl=Lock("",SHARED_LOCK)))
+  if (!(fl=Lock((CONST_STRPTR)"",SHARED_LOCK)))
     exit(20);
   oldlock=CurrentDir(fl);
   havelock=1;

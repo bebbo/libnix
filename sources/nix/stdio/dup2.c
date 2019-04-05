@@ -2,7 +2,7 @@
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <stdio.h>
+#include "stdio.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -15,10 +15,10 @@
  */
 
 extern StdFileDes **__stdfiledes;
-extern unsigned __stdfilesize;
+extern int __stdfilesize;
 
 int dup2(int oldfd, int newfd) {
-	if ((unsigned)oldfd < __stdfilesize) {
+	if (oldfd < __stdfilesize) {
 		StdFileDes *old = __stdfiledes[oldfd];
 		if (old && old->lx_inuse) {
 			StdFileDes * neu;

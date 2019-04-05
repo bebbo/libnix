@@ -5,12 +5,12 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <exec/lists.h>
 #include <exec/memory.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include "stabs.h"
+#include "stdio.h"
 
 extern ULONG _MSTEP;
 

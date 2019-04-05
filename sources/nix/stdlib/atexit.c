@@ -1,7 +1,7 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include "stabs.h"
+#include "stdio.h"
 
 struct atexitnode
 { 

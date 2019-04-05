@@ -1,1 +1,1 @@
-unsigned char *__decimalpoint=".";
+char *__decimalpoint=".";

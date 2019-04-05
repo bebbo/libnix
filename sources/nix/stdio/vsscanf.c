@@ -1,7 +1,7 @@
-#include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 #include <strsup.h>
+#include "stdio.h"
 
 int vsscanf(const char *s,const char *format,va_list args)
 { FILE buffer;

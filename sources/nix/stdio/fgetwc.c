@@ -1,7 +1,7 @@
 #include <errno.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
+#include "stdio.h"
 
 wint_t fgetwc(FILE *fp) {
 	wint_t b;

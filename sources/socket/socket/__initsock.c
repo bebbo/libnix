@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <time.h>
 #include <errno.h>
 #include <string.h>
@@ -14,6 +13,7 @@
 #include "select.h"
 #include "socket.h"
 #include "stabs.h"
+#include "stdio.h"
 
 /*
 **
@@ -26,7 +26,7 @@ extern int h_errno;
 /*
 **
 */
-static ssize_t _sock_read(StdFileDes *fp,void *buf,size_t len)
+static ssize_t __stdargs _sock_read(StdFileDes *fp,void *buf,size_t len)
 {
   return recv(fp->lx_pos,buf,len,0);
 }
@@ -97,7 +97,7 @@ static int _sock_dup(StdFileDes *fp)
 
 static int _sock_fstat(StdFileDes *fp,struct stat *sb)
 { long value;
-  int size = sizeof(value);
+  socklen_t size = sizeof(value);
 
   memset(sb, 0, sizeof(*sb));
 
@@ -170,22 +170,23 @@ static int _sock_select(StdFileDes *fp,int select_cmd,int io_mode,fd_set *set,u_
   return 0;
 }
 
+StdFileDes *_create_socket(int family,int type,int protocol);
+
+struct _StdFileFx socket_fx = {
+		_sock_read, _sock_write, _sock_close, _sock_fstat, _sock_dup, _sock_select
+};
+
 StdFileDes *_create_socket(int family,int type,int protocol)
 { extern StdFileDes *_allocfd(void);
   StdFileDes *sfd = _allocfd();
 
   if (sfd) {
-    sfd->lx_type     = LX_SOCKET;
+    sfd->lx_flags     = LX_SOCKET;
     sfd->lx_inuse    = 1;
     sfd->lx_family   = family;
     sfd->lx_domain   = type;
     sfd->lx_protocol = protocol;
-    sfd->lx_read     = _sock_read;
-    sfd->lx_write    = _sock_write;
-    sfd->lx_close    = _sock_close;
-    sfd->lx_dup      = _sock_dup;
-    sfd->lx_fstat    = _sock_fstat;
-    sfd->lx_select   = _sock_select;
+    sfd->lx_fx       = &socket_fx;
   }
 
   return sfd;
