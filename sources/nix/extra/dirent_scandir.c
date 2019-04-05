@@ -80,5 +80,5 @@ cleanup:
  */
 int alphasort(const struct dirent **d1,const struct dirent **d2)
 {
-  return(strcmp((const char *)(*d1)->d_name, (const char *)(*d2)->d_name));
+  return(strcmp((*d1)->d_name, (*d2)->d_name));
 }

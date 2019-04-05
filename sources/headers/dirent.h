@@ -8,7 +8,7 @@ struct dirent {
   ULONG d_fileno;
   USHORT d_reclen;
   USHORT d_namlen;
-  BYTE d_name[256];
+  char d_name[256];
 };
 
 typedef struct _dirdesc {
