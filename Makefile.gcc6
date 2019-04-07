@@ -21,16 +21,18 @@ root = $(subst /cygdrive/$(tdrive)/,$(tdrive):/,$(troot))
 endif
 endif
 
+ifneq (,$(lib))
 ifeq (,$(libname))
 libname=$(lib)
 endif
+-include $(root)/sources/$(lib)/steal.me
+endif
 
 mcrt = -noixemul
--include $(root)/sources/$(lib)/steal.me
 
 CFLAGS = -Os -fomit-frame-pointer
 CFLAGS += -I$(root)/sources/headers
-CFLAGS += $(mcrt)
+CFLAGS += $(mcrt) 
 
 .PHONY: all one rest clean install install_one
 
@@ -99,19 +101,19 @@ lib/libinit.o: $(root)/sources/startup/libinit.c libdir
 lib/libinitr.o: $(root)/sources/startup/libinitr.c libdir
 	$(CC) -c $(CFLAGS) $(flags) $< -o $@
 
-lib/ncrt0.o: $(root)/sources/startup/ncrt0.s libdir
+lib/ncrt0.o: $(root)/sources/startup/ncrt0.S libdir
 	$(AS) $< -o $@
 
-lib/nbcrt0.o: $(root)/sources/startup/nbcrt0.s libdir
+lib/nbcrt0.o: $(root)/sources/startup/nbcrt0.S libdir
 	$(AS) $< -o $@
 
-lib/nlbcrt0.o: $(root)/sources/startup/nlbcrt0.s libdir
+lib/nlbcrt0.o: $(root)/sources/startup/nlbcrt0.S libdir
 	$(AS) $< -o $@
 
-lib/nrcrt0.o: $(root)/sources/startup/nrcrt0.s libdir
+lib/nrcrt0.o: $(root)/sources/startup/nrcrt0.S libdir
 	$(AS) $< -o $@
 
-lib/nlrcrt0.o: $(root)/sources/startup/nlrcrt0.s libdir
+lib/nlrcrt0.o: $(root)/sources/startup/nlrcrt0.S libdir
 	$(AS) $< -o $@
 
 .PHONY: libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack
