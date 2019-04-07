@@ -144,11 +144,12 @@ detach.o: $(root)/sources/misc/detach.c
 	$(CC) -c $(CFLAGS) $(flags) $^ -o $@
 
 # build the lib base on $(lib), $(kind) and $(flags)
-lib$(libname).a: $(shell find $(root)/sources/$(lib)/* -name '*.c') $(stolen)
+lib$(libname).a: $(shell find $(root)/sources/$(lib)/* -name '*.c') $(stolen) $(shell find $(root)/sources/headers/* -name '*.h')
 	@mkdir -p $(lib)
 	@echo compiling for $(kind)/$@ using $(CC) -c $(CFLAGS) $(flags)
 	@touch --date=@0 $(lib)/stamp && if [ -e $@ ]; then touch -r $@ $(lib)/stamp; fi
-	@cd $(lib) && $(CC) -c $(CFLAGS) $(flags) $$(find $^ -newer stamp)
+	@if [ "$$(find $(root)/sources/headers/* -newer $(lib)/stamp)" != "" ]; then rm -f $(lib)/*.o; touch --date=@0 $(lib)/stamp; fi
+	@cd $(lib) && files="$$(find $^ -name '*.c' -newer stamp)" && echo "$(CC) -c $(CFLAGS) $(flags) $$files" && $(CC) -c $(CFLAGS) $(flags) $$files 
 	@#echo archive $(kind)/$@
 	@$(AR) rcs $@ $$(find ./$(lib)/* -name '*.o' -newer $(lib)/stamp)
 
