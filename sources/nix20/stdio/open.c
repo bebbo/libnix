@@ -131,7 +131,9 @@ int open(const char *path, int flags, ...) {
 
 	if ((sfd = __allocfd())) {
 		sfd->lx_oflags = flags;
-		if ((sfd->lx_fh = (int)Open((CONST_STRPTR)path, flags&O_TRUNC?MODE_NEWFILE: flags&(O_WRONLY|O_RDWR)?MODE_READWRITE:MODE_OLDFILE))) {
+
+		long mode = flags&O_TRUNC?MODE_NEWFILE: flags&O_CREAT?MODE_READWRITE:MODE_OLDFILE;
+		if ((sfd->lx_fh = (int)Open((CONST_STRPTR)path, mode))) {
 			_setup_file(sfd);
 			return sfd->lx_pos;
 		}
@@ -200,27 +202,31 @@ FILE *freopen(const char *filename, const char *mode, FILE *stream) {
 		return NULL;
 
 	if (filename != NULL) {
-		long file, flags = O_RDONLY;
-		char ch;
+		long file, flags;
 		if (mode == NULL)
 			return NULL;
-		if (ch = *mode++, ch != 'r')
-			if (flags = O_WRONLY | O_CREAT | O_TRUNC, ch != 'w')
-				if (flags = O_WRONLY | O_CREAT | O_APPEND, ch != 'a')
-					return NULL;
-		if ((ch = *mode++)) {
-			if (ch == '+') {
-				if ((ch = *mode++) && (ch != 'b' || *mode))
-					return NULL;
-				flags = (flags & ~O_ACCMODE) | O_RDWR;
-			} else if (ch != 'b')
+
+		char ch = *mode++;
+		switch (ch) {
+			case 'r':
+				flags = O_RDONLY;
+				break;
+			case 'w':
+				flags = O_WRONLY | O_CREAT | O_TRUNC;
+				break;
+			case 'a':
+				flags = O_WRONLY | O_CREAT | O_APPEND;
+				break;
+			default:
 				return NULL;
-			else if ((ch = *mode++)) {
-				if (ch != '+' || *mode)
-					return NULL;
-				flags = (flags & ~O_ACCMODE) | O_RDWR;
-			}
 		}
+
+		ch = *mode++;
+		if (ch == 't' || ch == 'b') // ignore for compatibility
+			ch = *mode++;
+
+		if (ch == '+')
+			flags = (flags & ~O_ACCMODE) | O_RDWR;
 
 		if ((file = open(filename, flags, 0777)) < 0)
 			return NULL;
