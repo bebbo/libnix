@@ -128,7 +128,7 @@ libnixmain:
 libnix_main:
 	$(MAKE) -C $(kind) rest libnix_main.a lib=nix_main
 libm:
-	$(MAKE) -C $(kind) rest libm.a lib=math libname=m
+	$(MAKE) -C $(kind) rest libm.a lib=math libname=m flags="$(flags) -DFULL_SPECIFIERS"
 libsocket:
 	$(MAKE) -C $(kind) rest libsocket.a lib=socket
 libstack:
