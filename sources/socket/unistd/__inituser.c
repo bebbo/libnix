@@ -160,7 +160,8 @@ int setgroups(int gidsetlen, const gid_t *gidset)
 
 int initgroups(const char *name, int basegid)
 { struct SocketSettings *lss = _lx_get_socket_settings();
-  int gidset[NGROUPS_MAX], ngroups = 2;
+  gid_t gidset[NGROUPS_MAX];
+  int ngroups = 2;
   struct group *gr;
   char **grm;
 
@@ -178,7 +179,7 @@ int initgroups(const char *name, int basegid)
 
   while ((gr = getgrent())) {
     if (gr->gr_gid != (gid_t)basegid) {
-      for (grm = gr->gr_mem; grm && *grm; grm++)  {
+      for (grm = (char **)gr->gr_mem; grm && *grm; grm++)  {
         if (!strcmp(name,*grm))  {
           gidset[ngroups++] = (int)(gr->gr_gid);
           break;

@@ -44,6 +44,7 @@ ADD2EXIT(__cleanupselect,-10);
 /*
 **
 */
+#if 0
 static inline void handle_select_port(void)
 { extern struct MsgPort *__selport;
   struct StandardPacket *pkt;
@@ -53,6 +54,7 @@ static inline void handle_select_port(void)
     pkt->sp_Pkt.dp_Port = NULL;
   }
 }
+#endif
 
 static inline void setcopy(int nfd, u_int *ifd, u_int *ofd)
 {
@@ -148,7 +150,7 @@ static inline int lx_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, stru
       net_nfds = 0;
     }
 
-    handle_select_port();
+//    handle_select_port();
 
     tout = readydesc = 0;
 
@@ -204,7 +206,7 @@ static inline int lx_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, stru
         WaitIO(&_treq->tr_node);
       }
 
-      handle_select_port();
+//      handle_select_port();
 
       cmd = SELCMD_CHECK;
     }

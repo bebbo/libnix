@@ -31,12 +31,12 @@ static ssize_t __stdargs _sock_read(StdFileDes *fp,void *buf,size_t len)
   return recv(fp->lx_pos,buf,len,0);
 }
 
-static ssize_t _sock_write(StdFileDes *fp,const void *buf,size_t len)
+static ssize_t __stdargs _sock_write(StdFileDes *fp,const void *buf,size_t len)
 {
   return send(fp->lx_pos,buf,len,0);
 }
 
-static int _sock_close(StdFileDes *fp)
+static int __stdargs _sock_close(StdFileDes *fp)
 { struct SocketSettings *lss;
   int rc;
 
@@ -58,7 +58,7 @@ static int _sock_close(StdFileDes *fp)
   return rc;
 }
 
-static int _sock_dup(StdFileDes *fp)
+static int __stdargs _sock_dup(StdFileDes *fp)
 { struct SocketSettings *lss;
   StdFileDes *fp2;
   int rc;
@@ -95,7 +95,7 @@ static int _sock_dup(StdFileDes *fp)
   return rc;
 }
 
-static int _sock_fstat(StdFileDes *fp,struct stat *sb)
+static int __stdargs _sock_fstat(StdFileDes *fp,struct stat *sb)
 { long value;
   socklen_t size = sizeof(value);
 
@@ -110,7 +110,7 @@ static int _sock_fstat(StdFileDes *fp,struct stat *sb)
   return 0;
 }
 
-static int _sock_poll(StdFileDes *fp,int io_mode,struct SocketSettings *lss)
+static int __stdargs _sock_poll(StdFileDes *fp,int io_mode,struct SocketSettings *lss)
 { struct timeval tv = {0, 0};
   fd_set in, out, exc;
   int rc;
@@ -151,7 +151,7 @@ static int _sock_poll(StdFileDes *fp,int io_mode,struct SocketSettings *lss)
   return ((rc == 1) ? 1 : 0);
 }
 
-static int _sock_select(StdFileDes *fp,int select_cmd,int io_mode,fd_set *set,u_long *nfds)
+static int __stdargs _sock_select(StdFileDes *fp,int select_cmd,int io_mode,fd_set *set,u_long *nfds)
 { struct SocketSettings *lss = _lx_get_socket_settings();
   
   if (select_cmd == SELCMD_PREPARE) {
@@ -177,8 +177,8 @@ struct _StdFileFx socket_fx = {
 };
 
 StdFileDes *_create_socket(int family,int type,int protocol)
-{ extern StdFileDes *_allocfd(void);
-  StdFileDes *sfd = _allocfd();
+{ extern StdFileDes *__allocfd(void);
+  StdFileDes *sfd = __allocfd();
 
   if (sfd) {
     sfd->lx_flags     = LX_SOCKET;
@@ -265,7 +265,8 @@ static int init_inet_daemon(int *argc,char ***argv,struct SocketSettings *lss)
       }
     }
 
-    return ((errno=err) ? -1 : fp->lx_pos);
+    errno = err;
+    return (err ? -1 : fp->lx_pos);
   }
 
   if (lss->lx_network_type == LX_AMITCP) {

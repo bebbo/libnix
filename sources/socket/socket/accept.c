@@ -9,18 +9,18 @@ int accept(int s, struct sockaddr *name, socklen_t *namelen)
   int rc;
 
   if ((fp=_lx_fhfromfd(s)) == NULL)
-    return NULL;
+    return 0;
 
   if ((fp2=_create_socket(fp->lx_family, fp->lx_domain, fp->lx_protocol)) == NULL)
     return -1;
 
   switch (lss=_lx_get_socket_settings(),lss->lx_network_type) {
     case LX_AS225:
-      rc = SOCK_accept(fp->lx_sock, name, namelen);
+      rc = SOCK_accept(fp->lx_sock, name, (int*)namelen);
     break;
 
     case LX_AMITCP:
-      rc = TCP_Accept(fp->lx_sock, name, namelen);
+      rc = TCP_Accept(fp->lx_sock, name, (int*)namelen);
     break;
 
     default:

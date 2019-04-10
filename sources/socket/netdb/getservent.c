@@ -100,7 +100,7 @@ struct servent *getservent(void)
           lss->lx_serv.s_port = htonl(atoi(s));
           lss->lx_serv.s_proto = cp;
 
-          q = lss->lx_serv.s_aliases = lss->lx_serv_aliases;
+          lss->lx_serv.s_aliases = (__STRPTR *)(q = lss->lx_serv_aliases);
           if ((cp=strpbrk(cp, " \t")) != NULL) {
             *cp++ = '\0';
             while (cp && *cp) {
