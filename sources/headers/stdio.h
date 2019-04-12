@@ -231,7 +231,7 @@ struct _StdFileFx {
 	int __stdargs (*lx_close)(struct _StdFileDes *);
 	int __stdargs (*lx_dup)(struct _StdFileDes *);
 	int __stdargs (*lx_fstat)(struct _StdFileDes *, struct stat *);
-	int __stdargs (*lx_select)(struct _StdFileDes *sfd, int select_cmd, int io_mode, fd_set *, u_long *);
+	int __stdargs (*lx_select)(struct _StdFileDes *sfd, int select_cmd, int io_mode, struct fd_set *, unsigned long *);
 };
 
 typedef struct _StdFileDes {
