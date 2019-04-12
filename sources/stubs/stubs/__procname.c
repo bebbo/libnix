@@ -1,1 +1,1 @@
-char *__procname="Background process";
+const char * const __procname="Background process";

@@ -1,14 +1,13 @@
 #include <proto/exec.h>
+#include <proto/dos.h>
 #include "stabs.h"
 #include <string.h>
-#include "stdio.h"
 
 extern struct lib /* These are the elements pointed to by __LIB_LIST__ */
 { struct Library *base;
   char *name;
 } *__LIB_LIST__[];
 
-extern void __request(const char *text);
 extern void exit(int returncode);
 
 static void __openliberror(ULONG,char const *);
@@ -19,7 +18,7 @@ static void __openliberror(ULONG version, char const * ln)
   strcpy(buf, "can't load ");
   strcat(buf, ln);
   strcat(buf, "\n");
-  fputs(buf, stderr);
+  Write(Output(), buf, strlen(buf));
   exit(20);
 }
 
