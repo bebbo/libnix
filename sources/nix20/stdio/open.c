@@ -298,9 +298,10 @@ void __initstdio(void) {
 						if (((*f++ = fdopen(STDIN_FILENO, "r")) == NULL) || ((*f++ = fdopen(STDOUT_FILENO, "w")) == NULL) || ((*f = err = fdopen(STDERR_FILENO, "w")) == NULL))
 							exit(20);
 						free(err->_bf._base);
-						err->_flags &= ~(__SMBF | __SLBF);
-						err->_flags |= __SNBF;
+						short flags = err->_flags & ~(__SMBF | __SLBF);
+						err->_flags = flags | __SNBF;
 						err->_bf._base = err->unget;
+						err->_bf._size = 3;
 					}
 
 					return;
