@@ -80,6 +80,7 @@ static const char flagc[] = { '#', '0', '-', ' ', '+' };
  */
 #define HAS_PRECI 32
 
+#if 0
 static int ___vfprintf_total_size(FILE *stream, const char *format,
 		va_list args) {
 	unsigned char buf[64];
@@ -99,6 +100,7 @@ static int ___vfprintf_total_size(FILE *stream, const char *format,
 		stream->_flags |= __SERR;
 	return ret;
 }
+#endif
 
 static unsigned __ulldivus(unsigned long long * llp, unsigned short n) {
 	struct LL {
@@ -142,10 +144,10 @@ static unsigned __ulldivus(unsigned long long * llp, unsigned short n) {
 int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 	size_t outcount = 0;
 
-	/* optimize unbuffered write-only files */
-	if ((stream->_flags & (__SWO | __SNBF)) == (__SWO | __SNBF)) {
-		return ___vfprintf_total_size(stream, format, args);
-	}
+//	/* optimize unbuffered write-only files */
+//	if ((stream->_flags & (__SWO | __SNBF)) == (__SWO | __SNBF)) {
+//		return ___vfprintf_total_size(stream, format, args);
+//	}
 
 	while (*format) {
 		if (*format == '%') {
