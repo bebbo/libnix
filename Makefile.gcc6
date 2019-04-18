@@ -34,7 +34,7 @@ else
 mcrt = -noixemul
 endif
 
-CFLAGS = -Os -fomit-frame-pointer
+CFLAGS ?= -Os -fomit-frame-pointer
 CFLAGS += -I$(root)/sources/headers
 CFLAGS += $(mcrt) 
 
