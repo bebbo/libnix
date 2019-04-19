@@ -282,7 +282,7 @@ void __initstdio(void) {
 					if ((fp->lx_fh = (proc)->pr_CES) == 0)
 #endif
 						if (_WBenchMsg || (fp->lx_fh = stderrdes = Open((CONST_STRPTR)"*", MODE_OLDFILE)) == 0)
-							fp->lx_fh = sfd[STDOUT_FILENO]->lx_fh;
+							fp->lx_fh = __stdfiledes[STDOUT_FILENO]->lx_fh;
 					fp->lx_pos = STDERR_FILENO;
 					fp->lx_oflags = O_WRONLY;
 					_setup_file(fp);
