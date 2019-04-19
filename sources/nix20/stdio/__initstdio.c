@@ -92,7 +92,7 @@ FILE *fdopen(int filedes, const char *mode) {
 				f->_p = 0;
 				f->_r = 0;
 				f->_w = 0;
-				f->_flags |= __SMBF; /* Buffer is malloc'ed */
+				f->_flags = __SMBF; /* Buffer is malloc'ed */
 				if (isatty(filedes))
 					f->_flags |= __SLBF; /* set linebuffered flag */
 				if (_lx_addflags(filedes, *mode == 'a' ? O_APPEND : 0) & O_WRONLY)
