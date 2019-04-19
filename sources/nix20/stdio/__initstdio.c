@@ -42,7 +42,7 @@ static BPTR stderrdes;
 /*
  **
  */
-static inline void _setup_file(StdFileDes *fp) {
+void _setup_file(StdFileDes *fp) {
 	fp->lx_inuse = 1;
 	if (IsInteractive(fp->lx_fh))
 		fp->lx_flags = LX_FILE | LX_ATTY;
@@ -78,34 +78,39 @@ StdFileDes *_lx_fhfromfd(int d) {
 	return NULL;
 }
 
-
 /**
  * Open the file stream for the file descriptor.
  */
-FILE *fdopen(int filedes,const char *mode)
-{ extern int _lx_addflags(int,int);
-  if (mode!=NULL)
-  { struct filenode *node = (struct filenode *)calloc(1,sizeof(*node));
-    if(node!=NULL)
-    { if((node->theFILE._bf._base=(unsigned char *)malloc(BUFSIZ))!=NULL)
-      { node->theFILE._bf._size=BUFSIZ;
-        node->theFILE.file=filedes;
-        node->theFILE._flags|=__SMBF; /* Buffer is malloc'ed */
-        if(isatty(filedes))
-          node->theFILE._flags|=__SLBF; /* set linebuffered flag */
-        if(_lx_addflags(filedes,*mode=='a'?O_APPEND:0)&O_WRONLY)
-          node->theFILE._flags|=__SWO; /* set write-only flag */
-        AddHead((struct List *)&__filelist,(struct Node *)&node->node);
-        return &node->theFILE;
-      }
-      else
-        errno=ENOMEM;
-      free(node);
-    }
-    else
-      errno=ENOMEM;
-  }
-  return NULL;
+FILE *fdopen(int filedes, const char *mode) {
+	extern int _lx_addflags(int, int);
+	if (mode != NULL) {
+		struct filenode *node = (struct filenode *) malloc(sizeof(*node));
+		if (node != NULL) {
+			FILE * f = &node->theFILE;
+			if ((f->_bf._base = (unsigned char *) malloc(BUFSIZ)) != NULL) {
+				AddHead((struct List * )&__filelist, (struct Node * )&node->node);
+				f->_p = 0;
+				f->_r = 0;
+				f->_w = 0;
+				f->_flags |= __SMBF; /* Buffer is malloc'ed */
+				if (isatty(filedes))
+					f->_flags |= __SLBF; /* set linebuffered flag */
+				if (_lx_addflags(filedes, *mode == 'a' ? O_APPEND : 0) & O_WRONLY)
+					f->_flags |= __SWO; /* set write-only flag */
+				f->file = filedes;
+				f->_bf._size = BUFSIZ;
+				f->linebufsize = 0;
+				f->tmpp = 0;
+				f->tmpinc = 0;
+				f->tmpdir = 0;
+				f->name = 0;
+				return f;
+			}
+			free(node);
+		}
+	}
+	errno = ENOMEM;
+	return NULL;
 }
 
 int __fclose(FILE * stream) {

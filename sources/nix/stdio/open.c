@@ -9,7 +9,7 @@ extern StdFileDes **__stdfiledes;
 extern unsigned __stdfilesize;
 
 StdFileDes *__allocfd(void);
-
+extern void _setup_file(StdFileDes *fp);
 /**
  * open a file
  *
