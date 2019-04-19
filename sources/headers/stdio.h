@@ -36,13 +36,13 @@ struct __sFILE {
 #define __SNBF	0x0002	  /* unbuffered */
 #define __SRD	0x0004	  /* read mode */
 #define __SWR	0x0008	  /* write mode */
+#define	__SRW   0x0010    /* read and write allowed */
 #define __SEOF	0x0020	  /* EOF read */
 #define __SERR	0x0040	  /* error encountered */
 #define __SMBF	0x0080	  /* buffer malloc'ed by library */
 #define __SSTR	0x0200	  /* sprintf/sscanf buffer */
 #define __SWO	0x8000	  /* write-only mode */
 
-#define	__SRW (__SRD | __SWR) /* different than in newlib! */
 
 #define __BPTRS 0x4000	/* tmpdir and name are BPTRS. */
 

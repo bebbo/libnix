@@ -33,11 +33,11 @@ FILE **__sF = (FILE **) (&errno + 1); /* stdin, stdout, stderr */
  ** the internal storage
  */
 StdFileDes **__stdfiledes;
-unsigned __stdfilesize = 4;
+unsigned __stdfilesize;
 /* The normal Amiga shell sets no process->pr_CES stream -
  * we use Open("*",MODE_NEWFILE) in this case
  */
-static long stderrdes;
+static BPTR stderrdes;
 
 /*
  **
@@ -51,46 +51,9 @@ static inline void _setup_file(StdFileDes *fp) {
 	fp->lx_fx = 0;
 }
 
-/**
- * Reuse or allocate a StdFileDes object.
- */
-StdFileDes *__allocfd(void) {
-	StdFileDes *fp, **sfd;
-	int file, max;
-
-	for (sfd = __stdfiledes, max = __stdfilesize, file = 0; file < max; sfd++, file++)
-		if (!sfd[0] || !sfd[0]->lx_inuse)
-			break;
-
-	if (file == SHRT_MAX) {
-		errno = EMFILE;
-		return NULL;
-	}
-
-	if (file == max) {
-		if ((sfd = realloc(__stdfiledes, (file + 1) * sizeof(fp))) == NULL) {
-			errno = ENOMEM;
-			return NULL;
-		}
-		__stdfiledes = sfd;
-		__stdfilesize++;
-		*(sfd = &sfd[file]) = 0;
-	}
-
-	if ((fp = sfd[0]) == NULL) {
-		if ((sfd[0] = fp = malloc(sizeof(*fp))) == NULL) {
-			errno = ENOMEM;
-			return NULL;
-		}
-		fp->lx_pos = file;
-	}
-
-	return fp;
-}
 
 int isatty(int d) {
 	StdFileDes *sfd = _lx_fhfromfd(d);
-
 	return sfd ? (sfd->lx_flags & LX_ATTY) : 0;
 }
 
@@ -115,34 +78,6 @@ StdFileDes *_lx_fhfromfd(int d) {
 	return NULL;
 }
 
-/**
- * open a file
- *
- * @return the file descriptor.
- */
-int open(const char *path, int flags, ...) {
-	extern char *__amigapath(const char *path);
-	StdFileDes *sfd;
-
-#ifdef IXPATHS
-	if((path=__amigapath(path))==NULL)
-	return -1;
-#endif
-
-	if ((sfd = __allocfd())) {
-		sfd->lx_oflags = flags;
-
-		long mode = flags&O_TRUNC?MODE_NEWFILE: flags&O_CREAT?MODE_READWRITE:MODE_OLDFILE;
-		if ((sfd->lx_fh = (int)Open((CONST_STRPTR)path, mode))) {
-			_setup_file(sfd);
-			return sfd->lx_pos;
-		}
-		__seterrno();
-		sfd->lx_inuse = 0;
-	}
-
-	return -1;
-}
 
 /**
  * Open the file stream for the file descriptor.
@@ -173,14 +108,8 @@ FILE *fdopen(int filedes,const char *mode)
   return NULL;
 }
 
-
-/**
- * Reopen a file.
- *
- * @return file stream.
- */
-FILE *freopen(const char *filename, const char *mode, FILE *stream) {
-	int error = __fflush(stream);
+int __fclose(FILE * stream) {
+ int error = __fflush(stream);
 
 	if (stream->file >= 0)
 		close(stream->file);
@@ -197,101 +126,47 @@ FILE *freopen(const char *filename, const char *mode, FILE *stream) {
 		UnLock(CurrentDir(cd)); /* cd back, unlock t: */
 	}
 	stream->file = 0;
-
-	if (error)
-		return NULL;
-
-	if (filename != NULL) {
-		long file, flags;
-		if (mode == NULL)
-			return NULL;
-
-		char ch = *mode++;
-		switch (ch) {
-			case 'r':
-				flags = O_RDONLY;
-				break;
-			case 'w':
-				flags = O_WRONLY | O_CREAT | O_TRUNC;
-				break;
-			case 'a':
-				flags = O_WRONLY | O_CREAT | O_APPEND;
-				break;
-			default:
-				return NULL;
-		}
-
-		ch = *mode++;
-		if (ch == 't' || ch == 'b') // ignore for compatibility
-			ch = *mode++;
-
-		if (ch == '+')
-			flags = (flags & ~O_ACCMODE) | O_RDWR;
-
-		if ((file = open(filename, flags, 0777)) < 0)
-			return NULL;
-
-		if (flags & O_APPEND)
-			Seek(__stdfiledes[stream->file]->lx_fh, 0, OFFSET_END);
-
-		/* clear a lot of flags */
-		stream->_flags &= ~(__SWO | __SERR | __SEOF | __SWR | __SRD | __SNBF | __SLBF);
-		if (flags & O_WRONLY)
-			stream->_flags |= __SWO; /* set write-only flag */
-		if (isatty(file))
-			stream->_flags |= __SLBF; /* set linebuffered flag */
-		stream->file = file;
-	}
-
-	return stream;
+	return error;
 }
 
+static StdFileDes * stdfiledes(BPTR fh) {
+	StdFileDes *sfd = (StdFileDes *) malloc(sizeof(StdFileDes));
+	if (sfd) {
+		__stdfiledes[__stdfilesize] = sfd;
+		sfd->lx_pos = __stdfilesize++;
+		sfd->lx_fh = Input();
+		sfd->lx_oflags = O_WRONLY;
+		_setup_file(sfd);
+		sfd->lx_flags |= LX_SYS;
+	}
+	return sfd;
+}
 
 /*
  **
  */
 void __initstdio(void) {
 	extern struct WBStartup *_WBenchMsg;
-	StdFileDes *fp, **sfd;
+	StdFileDes *sfd;
 
-	if ((__stdfiledes = sfd = (StdFileDes **) malloc(4 * sizeof(StdFileDes *)))) {
-		if ((fp = (StdFileDes *) malloc(sizeof(StdFileDes)))) {
-			*sfd++ = fp;
-			fp->lx_fh = Input();
-			fp->lx_pos = STDIN_FILENO;
-			fp->lx_oflags = O_RDONLY;
-			_setup_file(fp);
-			fp->lx_flags |= LX_SYS;
-			if ((fp = (StdFileDes *) malloc(sizeof(StdFileDes)))) {
-				*sfd++ = fp;
-				fp->lx_fh = Output();
-				fp->lx_pos = STDOUT_FILENO;
-				fp->lx_oflags = O_WRONLY;
-				_setup_file(fp);
-				fp->lx_flags |= LX_SYS;
-				if ((fp = (StdFileDes *) malloc(sizeof(StdFileDes)))) {
-					*sfd++ = fp;
-					*sfd = 0; // have a free one
-
-					struct Process * proc = (struct Process *) SysBase->ThisTask;
+	if ((__stdfiledes = (StdFileDes **) malloc(4 * sizeof(StdFileDes *)))) {
+		if ((sfd = stdfiledes(Input()))) {
+			sfd->lx_oflags = O_RDONLY;
+			if ((sfd = stdfiledes(Output()))) {
+				BPTR bstderr;
+				struct Process * proc = (struct Process *) SysBase->ThisTask;
 #ifdef __KICK13__
-					struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(proc->pr_CLI);
-					fp->lx_fh = cli->cli_StandardOutput;
-					if(fp->lx_fh==0)
+				struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(proc->pr_CLI);
+				bstderr = cli->cli_StandardOutput;
 #else
-					if ((fp->lx_fh = (proc)->pr_CES) == 0)
+				bstderr = proc->pr_CES;
 #endif
-						if (_WBenchMsg || (fp->lx_fh = stderrdes = Open((CONST_STRPTR)"*", MODE_OLDFILE)) == 0)
-							fp->lx_fh = __stdfiledes[STDOUT_FILENO]->lx_fh;
-					fp->lx_pos = STDERR_FILENO;
-					fp->lx_oflags = O_WRONLY;
-					_setup_file(fp);
-					fp->lx_flags |= LX_SYS;
+				if(bstderr == 0 &&
+				  (_WBenchMsg || (bstderr = stderrdes = Open((CONST_STRPTR)"*", MODE_OLDFILE)) == 0))
+					bstderr = __stdfiledes[STDOUT_FILENO]->lx_fh;
 
-#define STDIN_FILENO 0
-#define STDOUT_FILENO 1
-#define STDERR_FILENO 2
-
+				if ((sfd = stdfiledes(bstderr))) {
+					__stdfiledes[3] = 0; // have a free one
 					{
 						// fdopen stdin, stdout and stderr and make stderr unbuffered
 						FILE **f = __sF, *err;
@@ -303,7 +178,6 @@ void __initstdio(void) {
 						err->_bf._base = err->unget;
 						err->_bf._size = 3;
 					}
-
 					return;
 				}
 			}
@@ -351,7 +225,7 @@ int fclose(FILE *stream) {
 	if (!stream) {
 		return EOF;
 	}
-	retval = freopen(NULL, NULL, stream) == NULL ? EOF : 0;
+	retval = __fclose(stream) ? EOF : 0;
 	if (stream->_flags & __SMBF) /* Free buffer if necessary */
 	{
 		free(stream->_bf._base);

@@ -11,7 +11,7 @@
 #include "stabs.h"
 
 extern struct LocaleBase *LocaleBase;
-extern char __localename[];
+//extern char __localename[];
 extern struct Locale *__localevec[];
 
 /* for LC_CTYPE */
@@ -24,7 +24,7 @@ extern char *__decimalpoint;
 
 /* for LC_TIME */
 extern long __gmtoffset;
-extern int __dstflag;
+//extern int __dstflag;
 
 extern struct lconv __lconv;
 

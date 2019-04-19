@@ -18,8 +18,6 @@ union _d_bits {
 	unsigned u;
 };
 
-extern __stdargs int __fflush(FILE *stream);
-
 extern int __vfprintf_total_size(FILE *stream, const char *fmt, va_list args);
 
 /* a little macro to make life easier */

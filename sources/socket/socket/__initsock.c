@@ -308,7 +308,7 @@ static int init_inet_daemon(int *argc,char ***argv,struct SocketSettings *lss)
       err = 0;
     } while (0);
 
-    return ((errno=err) ? -1 : fp->lx_pos);
+    return ((errno = err) ? -1 : fp->lx_pos);
   }
 
   return -1;
