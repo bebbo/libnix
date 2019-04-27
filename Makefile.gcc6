@@ -28,15 +28,19 @@ endif
 -include $(root)/sources/$(lib)/steal.me
 endif
 
+# use nix13 or nix20
 ifeq (nix13,$(lib))
 mcrt = -mcrt=nix13
 else
 mcrt = -noixemul
 endif
 
+# extend CFLAGS on first invokation
+ifeq (,$(kind))
 CFLAGS ?= -Os -fomit-frame-pointer
 CFLAGS += -I$(root)/sources/headers
 CFLAGS += $(mcrt) 
+endif
 
 .PHONY: all one rest clean install install_one
 
@@ -47,7 +51,7 @@ all: info lib libb libm020 libm020bb libm020bb32
 lib: lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
 	@mkdir -p $@
 	$(MAKE) one kind=$@
-	if [ -e $(PREFIX)/m68k-amigaos/lib/libstubs.a ]; then cp $(PREFIX)/m68k-amigaos/lib/libstubs.a lib/libstubs.a; fi
+	if [ -e $(PREFIX)/m68k-amigaos/lib/libstubs.a ]; then cp $(PREFIX)/m68k-amigaos/lib/libstubs.a lib/libstubs.a; touch -t 0001010000 lib/libstubs.a; fi
 	if [ -e lib/libstubs.a ] && [ "$$(m68k-amigaos-ar t lib/libstubs.a | grep __initlib)" != "" ]; then rm -f lib/libstubs.a; fi
 	$(MAKE) -C $@ kind=lib libstubs.a lib=stubs
 		
@@ -153,9 +157,9 @@ detach.o: $(root)/sources/misc/detach.c
 lib$(libname).a: $(shell find $(root)/sources/$(lib)/* -name '*.c') $(stolen) $(shell find $(root)/sources/headers/* -name '*.h') $(root)/Makefile.gcc6
 	@mkdir -p $(lib)
 	@echo compiling for $(kind)/$@ using $(CC) -c $(CFLAGS) $(flags)
-	@touch --date=@0 $(lib)/stamp && if [ -e $@ ]; then touch -r $@ $(lib)/stamp; fi
-	@if [ "$$(find $(root)/sources/headers/* -newer $(lib)/stamp)" != "" ]; then rm -f $(lib)/*.o $@; touch --date=@0 $(lib)/stamp; fi
-	@if [ "$$(find $(root)/Makefile.gcc6 -newer $(lib)/stamp)" != "" ]; then rm -f $(lib)/*.o $@; touch --date=@0 $(lib)/stamp; fi
+	@touch -t 0001010000 $(lib)/stamp && if [ -e $@ ]; then touch -r $@ $(lib)/stamp; fi
+	@if [ "$$(find $(root)/sources/headers/* -newer $(lib)/stamp)" != "" ]; then rm -f $(lib)/*.o $@; touch -t 0001010000 $(lib)/stamp; fi
+	@if [ "$$(find $(root)/Makefile.gcc6 -newer $(lib)/stamp)" != "" ]; then rm -f $(lib)/*.o $@; touch -t 0001010000 $(lib)/stamp; fi
 	@cd $(lib) && files="$$(find $^ -name '*.c' -newer stamp)" && echo "$(CC) -c $(CFLAGS) $(flags) $$files" && $(CC) -c $(CFLAGS) $(flags) $$files 
 	@#echo archive $(kind)/$@
 	@$(AR) rcs $@ $$(find ./$(lib)/* -name '*.o' -newer $(lib)/stamp)
