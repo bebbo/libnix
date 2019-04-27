@@ -1,12 +1,12 @@
 #ifndef _HEADERS_BASE_H
 #define _HEADERS_BASE_H
 
-#ifndef SMALL_DATA
-#define A4(x) #x
-#elif defined(mc68020)
+#if defined(__baserel32__)
 #define A4(x) "a4@(" #x ":L)"
-#else
+#elif defined (__baserel__)
 #define A4(x) "a4@(" #x ":W)"
+#else
+#define A4(x) #x
 #endif
 
 #define GETAGBASE  movel A4(_AmigaGuideBase),a6
