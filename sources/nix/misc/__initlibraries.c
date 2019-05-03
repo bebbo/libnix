@@ -3,11 +3,11 @@
 #include "stabs.h"
 #include <string.h>
 
-struct lib /* These are the elements pointed to by __LIB_LIST__ */
+extern struct lib /* These are the elements pointed to by __LIB_LIST__ */
 {
 	struct Library *base;
 	char *name;
-}*__LIB_LIST__[] = {0};
+}*__LIB_LIST__[];
 
 extern void exit(int returncode);
 
