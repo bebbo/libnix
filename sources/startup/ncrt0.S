@@ -109,7 +109,6 @@ oldpri: 	movel	a3@+,d0
 		.data
 
 		.long ___nocommandline
-		.long ___initlibraries
 		.long ___initcpp
 		.long ___cpucheck
 
