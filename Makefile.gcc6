@@ -29,17 +29,18 @@ endif
 endif
 
 # use nix13 or nix20
+ifneq (,$(lib))
 ifeq (nix13,$(lib))
-mcrt = -mcrt=nix13
+CFLAGS += -mcrt=nix13
 else
-mcrt = -noixemul
+CFLAGS += -noixemul
+endif
 endif
 
 # extend CFLAGS on first invokation
 ifeq (,$(kind))
 CFLAGS ?= -Os -fomit-frame-pointer
 CFLAGS += -I$(root)/sources/headers
-CFLAGS += $(mcrt) 
 endif
 
 .PHONY: all one rest clean install install_one
