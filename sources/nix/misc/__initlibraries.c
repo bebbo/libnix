@@ -24,7 +24,7 @@ void __initlibraries(void) {
 	struct lib **list = __LIB_LIST__ + 1;
 	struct lib * l;
 	while ((l = *list++)) {
-		if ((l->base = OpenLibrary(l->name, 0)) == NULL)
+		if ((l->base = OldOpenLibrary(l->name)) == NULL)
 			__openliberror(0, l->name);
 	}
 }
