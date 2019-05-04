@@ -12,21 +12,32 @@ extern struct lib /* These are the elements pointed to by __LIB_LIST__ */
 extern void exit(int returncode);
 
 
-static __attribute__((noreturn)) void __openliberror(ULONG version, char const * ln) {
+static __attribute__((noreturn)) void __openliberror() {
 	char buf[60];
-	strcpy(buf, ln);
-	strcat(buf, " failed\n");
-	Write(Output(), buf, strlen(buf));
+
+	struct lib **list = __LIB_LIST__ + 1;
+	struct lib * l;
+	while ((l = *list++)) {
+		if (l->base)
+			continue;
+		strcpy(buf, l->name);
+		strcat(buf, " failed to load\n");
+		Write(Output(), buf, strlen(buf));
+	}
 	exit(20);
 }
 
 void __initlibraries(void) {
 	struct lib **list = __LIB_LIST__ + 1;
 	struct lib * l;
+	short err = 0;
 	while ((l = *list++)) {
-		if ((l->base = OldOpenLibrary(l->name)) == NULL)
-			__openliberror(0, l->name);
+		if ((l->base = OldOpenLibrary(l->name)))
+			continue;
+		err = 1;
 	}
+	if (err)
+		__openliberror();
 }
 
 void __exitlibraries(void) {
