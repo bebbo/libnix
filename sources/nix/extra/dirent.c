@@ -47,7 +47,7 @@ struct dirent *readdir(DIR *dirp) {
 	struct dirent *result;
 
 	if (!dirp->d_count && dirp->d_more != DOSFALSE) {
-		dirp->d_more = ExAll(dirp->d_lock, (APTR)&dirp->d_ead[0], sizeof(dirp->d_ead), ED_NAME, dirp->d_eac);
+		dirp->d_more = ExAll(dirp->d_lock, (APTR)&dirp->d_ead[0], sizeof(dirp->d_ead), ED_TYPE, dirp->d_eac);
 		dirp->current = (struct ExAllData *) &dirp->d_ead[0];
 		dirp->d_count = dirp->d_eac->eac_Entries;
 	}
@@ -56,6 +56,8 @@ struct dirent *readdir(DIR *dirp) {
 		dirp->dd_ent.d_fileno = dirp->dd_ent.d_reclen = 1;
 		strcpy((char *)dirp->dd_ent.d_name, (const char *)dirp->current->ed_Name);
 		dirp->dd_ent.d_namlen = strlen((const char *)dirp->dd_ent.d_name);
+		dirp->dd_ent.d_type = (dirp->current->ed_Type<0?DT_REG:
+			(dirp->current->ed_Type!=ST_SOFTLINK?DT_DIR:DT_LNK));
 		dirp->current = dirp->current->ed_Next;
 		dirp->d_count--;
 		result = &dirp->dd_ent;
@@ -67,7 +69,7 @@ struct dirent *readdir(DIR *dirp) {
 void rewinddir(DIR *dirp) {
 	if (dirp->d_more != DOSFALSE)
 		do {
-			dirp->d_more = ExAll(dirp->d_lock, (APTR)&dirp->d_ead[0], sizeof(dirp->d_ead), ED_NAME, dirp->d_eac);
+			dirp->d_more = ExAll(dirp->d_lock, (APTR)&dirp->d_ead[0], sizeof(dirp->d_ead), ED_TYPE, dirp->d_eac);
 		} while (dirp->d_more != DOSFALSE);
 	dirp->d_count = 0;
 	dirp->d_more = DOSTRUE;
