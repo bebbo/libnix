@@ -40,7 +40,7 @@ endif
 # extend CFLAGS on first invokation
 ifeq (,$(kind))
 CFLAGS ?= -Os -fomit-frame-pointer
-CFLAGS += -I$(root)/sources/headers
+CFLAGS += -I$(root)/sources/headers -fno-builtin
 endif
 
 .PHONY: all one rest clean install install_one
