@@ -1,4 +1,5 @@
-
-#undef __NO_INLINE__
+#define __NO_INLINE__
 #include "stdio.h"
-extern int ferror(FILE *fp);
+__stdargs int ferror(FILE *fp) {
+	return ((fp)->_flags & __SERR);
+}

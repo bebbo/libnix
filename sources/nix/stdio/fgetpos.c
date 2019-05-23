@@ -1,4 +1,6 @@
-
-#undef __NO_INLINE__
+#define __NO_INLINE__
 #include "stdio.h"
-extern int fgetpos(FILE *stream,fpos_t *pos);
+__stdargs int fgetpos(FILE *stream, fpos_t *pos) {
+	*pos = ftell(stream);
+	return 0;
+}

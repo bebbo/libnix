@@ -153,7 +153,7 @@ extern __stdargs int setbuf(FILE *stream, char *buf);
 #else
 
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
-#define __MY_INLINE__ inline
+#define __MY_INLINE__ static inline
 #else
 #define __MY_INLINE__ extern inline
 #endif
@@ -183,8 +183,7 @@ __MY_INLINE__ __stdargs int fsetpos(FILE *stream,fpos_t *pos)
 {	return fseek(stream,*pos,SEEK_SET);}
 
 __MY_INLINE__ __stdargs int getchar()
-{	return getc(stdin);
-}
+{	return getc(stdin);}
 
 __MY_INLINE__ __stdargs char *gets(char *s)
 {	return fgets(s, 0, stdin);}

@@ -3,7 +3,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <strsup.h>
+#include "string.h"
 #include "stdio.h"
 
 extern void __seterrno(void);

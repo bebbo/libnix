@@ -7,7 +7,6 @@
 #include <libraries/locale.h>
 #include <proto/locale.h>
 #include <proto/exec.h>
-#include <strsup.h>
 #include "stabs.h"
 
 extern struct LocaleBase *LocaleBase;

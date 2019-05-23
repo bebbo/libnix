@@ -1,6 +1,5 @@
 #include <limits.h>
 #include <string.h>
-#include <strsup.h>
 #ifndef __KICK13__
 #include <libraries/locale.h>
 #include <proto/locale.h>

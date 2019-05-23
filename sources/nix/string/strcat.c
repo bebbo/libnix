@@ -1,4 +1,3 @@
-#undef __NO_INLINE__
 #define __NO_INLINE__
 #ifndef mc68000
 #include <string.h>

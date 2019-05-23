@@ -1,4 +1,5 @@
-
-#undef __NO_INLINE__
+#define __NO_INLINE__
 #include "stdio.h"
-extern char *gets(char *s);
+__stdargs char *gets(char *s) {
+	return fgets(s, 0, stdin);
+}

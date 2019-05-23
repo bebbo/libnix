@@ -1,4 +1,3 @@
-#undef __NO_INLINE__
 #define __NO_INLINE__
 #include <proto/exec.h>
 #include <string.h>

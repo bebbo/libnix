@@ -1,4 +1,6 @@
-
-#undef __NO_INLINE__
+#define __NO_INLINE__
 #include "stdio.h"
-extern int fileno(FILE *file);
+__stdargs int fileno(FILE *file) {
+	return file->file;
+}
+

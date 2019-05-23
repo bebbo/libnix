@@ -1,4 +1,5 @@
-
-#undef __NO_INLINE__
+#define __NO_INLINE__
 #include "stdio.h"
-extern void clearerr(FILE *stream);
+__stdargs void clearerr(FILE *stream) {
+	stream->_flags &= ~(__SERR | __SEOF);
+}

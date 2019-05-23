@@ -1,4 +1,3 @@
-#undef __NO_INLINE__
 #define __NO_INLINE__
 #include <string.h>
 int strcmp(const char *p1,const char *p2)

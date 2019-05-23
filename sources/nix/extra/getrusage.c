@@ -1,4 +1,3 @@
-#include <strsup.h>
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/resource.h>

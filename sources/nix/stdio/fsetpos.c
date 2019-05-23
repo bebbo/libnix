@@ -1,4 +1,5 @@
-
-#undef __NO_INLINE__
+#define __NO_INLINE__
 #include "stdio.h"
-extern int fsetpos(FILE *stream,fpos_t *pos);
+__stdargs int fsetpos(FILE *stream, fpos_t *pos) {
+	return fseek(stream, *pos, SEEK_SET);
+}

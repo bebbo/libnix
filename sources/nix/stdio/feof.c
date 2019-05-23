@@ -1,4 +1,5 @@
-
-#undef __NO_INLINE__
+#define __NO_INLINE__
 #include "stdio.h"
-extern int feof(FILE * fp);
+__stdargs int feof(FILE * fp) {
+	return ((fp)->_flags & __SEOF);
+}

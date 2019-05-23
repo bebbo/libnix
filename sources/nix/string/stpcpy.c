@@ -1,3 +1,8 @@
-#undef __NO_INLINE__
+#define __NO_INLINE__
 #include <string.h>
-extern char *stpcpy(char *dst,const char *src);
+__stdargs char *stpcpy(char *dst, const char *src) {
+	while ((*dst++ = *src++)) {
+	}
+	return (--dst);
+}
+
