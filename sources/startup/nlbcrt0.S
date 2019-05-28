@@ -29,7 +29,7 @@ start:		movel	#___bss_size,d1
 		lea	a4@(__edata:L),a1
 clrbss: 	clrl	a1@+
 		subql	#4,d1
-		bnes	clrbss
+		bgts	clrbss
 
 nobss:		movel	a0,a4@(___commandline:L)
 		movel	d0,a4@(___commandlen:L)

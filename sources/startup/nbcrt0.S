@@ -34,7 +34,7 @@ start:
 clrbss:
 		move.l	d2,a1@+
 		subql	#4,d1
-		bnes	clrbss
+		bgts	clrbss
 
 nobss:
 		movel	a0,a4@(___commandline:W)
