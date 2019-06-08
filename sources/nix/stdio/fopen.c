@@ -9,7 +9,7 @@
 
 #include "stdio.h"
 
-#include "../../../sources/nix/stdio/__filenode.h"
+#include "__filenode.h"
 extern struct MinList __filelist;
 
 FILE *fopen(const char *filename,const char *mode)

@@ -3,7 +3,7 @@
 
 #include "stdio.h"
 
-#include "../../../sources/nix/stdio/__filenode.h"
+#include "__filenode.h"
 
 extern int __fflush(FILE *);
 
