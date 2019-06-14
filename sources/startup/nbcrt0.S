@@ -133,7 +133,6 @@ _geta4: 	lea	___a4_init,a4
 		.data
 
 		.long ___nocommandline
-		.long ___cpucheck
 
 .comm		_SysBase,4
 .comm		___SaveSP,4

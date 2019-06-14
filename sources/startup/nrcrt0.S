@@ -164,7 +164,6 @@ oldpri: 	movel	a3@+,d0
 		.data
 
 		.long ___nocommandline
-		.long ___cpucheck
 
 .comm		_SysBase,4
 .comm		___SaveSP,4

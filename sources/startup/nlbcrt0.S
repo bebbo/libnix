@@ -13,6 +13,7 @@ _LVOWaitPort	=	-384
 pr_MsgPort	=	  92
 pr_CLI		=	 172
 ThisTask    =    276
+Attn        =    0x128
 
 | public symbols
 
@@ -23,36 +24,54 @@ ThisTask    =    276
 
 | first entry - init some vars, check for cli or wb start
 
-start:		movel	#___bss_size,d1
-		jbsr	_geta4
-		beqs	nobss
-		lea	a4@(__edata:L),a1
-clrbss: 	clrl	a1@+
-		subql	#4,d1
-		bgts	clrbss
-
-nobss:		movel	a0,a4@(___commandline:L)
-		movel	d0,a4@(___commandlen:L)
-
-		movel	sp,a4@(___SaveSP:L)
+start:
 		movel	4:L,a6
-		movel	a6,a4@(_SysBase:L)
-
 		movel	a6@(ThisTask:W),a3
-		tstl	a3@(pr_CLI:L)
-		bne	fromCLI
 
 | wb start - get wbmsg
-
-fromWB: 	lea	a3@(pr_MsgPort:L),a0
+		moveq.l	#0,d6
+		tstl	a3@(pr_CLI:L)
+		bne	fromCLI
+fromWB:
+		lea	a3@(pr_MsgPort:L),a0
 		jsr	a6@(_LVOWaitPort:L)
 		lea	a3@(pr_MsgPort:L),a0
 		jsr	a6@(_LVOGetMsg:L)
-		movel	d0,a4@(__WBenchMsg:L)
+		move.l	d0,d6
+fromCLI:
+
+| check cpu
+		btst.b  #1,1+Attn(a6)
+		jne cpuok
+
+| alert
+		move.l  #0x68020,d7
+		jsr -0x6c(a6)
+
+		moveq.l	#20,d7
+		move.l	d6,d2
+		bra		cleanup
+
+cpuok:
+		movel	#___bss_size,d1
+		jbsr	_geta4
+		beqs	nobss
+		lea	a4@(__edata:L),a1
+clrbss:
+		clrl	a1@+
+		subql	#4,d1
+		bgts	clrbss
+
+nobss:
+		movel	a0,a4@(___commandline:L)
+		movel	d0,a4@(___commandlen:L)
+
+		movel	sp,a4@(___SaveSP:L)
+		movel	a6,a4@(_SysBase:L)
+		movel	d6,a4@(__WBenchMsg:L)
 
 | execute all init functions then call main
-
-fromCLI:	lea	a4@(___INIT_LIST__:L),a2
+		lea	a4@(___INIT_LIST__:L),a2
 		addqw	#4,a2
 		moveql	#-1,d2
 		jbsr	callfuncs
@@ -64,14 +83,18 @@ fromCLI:	lea	a4@(___INIT_LIST__:L),a2
 
 | exit() entry - execute all exit functions, reply wbmsg
 
-__exit: 	lea	a4@(___EXIT_LIST__:L),a2
+__exit:
+	 	lea	a4@(___EXIT_LIST__:L),a2
 		addqw	#4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
 
-		movel	a4@(_SysBase:L),a6
+		movel	a4@(___SaveSP:L),sp
+		movel	sp@(4:L),d7
 
+		movel	a4@(_SysBase:L),a6
 		movel	a4@(__WBenchMsg:L),d2
+cleanup:
 		beq	todos
 		jsr	a6@(_LVOForbid:L)
 		movel	d2,a1
@@ -79,8 +102,8 @@ __exit: 	lea	a4@(___EXIT_LIST__:L),a2
 
 | leave - get return val, restore stackptr
 
-todos:		movel	sp@(4:L),d0
-		movel	a4@(___SaveSP:L),sp
+todos:
+		move.l	d7,d0
 		rts
 
 | call all functions in the NULL terminated list pointed to by a2
@@ -127,7 +150,6 @@ _geta4: 	lea	___a4_init,a4
 		.data
 
 		.long ___nocommandline
-		.long ___cpucheck
 
 .comm		_SysBase,4
 .comm		___SaveSP,4

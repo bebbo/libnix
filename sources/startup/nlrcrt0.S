@@ -21,6 +21,7 @@ _LVOCopyMemQuick =	-630
 pr_MsgPort	=	  92
 pr_CLI		=	 172
 ThisTask    =    276
+Attn        =    0x128
 
 ERROR_NO_FREE_STORE =	 103
 
@@ -31,7 +32,8 @@ ERROR_NO_FREE_STORE =	 103
 
 | first entry - check for cli or wb start
 
-start:		movel	a0,d3
+start:
+		movel	a0,d3
 		movel	d0,d4
 
 		movel	4:W,a6
@@ -43,7 +45,8 @@ start:		movel	a0,d3
 
 | wb start - get our message
 
-fromWB: 	lea	a3@(pr_MsgPort:L),a0
+fromWB:
+	 	lea	a3@(pr_MsgPort:L),a0
 		jsr	a6@(_LVOWaitPort:L)
 		lea	a3@(pr_MsgPort:L),a0
 		jsr	a6@(_LVOGetMsg:L)
@@ -51,7 +54,20 @@ fromWB: 	lea	a3@(pr_MsgPort:L),a0
 
 | resident setup - allocate memory and relocate
 
-fromCLI:	movql	#ERROR_NO_FREE_STORE,d7
+fromCLI:
+| check cpu
+		btst.b  #1,1+Attn(a6)
+		jne cpuok
+
+| alert
+		move.l  #0x68020,d7
+		jsr -0x6c(a6)
+
+		moveq.l	#20,d7
+		bra		cleanup
+
+cpuok:
+		movql	#ERROR_NO_FREE_STORE,d7
 		movel	#___data_size,d5
 		movel	#___bss_size,d2
 		addl	d5,d2
@@ -99,7 +115,8 @@ no_reloc:	lea	a4@(0x7ffe:L),a4
 
 | exit() entry - get return val, restore stackptr
 
-__exit: 	lea	a4@(___EXIT_LIST__:L),a2
+__exit:
+	 	lea	a4@(___EXIT_LIST__:L),a2
 		addqw	#4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
@@ -118,12 +135,14 @@ __exit: 	lea	a4@(___EXIT_LIST__:L),a2
 
 | cleanup - reply wbmsg and exit
 
-cleanup:	movel	a2,d0
+cleanup:
+		movel	a2,d0
 		beqs	todos
 		jsr	a6@(_LVOForbid:L)
 		movel	a2,a1
 		jsr	a6@(_LVOReplyMsg:L)
-todos:		movel	d7,d0
+todos:
+		movel	d7,d0
 		rts
 
 | call all functions in the NULL terminated list pointed to by a2
