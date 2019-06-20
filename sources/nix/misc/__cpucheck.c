@@ -10,6 +10,7 @@ asm(
 
 "	.globl	___cpucheck;"
 "___cpucheck:;"
+"	exg a7,a7;"
 "	movel	"A4(_SysBase)",a1;"
 "	movew	a1@(0x128:W),d0;"
 

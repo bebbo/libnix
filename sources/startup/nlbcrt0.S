@@ -53,6 +53,18 @@ fromCLI:
 		bra		cleanup
 
 cpuok:
+                btst.b  #4,1+Attn(a6)
+                jne fpuok
+
+| alert
+                move.l  #0x68881,d7
+                jsr -0x6c(a6)
+
+                moveq.l #20,d7
+                move.l  d6,d2
+                bra             cleanup
+
+fpuok:
 		movel	#___bss_size,d1
 		jbsr	_geta4
 		beqs	nobss
