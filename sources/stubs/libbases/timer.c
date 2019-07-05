@@ -4,7 +4,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#if defined (__libnix__)
+#if 0 && defined (__libnix__)
 
 #include <stabs.h>
 void* TimerBase[2] = { 0, "timer.device" };
