@@ -10,7 +10,7 @@ VAMOS = vamos
 
 NEED_68020_MESSAGE = 'CALL:  108 Alert( alertNum[d7]=00068020 )'
 NEED_68881_MESSAGE = 'CALL:  108 Alert( alertNum[d7]=00068881 )'
-NORMAL_MESSAGE ='Hello world, Pi=3.141593'
+NORMAL_MESSAGE ='Hello world, Pi=3.14'
 
 all: m68000 m68020 m68020_m68881 fbaserel_m68000 fbaserel_m68020 fbaserel_m68020_m68881 fbaserel32_m68020 fbaserel32_m68020_m68881 resident resident_m68020 resident_m68020_m68881 resident32_m68020 resident32_m68020_m68881
 
