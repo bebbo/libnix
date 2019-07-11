@@ -102,12 +102,15 @@ install_libm020bb:
 	$(MAKE) install_one kind=libm020bb to="libb/libm020/"
 install_libm020bb32:
 	$(MAKE) install_one kind=libm020bb32 to="libb32/libm020/"
+<<<<<<< HEAD
 install_libm881:
 	$(MAKE) install_one kind=libm881 to="libm020/libm881/"
 install_libm020bb881:
 	$(MAKE) install_one kind=libm020bb881 to="libb/libm020/libm881/"
 install_libm020bb32881:
 	$(MAKE) install_one kind=libm020bb32881 to="libb32/libm020/libm881/"
+=======
+>>>>>>> 858cc8705686727529f82fe3424453c0052bb904
 
 # install the files for the given $(kind) into $(to)
 install_one:
