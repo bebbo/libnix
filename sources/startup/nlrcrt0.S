@@ -67,17 +67,6 @@ fromCLI:
 		bra		cleanup
 
 cpuok:
-                btst.b  #4,1+Attn(a6)
-                jne fpuok
-
-| alert
-                move.l  #0x68881,d7
-                jsr -0x6c(a6)
-
-                moveq.l #20,d7
-                bra             cleanup
-
-fpuok:
 		movql	#ERROR_NO_FREE_STORE,d7
 		movel	#___data_size,d5
 		movel	#___bss_size,d2
