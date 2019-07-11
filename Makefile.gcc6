@@ -45,8 +45,8 @@ endif
 
 .PHONY: all one rest clean install install_one
 
-.PHONY:      lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
-all:    info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
+.PHONY: lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
+all: info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
 
 # the desired kinds to be build
 lib: lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
@@ -102,15 +102,12 @@ install_libm020bb:
 	$(MAKE) install_one kind=libm020bb to="libb/libm020/"
 install_libm020bb32:
 	$(MAKE) install_one kind=libm020bb32 to="libb32/libm020/"
-<<<<<<< HEAD
 install_libm881:
 	$(MAKE) install_one kind=libm881 to="libm020/libm881/"
 install_libm020bb881:
 	$(MAKE) install_one kind=libm020bb881 to="libb/libm020/libm881/"
 install_libm020bb32881:
 	$(MAKE) install_one kind=libm020bb32881 to="libb32/libm020/libm881/"
-=======
->>>>>>> 858cc8705686727529f82fe3424453c0052bb904
 
 # install the files for the given $(kind) into $(to)
 install_one:
