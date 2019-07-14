@@ -139,7 +139,7 @@ static StdFileDes * stdfiledes(BPTR fh) {
 	if (sfd) {
 		__stdfiledes[__stdfilesize] = sfd;
 		sfd->lx_pos = __stdfilesize++;
-		sfd->lx_fh = Input();
+		sfd->lx_fh = fh;
 		sfd->lx_oflags = O_WRONLY;
 		_setup_file(sfd);
 		sfd->lx_flags |= LX_SYS;
