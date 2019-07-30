@@ -10,51 +10,51 @@
 
 _BEGIN_STD_C
 
-int isalnum (int __c);
-int isalpha (int __c);
-int iscntrl (int __c);
-int isdigit (int __c);
-int isgraph (int __c);
-int islower (int __c);
-int isprint (int __c);
-int ispunct (int __c);
-int isspace (int __c);
-int isupper (int __c);
-int isxdigit (int __c);
-int tolower (int __c);
-int toupper (int __c);
+__stdargs int isalnum (int __c);
+__stdargs int isalpha (int __c);
+__stdargs int iscntrl (int __c);
+__stdargs int isdigit (int __c);
+__stdargs int isgraph (int __c);
+__stdargs int islower (int __c);
+__stdargs int isprint (int __c);
+__stdargs int ispunct (int __c);
+__stdargs int isspace (int __c);
+__stdargs int isupper (int __c);
+__stdargs int isxdigit (int __c);
+__stdargs int tolower (int __c);
+__stdargs int toupper (int __c);
 
 #if __ISO_C_VISIBLE >= 1999
-int isblank (int __c);
+__stdargs int isblank (int __c);
 #endif
 
 #if __MISC_VISIBLE || __XSI_VISIBLE
-int isascii (int __c);
-int toascii (int __c);
+__stdargs int isascii (int __c);
+__stdargs int toascii (int __c);
 #define _tolower(__c) ((unsigned char)(__c) - 'A' + 'a')
 #define _toupper(__c) ((unsigned char)(__c) - 'a' + 'A')
 #endif
 
 #if __POSIX_VISIBLE >= 200809
-extern int isalnum_l (int __c, locale_t __l);
-extern int isalpha_l (int __c, locale_t __l);
-extern int isblank_l (int __c, locale_t __l);
-extern int iscntrl_l (int __c, locale_t __l);
-extern int isdigit_l (int __c, locale_t __l);
-extern int isgraph_l (int __c, locale_t __l);
-extern int islower_l (int __c, locale_t __l);
-extern int isprint_l (int __c, locale_t __l);
-extern int ispunct_l (int __c, locale_t __l);
-extern int isspace_l (int __c, locale_t __l);
-extern int isupper_l (int __c, locale_t __l);
-extern int isxdigit_l(int __c, locale_t __l);
-extern int tolower_l (int __c, locale_t __l);
-extern int toupper_l (int __c, locale_t __l);
+extern __stdargs int isalnum_l (int __c, locale_t __l);
+extern __stdargs int isalpha_l (int __c, locale_t __l);
+extern __stdargs int isblank_l (int __c, locale_t __l);
+extern __stdargs int iscntrl_l (int __c, locale_t __l);
+extern __stdargs int isdigit_l (int __c, locale_t __l);
+extern __stdargs int isgraph_l (int __c, locale_t __l);
+extern __stdargs int islower_l (int __c, locale_t __l);
+extern __stdargs int isprint_l (int __c, locale_t __l);
+extern __stdargs int ispunct_l (int __c, locale_t __l);
+extern __stdargs int isspace_l (int __c, locale_t __l);
+extern __stdargs int isupper_l (int __c, locale_t __l);
+extern __stdargs int isxdigit_l(int __c, locale_t __l);
+extern __stdargs int tolower_l (int __c, locale_t __l);
+extern __stdargs int toupper_l (int __c, locale_t __l);
 #endif
 
 #if __MISC_VISIBLE
-extern int isascii_l (int __c, locale_t __l);
-extern int toascii_l (int __c, locale_t __l);
+extern __stdargs int isascii_l (int __c, locale_t __l);
+extern __stdargs int toascii_l (int __c, locale_t __l);
 #endif
 
 #define	_U	01
@@ -67,7 +67,7 @@ extern int toascii_l (int __c, locale_t __l);
 #define	_B	0200
 
 #ifdef __HAVE_LOCALE_INFO__
-const char *__locale_ctype_ptr (void);
+__stdargs const char *__locale_ctype_ptr (void);
 #else
 #define __locale_ctype_ptr()	_ctype_
 #endif
@@ -108,7 +108,7 @@ const char *__locale_ctype_ptr (void);
 
 #if __POSIX_VISIBLE >= 200809
 #ifdef __HAVE_LOCALE_INFO__
-const char *__locale_ctype_ptr_l (locale_t);
+__stdargs const char *__locale_ctype_ptr_l (locale_t);
 #else
 #define __locale_ctype_ptr_l(l)	_ctype_
 #endif
