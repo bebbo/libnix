@@ -68,9 +68,7 @@ fromCLI:
 
 cpuok:
 		movql	#ERROR_NO_FREE_STORE,d7
-		movel	#___data_size,d5
-		movel	#___bss_size,d2
-		addl	d5,d2
+		movel	#___data_size,d2
 		movel	d2,d0
 		movql	#1,d1
 		swap	d1
@@ -79,7 +77,7 @@ cpuok:
 		movel	a4,d0
 		beq	cleanup
 		lea	___a4_init-0x7ffe,a5
-		movel	d5,d0
+		movel	d2,d0
 		movel	a5,a0
 		movel	a4,a1
 		jsr	a6@(_LVOCopyMemQuick:L)
