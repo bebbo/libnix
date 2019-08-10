@@ -12,7 +12,7 @@
 #endif
 
 __MY_INLINE__ __stdargs void *memmove(void *s1,const void *s2,size_t n)
-{	extern __stdargs void bcopy();
+{	extern __stdargs void bcopy(const void *, void *, size_t);
 
 	bcopy(s2,s1,n); return s1;
 }
