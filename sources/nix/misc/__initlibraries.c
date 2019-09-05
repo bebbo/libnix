@@ -9,7 +9,7 @@ extern struct lib /* These are the elements pointed to by __LIB_LIST__ */
 	char *name;
 }*__LIB_LIST__[];
 
-extern void exit(int returncode);
+extern __attribute__((noreturn)) void exit(int returncode);
 
 
 static __attribute__((noreturn)) void __openliberror() {
