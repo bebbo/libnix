@@ -8,7 +8,7 @@ asm(
 "	.even;"
 
 "	.globl	___fpucheck;"
-"___cpucheck:;"
+"___fpucheck:;"
 "	movel	"A4(_SysBase)",a1;"
 "	movew	a1@(0x128:W),d0;"
 "	btst	#4,d0;"

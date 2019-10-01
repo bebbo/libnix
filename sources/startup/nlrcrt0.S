@@ -56,17 +56,17 @@ fromWB:
 
 fromCLI:
 | check cpu
-		btst.b  #1,1+Attn(a6)
-		jne cpuok
+		;btst.b  #1,1+Attn(a6)
+		;jne cpuok
 
 | alert
-		move.l  #0x68020,d7
-		jsr -0x6c(a6)
+		;move.l  #0x68020,d7
+		;jsr -0x6c(a6)
 
-		moveq.l	#20,d7
-		bra		cleanup
+		;moveq.l	#20,d7
+		;bra		cleanup
 
-cpuok:
+;cpuok:
 		movql	#ERROR_NO_FREE_STORE,d7
 		movel	#___data_size,d2
 		movel	d2,d0
