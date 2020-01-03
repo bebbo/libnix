@@ -8,7 +8,7 @@
 
 static char *dummy_env[] = { 0 };
 
-char **environ;
+char **environ = dummy_env;
 
 int __fillenviron() {
 	// size the environ
@@ -42,4 +42,3 @@ int clearenv(void) {
 
 
 ADD2INIT(__fillenviron,-2);
-ADD2EXIT(__clearenviron,-2);
