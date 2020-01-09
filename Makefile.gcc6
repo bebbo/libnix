@@ -132,19 +132,19 @@ lib/libinitr.o: $(root)/sources/startup/libinitr.c libdir
 	$(CC) -c $(CFLAGS) $(flags) $< -o $@
 
 lib/ncrt0.o: $(root)/sources/startup/ncrt0.S libdir
-	$(AS) $< -o $@
+	$(AS) -m68000 $< -o $@
 
 lib/nbcrt0.o: $(root)/sources/startup/nbcrt0.S libdir
-	$(AS) $< -o $@
+	$(AS) -m68000 $< -o $@
 
 lib/nlbcrt0.o: $(root)/sources/startup/nlbcrt0.S libdir
-	$(AS) $< -o $@
+	$(AS) -m68020 $< -o $@
 
 lib/nrcrt0.o: $(root)/sources/startup/nrcrt0.S libdir
-	$(AS) $< -o $@
+	$(AS) -m68000 $< -o $@
 
 lib/nlrcrt0.o: $(root)/sources/startup/nlrcrt0.S libdir
-	$(AS) $< -o $@
+	$(AS) -m68020 $< -o $@
 
 .PHONY: libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack
 libnix:

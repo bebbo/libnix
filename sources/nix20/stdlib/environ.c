@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "stabs.h"
+#include <exec/execbase.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include <dos/dosextens.h>
@@ -17,10 +18,10 @@ struct LocalVar {
 
 static char *dummy_env[] = { 0 };
 
-char **environ;
+char **environ = dummy_env;
 
 int __fillenviron() {
-	struct Process * proc = (struct Process *)FindTask(0);
+	struct Process * proc = (struct Process *)SysBase->ThisTask;
 	struct MinList * vars = &proc->pr_LocalVars;
 
 	// size the environ
@@ -72,7 +73,7 @@ void __clearenviron() {
 }
 
 int clearenv(void) {
-	struct Process * proc = (struct Process *)FindTask(0);
+	struct Process * proc = (struct Process *)SysBase->ThisTask;
 	for (struct Node *t, * n = (struct Node *)proc->pr_LocalVars.mlh_Head; n->ln_Succ; n = t) {
 		t = n->ln_Succ;
 		if (n->ln_Type != LV_VAR)
@@ -86,4 +87,3 @@ int clearenv(void) {
 
 
 ADD2INIT(__fillenviron,-2);
-ADD2EXIT(__clearenviron,-2);

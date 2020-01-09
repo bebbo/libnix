@@ -162,7 +162,7 @@ void __initstdio(void) {
 				struct Process * proc = (struct Process *) SysBase->ThisTask;
 #ifdef __KICK13__
 				struct CommandLineInterface * cli = (struct CommandLineInterface *)BADDR(proc->pr_CLI);
-				bstderr = cli->cli_StandardOutput;
+				bstderr = cli ? cli->cli_StandardOutput : 0;
 #else
 				bstderr = proc->pr_CES;
 #endif

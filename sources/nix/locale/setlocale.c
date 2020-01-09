@@ -181,9 +181,6 @@ void __exitlocale(void) {
 	for (i = 0; i < 5; i++)
 		if (__localevec[i] != NULL)
 			CloseLocale(__localevec[i]);
-
-	if (LocaleBase != NULL)
-		CloseLibrary((struct Library * )LocaleBase);
 }
 
 ADD2INIT(__initlocale, -10);

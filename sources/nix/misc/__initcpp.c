@@ -19,5 +19,5 @@ void __exitcpp() {
     (*p++)();
 }
 
-ADD2INIT(__initcpp,100);
-ADD2EXIT(__exitcpp,100);
+ADD2INIT(__initcpp,-5);
+ADD2EXIT(__exitcpp,-5);
