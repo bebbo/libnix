@@ -3,7 +3,7 @@
 # checks, if CPU and FPU requirements are enforced
 #
 
-PREFIX ?= /home/developer/opt/m68k-amigaos_29Sep19
+PREFIX ?= /home/developer/opt/m68k-amigaos_07Jan20
 
 # remove trailing / if there is one
 PREFIX_ = $(shell realpath $(PREFIX))
