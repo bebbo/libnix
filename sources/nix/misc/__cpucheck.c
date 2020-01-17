@@ -26,14 +26,14 @@ asm(
 "              .globl     ___myrequest;"
 "___myrequest:;"
 //              if (((struct Process *) SysBase->ThisTask)->pr_WindowPtr != (APTR) -1L)         
-"               move.l _SysBase,a0;"
+"               move.l 4,a0;"
 "               move.l (276,a0),a0;"
 "               move.l (184,a0),d0;"
 "               moveq #-1,d1;"
 "               cmp.l d0,d1;"
 "               jeq Ende;"             // -1, dont show requester
 //              IntuitionBase=OpenLibrary((unsigned char*)"intuition.library",0);
-"               move.l _SysBase,a6;"
+"               move.l 4,a6;"
 "               lea IntuitionName,a1;"        // libname
 "               move.l #0,d0;"        // version
 "               jsr a6@(-0x228:W);"   // -552 OpenLibrary
@@ -55,7 +55,7 @@ asm(
 "               move.l IntuitionBase,a6;"          // IntuitionBase
 "               jsr a6@(-0x15c:W);\n"     // -348 Autorequest
 //              CloseLibrary(IntuitionBase);
-"               move.l _SysBase,d0;\n"
+"               move.l 4,d0;\n"
 "               move.l d0,a6;\n"
 "               move.l IntuitionBase,a1;\n"          // IntuitionBase
 "               jsr a6@(-0x19e:W);\n"     // -414 CloseLibrary

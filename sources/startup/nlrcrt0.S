@@ -56,15 +56,21 @@ fromWB:
 
 fromCLI:
 | check cpu
-		;btst.b  #1,1+Attn(a6)
-		;jne cpuok
+		btst.b  #1,1+Attn(a6)
+		jne cpuok
 
 | alert
-		;move.l  #0x68020,d7
-		;jsr -0x6c(a6)
+|		move.l  #0x68020,d7
+|		jsr -0x6c(a6)
 
-		;moveq.l	#20,d7
-		;bra		cleanup
+                lea errtext1,a0
+                move.l   a0,-(a7)
+                jsr ___myrequest
+                move.l  (a7)+,a0   | correct Stack
+
+
+		moveq.l	#20,d7
+		bra		cleanup
 
 ;cpuok:
 		movql	#ERROR_NO_FREE_STORE,d7
@@ -193,3 +199,5 @@ oldpri: 	movel	a3@+,d0
 .comm		___argv,4
 .comm		___env,4
 .lcomm		cleanupflag,4
+
+errtext1:       dc.b 'N','e','e','d',' ','a',' ','6','8','0','2','0',' ','o','r',' ','h','i','g','h','e','r',' ','C','P','U',0
