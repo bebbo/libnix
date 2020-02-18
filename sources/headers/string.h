@@ -36,6 +36,7 @@ __stdargs char *strrchr(const char *, int);
 __stdargs size_t strspn(const char *, const char *);
 __stdargs char *strstr(const char *, const char *);
 __stdargs char *strtok(char *, const char *);
+__stdargs char *strtok_r(char *, const char *, char **);
 __stdargs size_t strxfrm(char *, const char *, size_t);
 __stdargs char *strupr(char *s);
 
@@ -58,7 +59,7 @@ __stdargs int stricmp(const char *, const char *);
 __stdargs int strnicmp(const char *, const char *, size_t);
 
 __stdargs char *strerror_r(int errnum, char *buf, size_t buflen);
-#endif 
+#endif
 
 #ifdef __NO_INLINE__
 __stdargs void *memmove(void *, const void *, size_t);
