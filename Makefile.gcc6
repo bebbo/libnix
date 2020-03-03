@@ -74,15 +74,15 @@ libm020bb32:
 
 libm881:
 	@mkdir -p $@
-	$(MAKE) one kind=$@ flags="-m68020 -m68881"
+	$(MAKE) one kind=$@ flags="-m68020 -m68881 -mhard-float"
 
 libm020bb881:
 	@mkdir -p $@
-	$(MAKE) one kind=$@ flags="-fbaserel -m68020 -m68881"
+	$(MAKE) one kind=$@ flags="-fbaserel -m68020 -m68881 -mhard-float"
 
 libm020bb32881:
 	@mkdir -p $@
-	$(MAKE) one kind=$@ flags="-fbaserel32 -m68020 -m68881"
+	$(MAKE) one kind=$@ flags="-fbaserel32 -m68020 -m68881 -mhard-float"
 
 # the libs to build for each kind
 one: libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack
