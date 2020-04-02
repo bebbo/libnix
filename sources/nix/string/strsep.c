@@ -1,4 +1,3 @@
-  
 #include <string.h>
 
 char * strsep(char **sp, char *sep)
