@@ -37,6 +37,7 @@ __stdargs size_t strspn(const char *, const char *);
 __stdargs char *strstr(const char *, const char *);
 __stdargs char *strtok(char *, const char *);
 __stdargs char* strtok_r(char *str, const char *delim, char **nextp);
+__stdargs char* strsep(char **sp, char *sep);
 __stdargs size_t strxfrm(char *, const char *, size_t);
 __stdargs char *strupr(char *s);
 
