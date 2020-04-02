@@ -1,6 +1,6 @@
 #include <string.h>
 
-char* strsep(char **sp, char *sep)
+char* strsep(char **sp, const char *sep)
 {
     char *p, *s;
     if (sp == NULL || *sp == NULL || **sp == '\0') return(NULL);
