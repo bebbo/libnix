@@ -53,7 +53,7 @@ fromCLI:
 		bra		cleanup
 
 cpuok:
-		movel	#___bss_size,d1
+		movel	#___bss_init_size,d1
 		jbsr	_geta4
 		beqs	nobss
 		lea	a4@(__edata:L),a1

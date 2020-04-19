@@ -26,7 +26,7 @@ ThisTask    =    276
 start:
 		jbsr	_geta4
 
-		movel	#___bss_size,d1
+		movel	#___bss_init_size,d1
 		beqs	nobss
 		moveq.l #0,d2
 		lea	a4@(__edata:W),a1
