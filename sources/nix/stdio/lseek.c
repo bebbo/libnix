@@ -9,9 +9,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-
-extern FILE **__sF;
-
 /*
  **
  */
@@ -24,7 +21,6 @@ off_t lseek(int d, off_t offset, int whence) {
 	if (sfd) {
 		off_t r;
 		int file = sfd->lx_fh;
-		fflush(__sF[file]);
 
 		// seek ...
 		r = Seek(file, offset, whence == SEEK_SET ? OFFSET_BEGINNING : whence == SEEK_END ? OFFSET_END : OFFSET_CURRENT);
