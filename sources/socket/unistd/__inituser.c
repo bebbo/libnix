@@ -165,6 +165,9 @@ int initgroups(const char *name, int basegid)
   struct group *gr;
   char **grm;
 
+  if (!lss->lx_UserGroupBase)
+	  return 0;
+
   if (lss->lx_network_type == LX_AMITCP)
     return UG_initgroups(name,basegid);
 

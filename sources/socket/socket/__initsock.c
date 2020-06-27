@@ -23,20 +23,22 @@ extern char **__argv;
 
 extern int h_errno;
 
+struct Library * SocketBase;
+
 /*
 **
 */
-static ssize_t __stdargs _sock_read(StdFileDes *fp,void *buf,size_t len)
+static ssize_t __stdargs _sock_read(struct _StdFileDes *fp,void *buf,size_t len)
 {
   return recv(fp->lx_pos,buf,len,0);
 }
 
-static ssize_t __stdargs _sock_write(StdFileDes *fp,const void *buf,size_t len)
+static ssize_t __stdargs _sock_write(struct _StdFileDes *fp,const void *buf,size_t len)
 {
   return send(fp->lx_pos,buf,len,0);
 }
 
-static int __stdargs _sock_close(StdFileDes *fp)
+static int __stdargs _sock_close(struct _StdFileDes *fp)
 { struct SocketSettings *lss;
   int rc;
 
@@ -58,7 +60,7 @@ static int __stdargs _sock_close(StdFileDes *fp)
   return rc;
 }
 
-static int __stdargs _sock_dup(StdFileDes *fp)
+static int __stdargs _sock_dup(struct _StdFileDes *fp)
 { struct SocketSettings *lss;
   StdFileDes *fp2;
   int rc;
@@ -95,7 +97,7 @@ static int __stdargs _sock_dup(StdFileDes *fp)
   return rc;
 }
 
-static int __stdargs _sock_fstat(StdFileDes *fp,struct stat *sb)
+static int __stdargs _sock_fstat(struct _StdFileDes *fp,struct stat *sb)
 { long value;
   socklen_t size = sizeof(value);
 
@@ -110,7 +112,7 @@ static int __stdargs _sock_fstat(StdFileDes *fp,struct stat *sb)
   return 0;
 }
 
-static int __stdargs _sock_poll(StdFileDes *fp,int io_mode,struct SocketSettings *lss)
+static int __stdargs _sock_poll(struct _StdFileDes *fp,int io_mode,struct SocketSettings *lss)
 { struct timeval tv = {0, 0};
   fd_set in, out, exc;
   int rc;
@@ -151,7 +153,7 @@ static int __stdargs _sock_poll(StdFileDes *fp,int io_mode,struct SocketSettings
   return ((rc == 1) ? 1 : 0);
 }
 
-static int __stdargs _sock_select(StdFileDes *fp,int select_cmd,int io_mode,fd_set *set,u_long *nfds)
+static int __stdargs _sock_select(struct _StdFileDes *fp,int select_cmd,int io_mode,fd_set *set,u_long *nfds)
 { struct SocketSettings *lss = _lx_get_socket_settings();
   
   if (select_cmd == SELCMD_PREPARE) {
@@ -392,6 +394,9 @@ void __initsocket(void)
     DB( BUG("lss->lx_BsdSocketBase is %lx\n", lss->lx_BsdSocketBase); )
     DB( BUG("progname is %s\n", progname); )
 
+	SocketBase = lss->lx_BsdSocketBase;
+    printf("%p\n", SocketBase);
+
     list[3].ti_Data = (1L << lss->lx_sigurg);
     list[4].ti_Data = (1L << lss->lx_sigio);
 
@@ -403,8 +408,8 @@ void __initsocket(void)
      * usergroup.library might open yet - some people bypass the
      * "login" command which loads usergroup.library
      */
-#if 0
-    lss->lx_UserGroupBase = OpenLibrary("AmiTCP:libs/usergroup.library",1);
+#if 1
+    lss->lx_UserGroupBase = OpenLibrary("usergroup.library",1);
     if (lss->lx_UserGroupBase) {
         struct TagItem ug_list[] = {
           { UGT_ERRNOPTR(sizeof(int)), (ULONG)&errno    },
@@ -412,6 +417,7 @@ void __initsocket(void)
           { TAG_END,TAG_END }
         };
         ug_SetupContextTagList(progname, ug_list);
+    }
 #else
    if (1) {
 	   lss->lx_UserGroupBase = 0;
@@ -423,10 +429,6 @@ void __initsocket(void)
 
       network_installed = 1;
       return;
-    }
-#if 0
-    CloseLibrary(lss->lx_BsdSocketBase);
-#endif
   }
 
   lss->lx_network_type = LX_AS225;
