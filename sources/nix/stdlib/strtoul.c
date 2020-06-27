@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include "stdio.h"
+#include "stabs.h"
 
 extern int iswxdigit(wint_t c);
 
@@ -65,3 +66,5 @@ unsigned long strtoul(const char *nptr, char **endptr, int base) {
 		*endptr = (char *) q;
 	return r;
 }
+
+ALIAS(strtoumax, strtoul);

@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include "stdio.h"
+#include "stabs.h"
 
 signed long strtol(const char *nptr,char **endptr,int base)
 { const char *p=nptr;
@@ -35,3 +36,5 @@ signed long strtol(const char *nptr,char **endptr,int base)
       return r;
   }
 }
+
+ALIAS(strtoimax, strtol);
