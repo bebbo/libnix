@@ -7,10 +7,10 @@
 
 extern int iswxdigit(wint_t c);
 
-unsigned long strtoul(const char *nptr, char **endptr, int base) {
+unsigned long long strtoull(const char *nptr, char **endptr, int base) {
 	const char *p = nptr, *q;
 	char c = 0;
-	unsigned long r = 0;
+	unsigned long long r = 0;
 	if (base < 0 || base == 1 || base > 36) {
 		if (endptr != NULL)
 			*endptr = (char *) nptr;
@@ -46,9 +46,9 @@ unsigned long strtoul(const char *nptr, char **endptr, int base) {
 		a = isdigit((int)*q) ? *q - '0' : tolower((int)*q) - ('a' - 10);
 		if (a >= base)
 			break;
-		if (r > (ULONG_MAX - a) / base || r * base > ULONG_MAX - a) {
+		if (r > (ULLONG_MAX - a) / base || r * base > ULLONG_MAX - a) {
 			errno = ERANGE; /* overflow */
-			r = ULONG_MAX;
+			r = ULLONG_MAX;
 			c = 0;
 		} else
 			r = r * base + a;
@@ -66,3 +66,5 @@ unsigned long strtoul(const char *nptr, char **endptr, int base) {
 		*endptr = (char *) q;
 	return r;
 }
+
+ALIAS(strtoumax, strtoull);

@@ -5,17 +5,17 @@
 #include "stdio.h"
 #include "stabs.h"
 
-signed long strtol(const char *nptr,char **endptr,int base)
+signed long long strtoll(const char *nptr,char **endptr,int base)
 { const char *p=nptr;
   char *q;
-  unsigned long r;
+  unsigned long long r;
   if(!(nptr && *nptr))
   { errno=EINVAL;
     return 0;
   }
   while(isspace((int)*p))
     p++;
-  r=strtoul(p,&q,base);
+  r=strtoull(p,&q,base);
   if(endptr!=NULL)
   { if(q==p)
       *endptr=(char *)nptr;
@@ -23,16 +23,18 @@ signed long strtol(const char *nptr,char **endptr,int base)
       *endptr=q;
   }
   if(*p=='-')
-  { if((signed long)r>0)
+  { if((signed long long)r>0)
     { errno=ERANGE;
-      return LONG_MIN; }
+      return LLONG_MIN; }
     else
       return r;
   }else
   { if((signed long)r<0)
     { errno=ERANGE;
-      return LONG_MAX; }
+      return LLONG_MAX; }
     else
       return r;
   }
 }
+
+ALIAS(strtoimax, strtoll);
