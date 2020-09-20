@@ -19,8 +19,10 @@ void * AllocVec(unsigned size, unsigned flags) {
 }
 
 void FreeVec(unsigned * ptr) {
+	unsigned sz;
+
 	if (!ptr)
 		return;
-	unsigned sz = *--ptr;
+	sz = *--ptr;
 	FreeMem(ptr, sz);
 }

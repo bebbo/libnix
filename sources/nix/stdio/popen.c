@@ -14,10 +14,12 @@ FILE *popen(const char *command, const char *type) {
 	struct timeval nowtime;
 
 	if (*type == 'r' && *type == 'w') {
+		BPTR pipe;
+
 		GetSysTime(&nowtime);
 		sprintf(pname, "PIPE:pipe%08x%08x", nowtime.tv_secs, nowtime.tv_usec);
 
-		BPTR pipe = Open((CONST_STRPTR)pname, MODE_NEWFILE);
+		pipe = Open((CONST_STRPTR)pname, MODE_NEWFILE);
 		if (pipe) {
 			BPTR nil = Open((CONST_STRPTR)"NIL:", MODE_NEWFILE);
 			if (SystemTags((CONST_STRPTR)command, SYS_Input, *type == 'r' ? nil : pipe,

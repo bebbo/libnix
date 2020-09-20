@@ -24,13 +24,16 @@ struct LocalVar {
 extern char **environ;
 
 char *getenv(const char *name) {
+	unsigned len;
+	char **p;
+
 	if (!name || !*name) {
 		errno = EINVAL;
 		return 0;
 	}
 
-	unsigned len = strlen(name);
-	for (char ** p = environ; *p; ++p) {
+	len = strlen(name);
+	for (p = environ; *p; ++p) {
 		if (0 == strncmp(*p, name, len) && len[*p] == '=')
 			return len + 1 + *p;
 	}

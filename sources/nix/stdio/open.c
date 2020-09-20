@@ -25,9 +25,11 @@ int open(const char *path, int flags, ...) {
 #endif
 
 	if ((sfd = __allocfd())) {
+		long mode;
+
 		sfd->lx_oflags = flags;
 
-		long mode = flags&O_TRUNC?MODE_NEWFILE: flags&O_CREAT?MODE_READWRITE:MODE_OLDFILE;
+		mode = flags&O_TRUNC?MODE_NEWFILE: flags&O_CREAT?MODE_READWRITE:MODE_OLDFILE;
 		if ((sfd->lx_fh = (int)Open((CONST_STRPTR)path, mode))) {
 			_setup_file(sfd);
 			return sfd->lx_pos;

@@ -20,7 +20,8 @@ struct __fx {
 static fxtype lookup(const char * name, size_t len) {
 //	printf("%s %d, %d, %d\n", name, len, sizeof(data), sizeof(struct __fx));
 	if (len == 5) {
-		for (size_t i = 0; i < sizeof(data) / sizeof(struct __fx) - 1; ++i)
+		size_t i;
+		for (i = 0; i < sizeof(data) / sizeof(struct __fx) - 1; ++i)
 			if (0 == strncmp(data[i].name, name, 5))
 				return data[i].fx;
 	} else if (len == 6) {
@@ -65,14 +66,17 @@ int fnmatch(const char *pattern, const char *string, int flags) {
 					--string;
 				break;
 			case '[': {
+				const char * start;
+				short not, match;
+
 				if (c == '/' && FLAG_PATHNAME)
 					return FNM_NOMATCH;
 
-				const char * start = pattern;
+				start = pattern;
 
 				p = *++pattern;
 
-				short not = 0;
+				not = 0;
 				if (p == '!') {
 					not = 1;
 					p = *++pattern;
@@ -85,7 +89,7 @@ int fnmatch(const char *pattern, const char *string, int flags) {
 					break;
 				}
 
-				short match = 0;
+				match = 0;
 				do {
 					if (!p) {
 						match = not;
@@ -93,10 +97,11 @@ int fnmatch(const char *pattern, const char *string, int flags) {
 					}
 					// character classes
 					if (p == '[' && pattern[1] == ':') {
+						fxtype is;
 						const char * name = pattern += 2;
 						while (*pattern && *pattern != ':')
 							++pattern;
-						fxtype is = lookup(name, pattern - name);
+						is = lookup(name, pattern - name);
 						if (*pattern == 0) {
 							match = not;
 							break;
@@ -112,8 +117,10 @@ int fnmatch(const char *pattern, const char *string, int flags) {
 					} else
 					// range handling
 					if (pattern[1] == '-' && pattern[2] != ']') {
+						unsigned char to;
+
 						pattern += 2;
-						unsigned char to = *pattern;
+						to = *pattern;
 						if (to == '\\' && !FLAG_NOESCAPE)
 							to = *++pattern;
 						while (!match && p <= to) {

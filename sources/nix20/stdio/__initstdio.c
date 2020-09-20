@@ -173,12 +173,13 @@ void __initstdio(void) {
 				if ((sfd = stdfiledes(bstderr))) {
 					__stdfiledes[3] = 0; // have a free one
 					{
+						short flags;
 						// fdopen stdin, stdout and stderr and make stderr unbuffered
 						FILE **f = __sF, *err;
 						if (((*f++ = fdopen(STDIN_FILENO, "r")) == NULL) || ((*f++ = fdopen(STDOUT_FILENO, "w")) == NULL) || ((*f = err = fdopen(STDERR_FILENO, "w")) == NULL))
 							exit(20);
 						free(err->_bf._base);
-						short flags = err->_flags & ~(__SMBF | __SLBF);
+						flags = err->_flags & ~(__SMBF | __SLBF);
 						err->_flags = flags | __SNBF;
 						err->_bf._base = err->unget;
 						err->_bf._size = 3;
@@ -253,12 +254,12 @@ struct MinList __filelist = { /* list of open files (fflush() needs also access)
 NULL, (struct MinNode *) &__filelist.mlh_Head };
 
 void __exitstdio(void) {
+	int i, max;
 	struct MinNode *node;
 	while ((node = __filelist.mlh_Head)->mln_Succ != NULL) {
 		fclose(&((struct filenode *) node)->theFILE);
 	}
 
-	int i, max;
 	for (max = __stdfilesize, i = 0; i < max; i++) {
 		StdFileDes *sfd = __stdfiledes[i];
 		if (sfd && sfd->lx_inuse) {

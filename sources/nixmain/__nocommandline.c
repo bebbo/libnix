@@ -47,9 +47,9 @@ static BPTR window=0l;   /* CLI-window for start from workbench */
 /* This guarantees that this module gets linked in.
    If you replace this by an own reference called
    __nocommandline you get no commandline arguments */
-ALIAS(__nocommandline,__initcommandline);
+//ALIAS(__nocommandline,__initcommandline);
 
-void __initcommandline(void)
+void __nocommandline(void)
 {
   struct WBStartup *wbs=_WBenchMsg;
 
@@ -165,5 +165,5 @@ void __exitcommandline(void)
 }
   
 /* Add these two functions to the lists */
-ADD2INIT(__initcommandline,-40);
+ADD2INIT(__nocommandline,-40);
 ADD2EXIT(__exitcommandline,-40);

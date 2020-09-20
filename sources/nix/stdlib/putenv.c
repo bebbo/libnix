@@ -32,8 +32,10 @@ int putenv(const char *str) {
 		if (!tmp) {
 			errno = ENOMEM;
 		} else {
+			char * pos;
+
 			strcpy(tmp, str);
-			char * pos = strchr(tmp, '=');
+			pos = strchr(tmp, '=');
 			if (pos) {
 				*pos++ = '\0';
 				retval = setenv(tmp, pos, 1);

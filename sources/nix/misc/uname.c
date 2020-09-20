@@ -10,13 +10,15 @@
 extern struct Library * WorkbenchBase;
 
 int uname (struct utsname * uname) {
+	struct Library * versionLibrary;
+
 	if (!uname)
 		return EFAULT;
 
 	strcpy(uname->sysname, "AmigaOS");
 	strcpy(uname->nodename, "alive");
 
-	struct Library * versionLibrary = OpenLibrary((CONST_STRPTR)"version.library", 0);
+	versionLibrary = OpenLibrary((CONST_STRPTR)"version.library", 0);
 	if (versionLibrary) {
 		sprintf(uname->version, "%d.%d", versionLibrary->lib_Version, versionLibrary->lib_Revision);
 		CloseLibrary(versionLibrary);

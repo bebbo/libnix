@@ -16,6 +16,7 @@ int strncmp(const char *s1,const char *s2,size_t n)
  */
 int strncmp(const char *p1,const char *p2, size_t n)
 {
+	unsigned char a,b;
   for(;;) {
 	  if (n--) {
 		  char c = *p1++;
@@ -24,8 +25,8 @@ int strncmp(const char *p1,const char *p2, size_t n)
 			  continue;
 		  } else
 			++p2;
-		  unsigned char a = *--p1;
-		  unsigned char b = *--p2;
+		  a = *--p1;
+		  b = *--p2;
 		  return (short)a - b;
 	  }
 	  return 0;

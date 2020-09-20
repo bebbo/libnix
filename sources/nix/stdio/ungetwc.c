@@ -6,6 +6,9 @@
 int __fflush(FILE *stream);
 
 wint_t ungetwc(wint_t c, FILE *stream) {
+	size_t i;
+	wint_t cc;
+
 	if (c == (wint_t)EOF)
 		return EOF;
 	if (stream->_flags & __SERR)/* Error on stream */
@@ -36,8 +39,8 @@ wint_t ungetwc(wint_t c, FILE *stream) {
 		return EOF;
 	stream->_r += sizeof(wint_t);
 
-	wint_t cc = c;
-	for (size_t i = 0; i < sizeof(wint_t); ++i) {
+	cc = c;
+	for (i = 0; i < sizeof(wint_t); ++i) {
 		*--stream->_p = cc;
 		cc >>= 8;
 	}

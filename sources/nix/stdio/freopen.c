@@ -18,11 +18,12 @@ FILE *freopen(const char *filename, const char *mode, FILE *stream) {
 		return NULL;
 
 	if (filename != NULL) {
+		char ch;
 		long file, flags;
 		if (mode == NULL)
 			return NULL;
 
-		char ch = *mode++;
+		ch = *mode++;
 		switch (ch) {
 			case 'r':
 				flags = O_RDONLY;

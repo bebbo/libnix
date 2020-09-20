@@ -5,6 +5,13 @@
 #include "stdio.h"
 #include "stabs.h"
 
+#ifndef LLONG_MIN
+#define LLONG_MIN 0x8000000000000000L
+#endif
+#ifndef LLONG_MAX
+#define LLONG_MAX 0x7fffffffffffffffL
+#endif
+
 signed long long strtoll(const char *nptr,char **endptr,int base)
 { const char *p=nptr;
   char *q;

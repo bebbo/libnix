@@ -21,6 +21,7 @@ int dup2(int oldfd, int newfd) {
 	if (oldfd < __stdfilesize) {
 		StdFileDes *old = __stdfiledes[oldfd];
 		if (old && old->lx_inuse) {
+			int fd;
 			StdFileDes * neu;
 			if (newfd < __stdfilesize) {
 				neu = __stdfiledes[newfd];
@@ -47,7 +48,7 @@ int dup2(int oldfd, int newfd) {
 				}
 				neu->lx_pos = newfd;
 			}
-			int fd = neu->lx_pos;
+			fd = neu->lx_pos;
 			*neu = *old;
 			neu->lx_pos = fd;
 			return fd;

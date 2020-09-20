@@ -21,15 +21,18 @@ static char *dummy_env[] = { 0 };
 char **environ = dummy_env;
 
 int __fillenviron() {
+	unsigned index, slen, tlen;
+	char * p;
 	struct Process * proc = (struct Process *)SysBase->ThisTask;
 	struct MinList * vars = &proc->pr_LocalVars;
 
 	// size the environ
 	unsigned varCount = 1; // trailing NULL
-	for (struct Node *  n = (struct Node *)vars->mlh_Head; n->ln_Succ; n = n->ln_Succ) {
+	{struct Node * n;
+	for (n = (struct Node *)vars->mlh_Head; n->ln_Succ; n = n->ln_Succ) {
 		if (n->ln_Type == LV_VAR)
 			++varCount;
-	}
+	}}
 	environ = (char **)malloc(varCount * sizeof(char *));
 	if (environ == 0) {
 		environ = dummy_env;
@@ -38,14 +41,14 @@ int __fillenviron() {
 	}
 
 	// fill the environ
-	unsigned index = 0;
-	for (struct LocalVar *  n = (struct LocalVar *)vars->mlh_Head; n->lv_Node.ln_Succ; n = (struct LocalVar *)n->lv_Node.ln_Succ) {
+	index = 0;
+	{struct LocalVar * n; for (n = (struct LocalVar *)vars->mlh_Head; n->lv_Node.ln_Succ; n = (struct LocalVar *)n->lv_Node.ln_Succ) {
 		if (n->lv_Node.ln_Type != LV_VAR)
 			continue;
 
-		unsigned slen = strlen(n->lv_Node.ln_Name);
-		unsigned tlen = slen + n->lv_Len + 1;
-		char * p = environ[index] = malloc(tlen + 1);
+		slen = strlen(n->lv_Node.ln_Name);
+		tlen = slen + n->lv_Len + 1;
+		p = environ[index] = malloc(tlen + 1);
 		if (!p) {
 			errno = ENOMEM;
 			break;
@@ -56,7 +59,7 @@ int __fillenviron() {
 		memcpy(p + slen + 1, n->lv_Value, n->lv_Len);
 		p[tlen] = 0;
 		++index;
-	}
+	}}
 	environ[index++] = 0;
 	return index - varCount;
 }
@@ -74,13 +77,13 @@ void __clearenviron() {
 
 int clearenv(void) {
 	struct Process * proc = (struct Process *)SysBase->ThisTask;
-	for (struct Node *t, * n = (struct Node *)proc->pr_LocalVars.mlh_Head; n->ln_Succ; n = t) {
+	{struct Node *t, * n; for (n = (struct Node *)proc->pr_LocalVars.mlh_Head; n->ln_Succ; n = t) {
 		t = n->ln_Succ;
 		if (n->ln_Type != LV_VAR)
 			continue;
 
 		DeleteVar((CONST_STRPTR)n->ln_Name, 0);
-	}
+	}}
 	__clearenviron();
 	return 0;
 }

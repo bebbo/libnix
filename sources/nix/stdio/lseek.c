@@ -57,12 +57,12 @@ off_t lseek(int d, off_t offset, int whence) {
 				// if the file is too small
 				// extend the file to reach that offset.
 				static char *tmp;
-				unsigned sz = 0x1000;
+				unsigned diff, sz = 0x1000;
 				if (!tmp)
 					tmp = malloc(sz);
 
 				// note that SetFileSize does not always work
-				unsigned diff = abs_pos - r;
+				diff = abs_pos - r;
 				while (diff) {
 					unsigned chunk = diff > sz ? sz : diff;
 					if (Write(file, tmp, chunk) != chunk)

@@ -92,6 +92,9 @@ static struct Process *ThisProcess;
 /* Are we called for the first time? */
 static LONG FirstCall = TRUE;
 
+#ifndef __saveds
+#define __saveds
+#endif
 
 /* Prototypes for the functions below. */
 FILE *popen (const char *command, const char *mode);

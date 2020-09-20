@@ -5,6 +5,10 @@
 #include "stdio.h"
 #include "stabs.h"
 
+#ifndef ULLONG_MAX
+#define ULLONG_MAX 0xffffffffffffffffL
+#endif
+
 extern int iswxdigit(wint_t c);
 
 unsigned long long strtoull(const char *nptr, char **endptr, int base) {

@@ -18,12 +18,16 @@ union _d_bits {
 	unsigned u;
 };
 
+#ifdef FULL_SPECIFIERS
+extern unsigned char *__decimalpoint;
+#endif
+
 extern int __vfprintf_total_size(FILE *stream, const char *fmt, va_list args);
 
 /* a little macro to make life easier */
 
 #define OUT(c)  do                           \
-                { fputc((c),stream);         \
+                { putc((c),stream);         \
                   outcount++;                \
                 }while(0)
 
@@ -108,29 +112,30 @@ static unsigned __ulldivus(unsigned long long * llp, unsigned short n) {
 			struct {
 				unsigned short exponent;
 				unsigned short y;
-			};
-		};
+			} s;
+		} u;
 	}* hl = (struct LL *) llp;
 
+	unsigned r;
 	unsigned long h = hl->hi;
 	if (h) {
-		unsigned l = hl->exponent;
-		unsigned k = hl->y;
+		unsigned l = hl->u.s.exponent;
+		unsigned k = hl->u.s.y;
 		unsigned c = h % n;
 		h = h / n;
 		l = l + (c << 16);
 		c = l % n;
 		l = l / n;
 		k = k + (c << 16);
-		unsigned r = k % n;
+		r = k % n;
 		k = k / n;
-		hl->lo = (l << 16) + k;
+		hl->u.lo = (l << 16) + k;
 		hl->hi = h + (l >> 16);
 		return r;
 	}
 
-	unsigned r = hl->lo % n;
-	hl->lo /= n;
+	r = hl->u.lo % n;
+	hl->u.lo /= n;
 	return r;
 }
 
@@ -299,7 +304,7 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 				break;
 
 #ifdef FULL_SPECIFIERS
-				extern unsigned char *__decimalpoint;
+
 
 
 			case 'a':
@@ -340,6 +345,10 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 					width -= 3;
 				}
 
+
+				{
+					short pos;
+					unsigned x, y;
 
 				// count of digts:
 				// f, F : all digits before dot, preci digits behind. = 1 + preci, add exponent if > 0
@@ -409,7 +418,7 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 
 						// fill it with digits
 						buffer[0] = '0';
-						short pos = 1;
+						pos = 1;
 						if (type == 0) { // f, F
 							if (exponent >= 0) {
 								leading += exponent;
@@ -480,7 +489,6 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 						OUT('0');
 						OUT(type + 'X' - 'A');
 
-						unsigned x, y;
 						if (!d.b.exp) {
 							exponent = x = y = 0;
 						} else {
@@ -494,8 +502,8 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 						}
 						stopPos = 1;
 
-						for (unsigned j = 16;j <= 28; j += 12) {
-							for (int i = j; i >= 0; i -= 4) {
+						{unsigned j; for (j = 16;j <= 28; j += 12) {
+							{int i; for (i = j; i >= 0; i -= 4) {
 								unsigned c = (x >> i) & 0xf;
 								x -= c << i;
 								if (c > 9)
@@ -505,12 +513,12 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 								buffer[stopPos++] = c;
 								if (!x && !y && stopPos >= preci)
 									break;
-							}
+							}}
 							if (!y && stopPos >= preci)
 								break;
 							x = y;
 							y = 0;
-						}
+						}}
 
 						type += 'P' - 'A';
 					}
@@ -606,6 +614,8 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 						OUT('0');
 
 					if (type != 0) {
+						int xout;
+
 						OUT(type);
 						if (exponent < 0) {
 							OUT('-');
@@ -614,7 +624,7 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 							OUT('+');
 						--width;
 
-						int xout = 0;
+						xout = 0;
 						if (exponent > 999) {
 							int z = exponent / 1000;
 							OUT('0' + z);
@@ -647,6 +657,7 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 				/* Everything already done */
 				format = ptr;
 				continue;
+			}
 			}
 #endif
 			case '%':

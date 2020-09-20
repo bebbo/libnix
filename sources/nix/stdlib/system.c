@@ -21,20 +21,22 @@ int system(const char *string) {
 }
 
 int execv(const char *path, char * const argv[]) {
-	int len = strlen(path) + 1;
-	for (char * const * p = argv; *p; ++p) {
+	char * const * p;
+	char * cmd;
+	int r, len = strlen(path) + 1;
+	for (p = argv; *p; ++p) {
 		len += 3 + strlen(*p);
 	}
-	char * cmd = malloc(len);
+	cmd = malloc(len);
 	strcpy(cmd, path);
 
-	for (char * const * p = argv; *p; ++p) {
+	for (p = argv; *p; ++p) {
 		strcat(cmd, " \"");
 		strcat(cmd, *p);
 		strcat(cmd, "\"");
 	}
 
-	int r = system(cmd);
+	r = system(cmd);
 	free(cmd);
 
 	if (r >= 0)

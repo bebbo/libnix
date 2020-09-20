@@ -24,6 +24,10 @@ static const unsigned char undef[3][sizeof(double)] = /* Undefined numeric value
 };
 #endif
 
+#ifdef FULL_SPECIFIERS
+extern unsigned char * __decimalpoint;
+#endif
+
 int vfscanf(FILE *stream, const char *format, va_list args) {
 	size_t blocks = 0, incount = 0;
 	int c = 0;
@@ -206,8 +210,6 @@ int vfscanf(FILE *stream, const char *format, va_list args) {
 						v = v * 10.0 + (c - '0');
 						NEXT(c);
 					}
-
-					extern unsigned char *__decimalpoint;
 
 					if (VAL(c == __decimalpoint[0])) {
 						double dp = 0.1;

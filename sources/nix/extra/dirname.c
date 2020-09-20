@@ -2,10 +2,12 @@
 #include <string.h>
 
 char *dirname(char *path) {
+	char *p;
+
 	if (!path || !*path)
 		return ".";
 
-	char *p = path;
+	p = path;
 	while (*p) {
 		++p;
 	}

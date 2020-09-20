@@ -2,6 +2,7 @@
 #include <string.h>
 int strcmp(const char *p1,const char *p2)
 { 
+	unsigned char a,b;
   for(;;) {
 	  char c = *p1++;
 	  if (c) {
@@ -10,8 +11,8 @@ int strcmp(const char *p1,const char *p2)
 	  } else
 		++p2;
 
-	  unsigned char a = *--p1;
-	  unsigned char b = *--p2;
+	  a = *--p1;
+	  b = *--p2;
 	  return (short)a - b;
 	}
 }

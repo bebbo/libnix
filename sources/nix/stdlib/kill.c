@@ -4,6 +4,8 @@
 #include <signal.h>
 
 int kill(pid_t pid, int signo) {
+	struct Task *task;
+
 	if (pid <= 0 || (signo != SIGTERM && signo != SIGINT)) {
 		errno = EINVAL;
 		return -1;
@@ -12,7 +14,7 @@ int kill(pid_t pid, int signo) {
 	errno = 0;
 
 	Forbid();
-	struct Task *task = (struct Task *) FindCliProc(pid);
+	task = (struct Task *) FindCliProc(pid);
 
 	if (task == FindTask(NULL)) {
 		Permit();
