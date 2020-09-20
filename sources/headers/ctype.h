@@ -10,6 +10,10 @@
 
 _BEGIN_STD_C
 
+#ifndef __stdargs
+#define __stdargs
+#endif
+
 __stdargs int isalnum (int __c);
 __stdargs int isalpha (int __c);
 __stdargs int iscntrl (int __c);

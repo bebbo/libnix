@@ -45,6 +45,9 @@ typedef struct _dirdesc {
 /*
 ** prototypes
 */
+#ifndef __stdargs
+#define __stdargs
+#endif
 
 __stdargs DIR *opendir(const char *dirname);
 __stdargs struct dirent *readdir(DIR *dirp);

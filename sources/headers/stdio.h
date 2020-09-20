@@ -64,9 +64,8 @@ struct __sFILE {
 	char *name; /* filename if temporary file */
 };
 
-typedef struct __sFILE __FILE;
-
 #if !defined(__FILE_defined)
+typedef struct __sFILE __FILE;
 typedef __FILE FILE;
 # define __FILE_defined
 #endif
@@ -237,6 +236,7 @@ typedef struct _StdFileDes {
 	unsigned short lx_pos; /* __stdfiledes[lx_pos]; */
 	unsigned char  lx_flags; /* LX_FILE, LX_SOCKET, LX_ATTY, LX_SYS*/
 	unsigned char  lx_inuse; /* use counter */
+#if __STDC_VERSION__ >= 199901L
 	union {
 		struct {
 			int lx_fh;
@@ -250,6 +250,16 @@ typedef struct _StdFileDes {
 			int lx_domain;
 		};
 	};
+#else
+	int lx_fh;
+	int lx_oflags;
+	struct StandardPacket *lx_packet;
+	int lx_domain;
+#define lx_sock    lx_fh
+#define lx_family  lx_oflags
+#define lx_protocol lx_packet
+#endif
+
 	struct _StdFileFx * lx_fx;
 } StdFileDes;
 
