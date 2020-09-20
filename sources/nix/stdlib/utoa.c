@@ -6,11 +6,18 @@ ALIAS( ultoa, utoa);
 
 char* utoa(unsigned int value, char *str, int base) {
 	// our digits for any base from 2-16
-	static const char digits[] = "0123456789ABCDEF";
+	static const char *__digits = "0123456789ABCDEF";
 	// allocate a buffer large enough, base 2 is 32-bits + null
-	char buffer[33], *b = buffer, c;
+	char buffer[33], *b, c;
 	// store our initial pointer for return value
-	char *_str = str;
+	char *_str;
+	char const *digits;
+
+	if (!str)
+		return str;
+	_str = str;
+	b = buffer;
+	digits = __digits;
 
 	// avoid stupid inputs
 	if ((base > 2) && (base <= 16)) {
@@ -22,10 +29,9 @@ char* utoa(unsigned int value, char *str, int base) {
 		while (value /= base);
 		// if the user provided a good pointer
 		// copy them back-to-front into user provided buffer
-		if (str)
-			do
-				c = *--b, *str++ = c;
-			while (c);
+		do
+			c = *--b, *str++ = c;
+		while (c);
 	}
 
 	// return pointer to parameter
