@@ -16,12 +16,15 @@ ThisTask    =    276
 
 | public symbols
 
+		.globl _start
+		.globl	_exit
 		.globl	__exit
+		.globl ___main
 		.text
 
 | first entry - init some vars, check for cli or wb start
 
-start:		movel	a0,___commandline
+_start:		movel	a0,___commandline
 		movel	d0,___commandlen
 
 		movel	sp,___SaveSP
@@ -53,6 +56,7 @@ fromCLI:	lea	___INIT_LIST__+4,a2
 
 | exit() entry - execute all exit functions, reply wbmsg
 
+_exit:
 __exit: 	lea	___EXIT_LIST__+4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
@@ -97,12 +101,9 @@ oldpri: 	movel	a3@+,d0
 		movel	d3,a5@
 		cmpl	d2,d3
 		jne	callfuncs
+___main:
 		rts
 
-| redirection of _exit
-
-		.stabs	"_exit",11,0,0,0
-		.stabs	"__exit",1,0,0,0
 
 | data area
 
@@ -119,3 +120,32 @@ oldpri: 	movel	a3@+,d0
 .comm		___argv,4
 .comm		___env,4
 .lcomm		cleanupflag,4
+
+.ifdef __elf__
+	.globl	___LIB_LIST__
+	.globl	___INIT_LIST__
+	.globl	___EXIT_LIST__
+	.globl	___CTOR_LIST__
+	.globl	___DTOR_LIST__
+
+.section	.list___LIB_LIST__,"aw"
+___LIB_LIST__:
+		.long ___initlibraries
+
+.section	.list___INIT_LIST__,"aw"
+___INIT_LIST__:
+		.long 0
+
+.section	.list___EXIT_LIST__,"aw"
+___EXIT_LIST__:
+		.long 0
+
+.section	.list___CTOR_LIST__,"aw"
+___CTOR_LIST__:
+		.long ___initcpp
+
+.section	.list___DTOR_LIST__,"aw"
+___DTOR_LIST__:
+		.long 0
+.endif
+
