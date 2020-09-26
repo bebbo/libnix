@@ -2,10 +2,6 @@
 
 PREFIX ?= /opt/amiga
 
-CC = m68k-amigaos-gcc
-AR = m68k-amigaos-ar
-AS = m68k-amigaos-as
-
 uname := $(shell uname)
 root ?= $(shell echo $$PWD)
 export root
@@ -29,12 +25,33 @@ endif
 endif
 
 # use nix13 or nix20
+ifeq (,$(lc))
+CC = m68k-amigaos-gcc
+AR = m68k-amigaos-ar
+AS = m68k-amigaos-as
+
+VARIANTS_TO_BUILD = info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
+LIBS_TO_BUILD = libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack
+STARTUPS ?= lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
+
 ifneq (,$(lib))
 ifeq (nix13,$(lib))
 CFLAGS += -mcrt=nix13
 else
 CFLAGS += -noixemul
 endif
+endif
+else
+CC = m68k-elf-gcc
+AR = m68k-elf-ar
+AS = m68k-elf-as
+
+TGT = --defsym __elf__=1
+#CFLAGS += -D__libnix__
+VARIANTS_TO_BUILD = info libm020
+LIBS_TO_BUILD = libc libm
+STARTUPS ?= lib/ncrt0.o lib/xcrt0.o
+
 endif
 
 # extend CFLAGS on first invokation
@@ -45,11 +62,11 @@ endif
 
 .PHONY: all one rest clean install install_one
 
-.PHONY: lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
-all: info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
+.PHONY: lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881 lc
+all: $(VARIANTS_TO_BUILD)
 
 # the desired kinds to be build
-lib: lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
+lib: $(STARTUPS)
 	@mkdir -p $@
 	$(MAKE) one kind=$@
 	if [ -e $(PREFIX)/m68k-amigaos/lib/libstubs.a ]; then cp $(PREFIX)/m68k-amigaos/lib/libstubs.a lib/libstubs.a; touch -t 0001010000 lib/libstubs.a; fi
@@ -74,7 +91,7 @@ libm020bb32:
 
 libm881:
 	@mkdir -p $@
-	$(MAKE) one kind=$@ flags="-m68020 -m68881 -mhard-float"
+	$(MAKE) one kind=$@ flags="-m68040"
 
 libm020bb881:
 	@mkdir -p $@
@@ -85,7 +102,7 @@ libm020bb32881:
 	$(MAKE) one kind=$@ flags="-fbaserel32 -m68020 -m68881 -mhard-float"
 
 # the libs to build for each kind
-one: libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack
+one: $(LIBS_TO_BUILD)
 
 # install all kinds into the prefix
 .PHONY: install_lib install_libb install_libm020 install_libm020bb install_libm020bb32 install_libm881 install_libm020bb881 install_libm020bb32881
@@ -132,7 +149,10 @@ lib/libinitr.o: $(root)/sources/startup/libinitr.c libdir
 	$(CC) -c $(CFLAGS) $(flags) $< -o $@
 
 lib/ncrt0.o: $(root)/sources/startup/ncrt0.S libdir
-	$(AS) -m68000 $< -o $@
+	$(AS) $(TGT) -m68000 $< -o $@
+
+lib/xcrt0.o: $(root)/sources/startup/xcrt0.S libdir
+	$(AS) $(TGT) -m68000 $< -o $@
 
 lib/nbcrt0.o: $(root)/sources/startup/nbcrt0.S libdir
 	$(AS) -m68000 $< -o $@
@@ -155,14 +175,25 @@ libnix20:
 	$(MAKE) -C $(kind) rest libnix20.a lib=nix20
 libnixmain:
 	$(MAKE) -C $(kind) rest libnixmain.a lib=nixmain
-libnix_main:
-	$(MAKE) -C $(kind) rest libnix_main.a lib=nix_main
 libm:
 	$(MAKE) -C $(kind) rest libm.a lib=math libname=m flags="$(flags) -DFULL_SPECIFIERS"
 libsocket:
 	$(MAKE) -C $(kind) rest libsocket.a lib=socket
 libstack:
 	$(MAKE) -C $(kind) rest libstack.a lib=stack
+
+libc: $(STARTUPS)
+	$(MAKE) -C lib kind=lib libstubs.a lib=stubs
+	$(MAKE) -C $(lc) kind=$(lc) rest libnix.a lib=nix
+	$(MAKE) -C $(lc) kind=$(lc) rest libnix20.a lib=nix20
+	$(MAKE) -C $(lc) kind=$(lc) rest libnixmain.a lib=nixmain
+	-rm lib/stubs/*_list__.o
+	if [ ! -e  $(lc)/libc.a ]; then $(AR) rcs $(lc)/libc.a; touch -t 0001010000 $(lc)/libc.a; fi
+	$(AR) rcs $(lc)/libc.a \
+	$$(find ./$(lc)/nix/* -name '*.o' -newer $(lc)/libc.a) \
+	$$(find ./lib/stubs/* -name '*.o' -newer $(lc)/libc.a) \
+	$$(find ./$(lc)/nixmain/* -name '*.o' -newer $(lc)/libc.a) \
+	$$(find ./$(lc)/nix20/* -name '*.o' -newer $(lc)/libc.a)
 
 rest: swapstack.o detach.o
 
