@@ -47,7 +47,6 @@ AR = m68k-elf-ar
 AS = m68k-elf-as
 
 TGT = --defsym __elf__=1
-#CFLAGS += -D__libnix__
 VARIANTS_TO_BUILD = info libm020
 LIBS_TO_BUILD = libc libm
 STARTUPS ?= lib/ncrt0.o lib/xcrt0.o
@@ -58,6 +57,10 @@ endif
 ifeq (,$(kind))
 CFLAGS ?= -Os -fomit-frame-pointer
 CFLAGS += -I$(root)/sources/headers -fno-builtin
+
+ifneq (,$(lc))
+CFLAGS += -D__libnix__
+endif
 endif
 
 .PHONY: all one rest clean install install_one
