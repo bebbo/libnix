@@ -6,28 +6,31 @@ extern int __fflush(FILE *);
 int __swbuf(int c, FILE *stream) /* Get next output block */
 {
 	int out, lbs;
+	short flags = stream->_flags;
 
-	if (stream->_flags & (__SSTR | __SERR)) /* sprintf buffer | error on stream */
-	{
-		stream->_w = 0;
-		errno = EPERM;
-		return EOF;
+	if (flags & (__SSTR | __SERR | __SRD)) {
+		if (flags & (__SSTR | __SERR)) /* sprintf buffer | error on stream */
+		{
+			stream->_w = 0;
+			errno = EPERM;
+			return EOF;
+		}
+
+		if (flags & __SRD) { /* was in read mode */
+			stream->_r = 0; /* throw away input buffer */
+			stream->tmpp = NULL;
+			stream->_flags = flags &= ~__SRD;
+		}
 	}
 
-	if (stream->_flags & __SRD) { /* was in read mode */
-		stream->_r = 0; /* throw away input buffer */
-		stream->tmpp = NULL;
-		stream->_flags &= ~__SRD;
-	}
+	lbs = flags & __SLBF ? -stream->_bf._size : 0;
+	out = (flags & __SNBF ? 0 : stream->_bf._size - 1) + lbs;
 
-	lbs = stream->_flags & __SLBF ? -stream->_bf._size : 0;
-	out = (stream->_flags & __SNBF ? 0 : stream->_bf._size - 1) + lbs;
-
-	if (!(stream->_flags & __SWR)) /* File wasn't in write mode */
+	if (!(flags & __SWR)) /* File wasn't in write mode */
 	{
 		stream->_p = stream->_bf._base; /* set buffer */
 		stream->_w = --out; /* and buffercount */
-		stream->_flags |= __SWR;
+		stream->_flags = flags |= __SWR;
 	} /* and write mode */
 
 	*stream->_p++ = c; /* put this character */
@@ -35,9 +38,9 @@ int __swbuf(int c, FILE *stream) /* Get next output block */
 		if (__fflush(stream)) /* Buffer full */
 			return EOF;
 		stream->_p = stream->_bf._base; /* reset buffer */
+		stream->_flags = flags; /* set again - __fflush cleared it. */
 	}
 	stream->linebufsize = lbs;
 	stream->_w = out;
-	stream->_flags |= __SWR;
 	return c;
 }
