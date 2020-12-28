@@ -160,7 +160,11 @@ static const char *sys_errlist[] = {
 };
 
 static const int sys_nerr=sizeof(sys_errlist)/sizeof(sys_errlist[0]);
-extern int errno;
+extern int
+#ifdef __posix_threads__
+__thread
+#endif
+errno;
 extern void __seterrno(void);
 
 char *strerror(int eno)

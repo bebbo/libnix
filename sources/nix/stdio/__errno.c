@@ -4,4 +4,8 @@ struct _reent
 {
   int _errno;			/* local copy of errno */
   FILE *_stdin, *_stdout, *_stderr;	/* XXX */
-} errno;
+}
+#ifdef __posix_threads__
+__thread
+#endif
+errno;

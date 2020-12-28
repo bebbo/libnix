@@ -5,7 +5,11 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#ifdef __posix_threads__
+extern int __thread errno;
+#else
 extern int errno;
+#endif
 
 #include <sys/errno.h>
 
