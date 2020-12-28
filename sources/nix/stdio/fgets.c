@@ -4,7 +4,7 @@ char *fgets(char *s,int n,FILE *stream)
 { char *s2=s;
 
   while(--n)
-  { int c=fgetc(stream);
+  { int c=getc(stream);
     if(c==EOF)
     { if(s2==s)
         return NULL;

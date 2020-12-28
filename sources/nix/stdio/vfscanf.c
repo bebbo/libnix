@@ -12,7 +12,7 @@
  * PREV(c);     ungetc a character
  * VAL(a)       leads to 1 if a is true and valid
  */
-#define NEXT(c) ((c)=fgetc(stream),size++,incount++)
+#define NEXT(c) ((c)=getc(stream),size++,incount++)
 #define PREV(c) do{if((c)!=EOF)ungetc((c),stream);size--;incount--;}while(0)
 #define VAL(a)  ((a)&&size<=width)
 
