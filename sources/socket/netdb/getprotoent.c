@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 //
 #include "socket.h"
+#include <inline/amitcp.h>
+#include <inline/as225.h>
 
 #define MAXALIASES 35
 #define TCP_PATH_PROTOCOLS "AmiTCP:db/protocols"
@@ -97,7 +99,8 @@ struct protoent *getprotoent(void)
             *s++ = '\0';
           lss->lx_proto.p_proto = atoi(cp);
 
-          q = lss->lx_proto.p_aliases = lss->lx_proto_aliases;
+          q = lss->lx_proto_aliases;
+          lss->lx_proto.p_aliases = (__STRPTR *)q;
           if ((cp=s)) {
             while (cp && *cp) {
               if (*cp == ' ' || *cp == '\t') {
@@ -110,12 +113,11 @@ struct protoent *getprotoent(void)
                 *cp++ = '\0';
             }
           }
-          *q = NULL; return &lss->lx_proto;
+          *q = NULL;
+          return &lss->lx_proto;
         }
       }
-
-      /* fall through */
-
+      /* no break */
     default:
       return NULL;
     break;

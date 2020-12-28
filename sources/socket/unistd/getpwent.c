@@ -35,7 +35,7 @@ static int pw_start(struct SocketSettings *lss)
   if (lss->lx_pwd_fp) {
     rewind(lss->lx_pwd_fp); return 1;
   }
-  return ((lss->lx_pwd_fp = fopen(PATH_PASSWD, "r")) ? 1 : 0);
+  return ((lss->lx_pwd_fp = fopen(PATH_PASSWD, "r")) != 0 ? 1 : 0);
 }
 
 static int pw_scan(int search, uid_t uid, const char *name, struct SocketSettings *lss)
@@ -95,9 +95,9 @@ static int pw_scan(int search, uid_t uid, const char *name, struct SocketSetting
     if (!lss->lx_pwd.pw_shell) 
       continue;
 
-    return 1;
+    break;
   }
-  /* NOTREACHED */
+  return 1;
 }
 
 /*
@@ -147,11 +147,6 @@ static struct passwd *__TCP2InetPwd(struct TCP_passwd *pwd,struct SocketSettings
 **
 */
 
-int setpwent(void)
-{
-  return setpassent(0);
-}
-
 int setpassent(int stayopen)
 { struct SocketSettings *lss;
 
@@ -165,12 +160,18 @@ int setpassent(int stayopen)
     break;
 
     default:
-      if (nextuid=0,pw_start(lss))
+	  nextuid=0;
+      if (pw_start(lss))
         lss->lx_pwd_stayopen = stayopen;
     break;
   }
 
   return 1;
+}
+
+int setpwent(void)
+{
+  return setpassent(0);
 }
 
 void endpwent(void)
@@ -186,7 +187,8 @@ void endpwent(void)
     break;
 
     default:
-      if (nextuid=0,lss->lx_pwd_fp) {
+    	nextuid=0;
+      if (lss->lx_pwd_fp) {
         fclose(lss->lx_pwd_fp); lss->lx_pwd_fp = NULL;
       }
     break;
@@ -220,6 +222,7 @@ struct passwd *getpwent(void)
           nextuid = -2;
           if ((name = (char *)getlogin()))
             return getpwnam(name);
+            /* no break */
         case (uid_t)(-2):
           nextuid = -1;
           return (struct passwd *)&builtin_nobody;

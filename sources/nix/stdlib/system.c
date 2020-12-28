@@ -41,6 +41,7 @@ int execv(const char *path, char * const argv[]) {
 
 	if (r >= 0)
 		exit(0);
+	return r;
 }
 
 //int execvp(const char *file, char *const argv[]) {

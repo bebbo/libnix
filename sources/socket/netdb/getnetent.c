@@ -7,6 +7,9 @@
 #include <arpa/inet.h>
 //
 #include "socket.h"
+#include <inline/amitcp.h>
+#include <inline/as225.h>
+
 
 #define MAXALIASES 35
 #define TCP_PATH_NETWORKS "AmiTCP:db/networks"
@@ -100,7 +103,8 @@ struct netent *getnetent(void)
           lss->lx_net.n_net = inet_network(cp);
           lss->lx_net.n_addrtype = AF_INET;
 
-          q = lss->lx_net.n_aliases = lss->lx_net_aliases;
+          q = lss->lx_net_aliases;
+          lss->lx_net.n_aliases = (__STRPTR*)q;
           if ((cp=s)) {
             while (cp && *cp) {
               if (*cp == ' ' || *cp == '\t') {
@@ -115,9 +119,7 @@ struct netent *getnetent(void)
           *q = NULL; return &lss->lx_net;
         }
       }
-
-      /* fall through */
-
+      /* no break */
     default:
       return NULL;
     break;

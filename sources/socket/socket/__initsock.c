@@ -175,7 +175,7 @@ static int __stdargs _sock_select(struct _StdFileDes *fp,int select_cmd,int io_m
 StdFileDes *_create_socket(int family,int type,int protocol);
 
 struct _StdFileFx socket_fx = {
-		_sock_read, _sock_write, _sock_close, _sock_fstat, _sock_dup, _sock_select
+		_sock_read, _sock_write, _sock_close, _sock_dup, _sock_fstat, _sock_select
 };
 
 StdFileDes *_create_socket(int family,int type,int protocol)
@@ -239,7 +239,8 @@ static int init_inet_daemon(int *argc,char ***argv,struct SocketSettings *lss)
      */
 
     /* save a little time with this comparison */
-    if (err=-1,*argc >= 4) {
+	  err=-1;
+    if (*argc >= 4) {
 
       struct servent *serv1 = SOCK_getservbyname((*argv)[1],"tcp");
       struct servent *serv2 = SOCK_getservbyname((*argv)[1],"udp");
@@ -310,7 +311,7 @@ static int init_inet_daemon(int *argc,char ***argv,struct SocketSettings *lss)
       err = 0;
     } while (0);
 
-    return ((errno = err) ? -1 : fp->lx_pos);
+    return ((errno = err) != 0 ? -1 : fp->lx_pos);
   }
 
   return -1;

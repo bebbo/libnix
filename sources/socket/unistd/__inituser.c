@@ -5,6 +5,20 @@
 #include "socket.h"
 #include "stabs.h"
 
+#define UG_getgroups(ngroups, groups) \
+	LP2(0x60, int, UG_getgroups, int, ngroups, d0, int *, groups, a1, \
+	, USERGROUP_BASE_NAME)
+
+#define UG_setgroups(ngroups, groups) \
+	LP2(0x66, int, UG_setgroups, int, ngroups, d0, const int *, groups, a1, \
+	, USERGROUP_BASE_NAME)
+
+
+extern void endgrent(void);
+extern struct group *getgrent(void);
+extern int setgrent(void);
+
+
 /*
 **
 */
@@ -111,7 +125,7 @@ int getgroups(int gidsetlen, gid_t *gidset)
 { struct SocketSettings *lss = _lx_get_socket_settings();
 
   if (lss->lx_network_type == LX_AMITCP)
-    return UG_getgroups(gidsetlen,gidset);
+    return UG_getgroups(gidsetlen, (int*)gidset);
 
   /* parameter check */
   if (!gidset || gidsetlen < 0)  {
@@ -134,7 +148,7 @@ int setgroups(int gidsetlen, const gid_t *gidset)
 { struct SocketSettings *lss = _lx_get_socket_settings();
 
   if (lss->lx_network_type == LX_AMITCP)
-    return UG_setgroups(gidsetlen,gidset);
+    return UG_setgroups(gidsetlen,(int*)gidset);
 
   /* parameter check */
   if (!gidset || gidsetlen < 0) {
