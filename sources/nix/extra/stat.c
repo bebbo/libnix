@@ -3,12 +3,12 @@
 #include <proto/exec.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "stabs.h"
 
 extern int __stat(struct stat *buf,struct FileInfoBlock *fib);
 extern void __seterrno(void);
 extern char *__amigapath(const char *path);
 
+asm("_lstat: .global _lstat");
 int stat(const char *name,struct stat *buf)
 { APTR oldwin,*wptr=&((struct Process *)FindTask(NULL))->pr_WindowPtr;
   struct FileInfoBlock *fib;
@@ -44,5 +44,3 @@ int stat(const char *name,struct stat *buf)
 
   return ret;
 }
-
-ALIAS(lstat,stat);

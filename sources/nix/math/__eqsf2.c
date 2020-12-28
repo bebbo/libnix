@@ -1,12 +1,10 @@
 #include <proto/mathieeesingbas.h>
-#include "stabs.h"
 
-signed long __eqsf2(float x,float y)
+asm("___eqsf2: .global ___eqsf2");
+asm("___nesf2: .global ___nesf2");
+asm("___ltsf2: .global ___ltsf2");
+asm("___lesf2: .global ___lesf2");
+asm("___gtsf2: .global ___gtsf2");
+asm("___gesf2: .global ___gesf2");
+signed long __cmpsf2(float x,float y)
 { return IEEESPCmp(x,y); }
-
-ALIAS(__cmpsf2,__eqsf2);
-ALIAS(__gesf2,__eqsf2);
-ALIAS(__nesf2,__eqsf2);
-ALIAS(__gtsf2,__eqsf2);
-ALIAS(__ltsf2,__eqsf2);
-ALIAS(__lesf2,__eqsf2);

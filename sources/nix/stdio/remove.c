@@ -4,6 +4,8 @@
 
 extern void __seterrno(void);
 
+asm("_rmdir: .global _rmdir");
+asm("_unlink: .global _unlink");
 int remove(const char *filename)
 { 
 #ifdef IXPATHS

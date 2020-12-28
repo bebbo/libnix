@@ -3,7 +3,6 @@
 #include <limits.h>
 #include <stdlib.h>
 #include "stdio.h"
-#include "stabs.h"
 
 #ifndef ULLONG_MAX
 #define ULLONG_MAX 0xffffffffffffffffL
@@ -11,6 +10,7 @@
 
 extern int iswxdigit(wint_t c);
 
+asm("_strtoumax: .global _strtoumax");
 unsigned long long strtoull(const char *nptr, char **endptr, int base) {
 	const char *p = nptr, *q;
 	char c = 0;
@@ -70,5 +70,3 @@ unsigned long long strtoull(const char *nptr, char **endptr, int base) {
 		*endptr = (char *) q;
 	return r;
 }
-
-ALIAS(strtoumax, strtoull);

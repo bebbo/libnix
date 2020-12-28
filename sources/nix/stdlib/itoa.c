@@ -4,8 +4,7 @@
 
 extern char* utoa(int value, char *str, int base);
 
-ALIAS( ltoa, itoa);
-
+asm("_ltoa: .global _ltoa");
 char* itoa(int value, char *str, int base) {
 	if (!str)
 		return str;

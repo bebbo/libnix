@@ -6,11 +6,10 @@ process started.
 
 #include <stdlib.h>
 #include <time.h>
-#include <stabs.h>
 
+asm("_getruntime: .global _getruntime");
 long get_run_time (void)
 {
   /* Fall back on clock since it's correctly implemented. */
   return clock() * 10000;
 }
-ALIAS(getruntime,get_run_time);

@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <string.h>
-#include "stabs.h"
 
+asm("_strncasecmp: .global strncasecmp");
 int strnicmp(const char *s1,const char *s2,size_t len)
 { unsigned char c1,c2;
   int r;
@@ -23,5 +23,3 @@ int strnicmp(const char *s1,const char *s2,size_t len)
     }
   return r;
 }
-
-ALIAS(strncasecmp,strnicmp);

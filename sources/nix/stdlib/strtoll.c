@@ -3,7 +3,6 @@
 #include <limits.h>
 #include <stdlib.h>
 #include "stdio.h"
-#include "stabs.h"
 
 #ifndef LLONG_MIN
 #define LLONG_MIN 0x8000000000000000L
@@ -12,6 +11,7 @@
 #define LLONG_MAX 0x7fffffffffffffffL
 #endif
 
+asm("_strtoimax: .global _strtoimax");
 signed long long strtoll(const char *nptr,char **endptr,int base)
 { const char *p=nptr;
   char *q;
@@ -43,5 +43,3 @@ signed long long strtoll(const char *nptr,char **endptr,int base)
       return r;
   }
 }
-
-ALIAS(strtoimax, strtoll);

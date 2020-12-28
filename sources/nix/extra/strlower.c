@@ -1,6 +1,6 @@
 #include <ctype.h>
-#include "stabs.h"
 
+asm("_strlwr: .global _strlwr");
 char *strlower(char *s)
 { unsigned char *s1;
 
@@ -12,5 +12,3 @@ char *strlower(char *s)
   }
   return s;
 }
-
-ALIAS(strlwr,strlower);

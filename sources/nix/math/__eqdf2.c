@@ -1,12 +1,10 @@
 #include <proto/mathieeedoubbas.h>
-#include "stabs.h"
 
-signed long __eqdf2(double x,double y)
+asm("___eqdf2: .global ___eqdf2");
+asm("___nedf2: .global ___nedf2");
+asm("___ltdf2: .global ___ltdf2");
+asm("___ledf2: .global ___ledf2");
+asm("___gtdf2: .global ___gtdf2");
+asm("___gedf2: .global ___gedf2");
+signed long __cmpdf2(double x,double y)
 { return IEEEDPCmp(x,y); }
-
-ALIAS(__cmpdf2,__eqdf2);
-ALIAS(__gedf2,__eqdf2);
-ALIAS(__nedf2,__eqdf2);
-ALIAS(__gtdf2,__eqdf2);
-ALIAS(__ltdf2,__eqdf2);
-ALIAS(__ledf2,__eqdf2);

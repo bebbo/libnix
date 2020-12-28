@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <string.h>
-#include "stabs.h"
 
+asm("_strcasecmp: .global _strcasecmp");
 int stricmp(const char *s1,const char *s2)
 { unsigned char c1,c2;
   int r;
@@ -20,5 +20,3 @@ int stricmp(const char *s1,const char *s2)
   }
   return r;
 }
-
-ALIAS(strcasecmp,stricmp);

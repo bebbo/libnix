@@ -1,6 +1,6 @@
 #include <string.h>
-#include "stabs.h"
 
+asm("_index: .global _index");
 char *strchr(const char *s,int c)
 {
   while (*s!=(char)c)
@@ -8,5 +8,3 @@ char *strchr(const char *s,int c)
       { s = (char *)0; break; }
   return (char *)s;
 }
-
-ALIAS(index,strchr);

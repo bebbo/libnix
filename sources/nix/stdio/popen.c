@@ -4,7 +4,6 @@
 #include <proto/dos.h>
 #include <proto/exec.h>
 #include <proto/timer.h>
-#include <stabs.h>
 #include <time.h>
 #include <errno.h>
 #include "stdio.h"
@@ -40,5 +39,3 @@ FILE *popen(const char *command, const char *type) {
 	errno = EIO;
 	return 0;
 }
-
-ALIAS( pclose, fclose);

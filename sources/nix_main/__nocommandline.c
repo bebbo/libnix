@@ -11,7 +11,6 @@
 #include <dos/dos.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include "stabs.h"
 
 extern char *__argc; /* Defined in startup */
 extern char *__commandline;
@@ -21,8 +20,7 @@ extern struct WBStartup *_WBenchMsg;
 /* This guarantees that this module gets linked in.
    If you replace this by an own reference called
    __nocommandline you get no commandline arguments */
-ALIAS(__nocommandline,__initcommandline);
-
+asm("___nocommandline: .global ___nocommandline");
 void __initcommandline(void)
 { if(_WBenchMsg==NULL)
   { unsigned long len,i;

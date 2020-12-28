@@ -1,6 +1,6 @@
 #include <string.h>
-#include "stabs.h"
 
+asm("_rindex: .global _rindex");
 char *strrchr(const char *s,int c)
 { char *c1=(char *)0;
   do
@@ -9,5 +9,3 @@ char *strrchr(const char *s,int c)
   while(*s++);
   return c1;
 }
-
-ALIAS(rindex,strrchr);

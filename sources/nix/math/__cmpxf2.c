@@ -51,8 +51,6 @@
 ** in with -msoft-float.
 */
 
-#include "stabs.h"
-
 /* the following deal with IEEE single-precision numbers */
 #define EXCESS		126L
 #define SIGNBIT		0x80000000L
@@ -141,15 +139,14 @@ __truncxfdf2 (long double ld)
 
 extern int __cmpdf2 (double x1, double x2);
 
+asm("___eqxf2: .global ___eqxf2");
+asm("___nexf2: .global ___nexf2");
+asm("___ltxf2: .global ___ltxf2");
+asm("___lexf2: .global ___lexf2");
+asm("___gtxf2: .global ___gtxf2");
+asm("___gexf2: .global ___gexf2");
 int
 __cmpxf2 (long double x1, long double x2)
 {
   return __cmpdf2 ((double) x1, (double) x2);
 }
-
-ALIAS(__eqxf2,__cmpxf2);
-ALIAS(__nexf2,__cmpxf2);
-ALIAS(__ltxf2,__cmpxf2);
-ALIAS(__lexf2,__cmpxf2);
-ALIAS(__gtxf2,__cmpxf2);
-ALIAS(__gexf2,__cmpxf2);

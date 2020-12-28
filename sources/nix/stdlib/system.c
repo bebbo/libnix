@@ -4,7 +4,6 @@
 #include <proto/dos.h>
 #include <errno.h>
 #include <string.h>
-#include <stabs.h>
 
 int system(const char *string) {
 	if (string == NULL) {
@@ -20,6 +19,7 @@ int system(const char *string) {
 		return (int) ~Execute((STRPTR )string, 0l, Output());
 }
 
+asm("_execvp: .global _execvp");
 int execv(const char *path, char * const argv[]) {
 	char * const * p;
 	char * cmd;
@@ -54,5 +54,3 @@ int pipe(int pipefd[2]) {
 pid_t fork(void) {
 	return 0;
 }
-
-ALIAS(execvp, execv);

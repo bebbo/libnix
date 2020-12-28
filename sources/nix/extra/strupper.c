@@ -1,6 +1,6 @@
 #include <ctype.h>
-#include "stabs.h"
 
+asm("_strupr: .global strupr");
 char *strupper(char *s)
 { unsigned char *s1;
 
@@ -12,5 +12,3 @@ char *strupper(char *s)
   }
   return s;
 }
-
-ALIAS(strupr,strupper);

@@ -1,5 +1,4 @@
 #include "bases.h"
-#include "stabs.h"
 
 asm(
 "	.text;"
@@ -25,5 +24,3 @@ asm(
 "	movel	sp@+,a5;"
 "	rts;"
 );
-
-ALIAS(__move_d0_sp,__stkrst);
