@@ -2,6 +2,8 @@
 
 PREFIX ?= /opt/amiga
 
+CFLAGS ?= -Os -fomit-frame-pointer
+
 uname := $(shell uname)
 root ?= $(shell echo $$PWD)
 export root
