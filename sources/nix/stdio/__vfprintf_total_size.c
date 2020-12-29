@@ -150,6 +150,8 @@ static unsigned __ulldivus(unsigned long long * llp, unsigned short n) {
 int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 	size_t outcount = 0;
 
+	__STDIO_LOCK(stream);
+
 //	/* optimize unbuffered write-only files */
 //	if ((stream->_flags & (__SWO | __SNBF)) == (__SWO | __SNBF)) {
 //		return ___vfprintf_total_size(stream, format, args);
@@ -715,6 +717,8 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 		} else
 			OUT(*format++);
 	}
+	__STDIO_UNLOCK(stream);
+
 	return outcount;
 }
 
