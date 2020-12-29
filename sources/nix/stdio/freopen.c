@@ -13,15 +13,21 @@ extern int __fclose(FILE *);
 extern StdFileDes **__stdfiledes;
 
 FILE *freopen(const char *filename, const char *mode, FILE *stream) {
+	__STDIO_LOCK(stream);
+
 	int error = __fclose(stream);
-	if (error)
+	if (error) {
+		__STDIO_UNLOCK(stream);
 		return NULL;
+	}
 
 	if (filename != NULL) {
 		char ch;
 		long file, flags;
-		if (mode == NULL)
+		if (mode == NULL) {
+			__STDIO_UNLOCK(stream);
 			return NULL;
+		}
 
 		ch = *mode++;
 		switch (ch) {
@@ -35,6 +41,7 @@ FILE *freopen(const char *filename, const char *mode, FILE *stream) {
 				flags = O_WRONLY | O_CREAT | O_APPEND;
 				break;
 			default:
+				__STDIO_UNLOCK(stream);
 				return NULL;
 		}
 
@@ -45,8 +52,10 @@ FILE *freopen(const char *filename, const char *mode, FILE *stream) {
 		if (ch == '+')
 			flags = (flags & ~O_ACCMODE) | O_RDWR;
 
-		if ((file = open(filename, flags, 0777)) < 0)
+		if ((file = open(filename, flags, 0777)) < 0) {
+			__STDIO_UNLOCK(stream);
 			return NULL;
+		}
 
 		if (flags & O_APPEND)
 			Seek(__stdfiledes[stream->file]->lx_fh, 0, OFFSET_END);
@@ -60,5 +69,6 @@ FILE *freopen(const char *filename, const char *mode, FILE *stream) {
 		stream->file = file;
 	}
 
+	__STDIO_UNLOCK(stream);
 	return stream;
 }

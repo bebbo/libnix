@@ -29,7 +29,7 @@
 							<option id="cdt.managedbuild.option.gnu.cross.prefix.399326393" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="m68k-amigaos-" valueType="string"/>
 							<option id="cdt.managedbuild.option.gnu.cross.path.587129650" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" value="/opt/amiga/bin" valueType="string"/>
 							<targetPlatform archList="all" binaryParser="de.bb.eclipse.cdt-amiga.Amiga" id="cdt.managedbuild.targetPlatform.gnu.cross.696677269" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
-							<builder arguments="-f Makefile.gcc6" autoBuildTarget="all" buildPath="${workspace_loc:/libnix}" cleanBuildTarget="clean" command="make" enableAutoBuild="true" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.builder.gnu.cross.1062458588" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="4" superClass="cdt.managedbuild.builder.gnu.cross"/>
+							<builder arguments="-f Makefile.gcc6" autoBuildTarget="all" buildPath="${workspace_loc:/libnix}" cleanBuildTarget="clean" command="make" enableAutoBuild="true" enableCleanBuild="true" enabledIncrementalBuild="true" id="cdt.managedbuild.builder.gnu.cross.1062458588" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="unlimited" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.403026519" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.1063600622" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.size" valueType="enumerated"/>
 								<option defaultValue="gnu.c.debugging.level.max" id="gnu.c.compiler.option.debugging.level.292667248" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" valueType="enumerated"/>
@@ -42,6 +42,9 @@
 								<option id="gnu.c.compiler.option.misc.other.1050859272" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c " valueType="string"/>
 								<option id="gnu.c.compiler.option.warnings.pedantic.2111355381" name="Pedantic (-pedantic)" superClass="gnu.c.compiler.option.warnings.pedantic" useByScannerDiscovery="false" value="false" valueType="boolean"/>
 								<option id="gnu.c.compiler.option.warnings.extrawarn.766747688" name="Extra warnings (-Wextra)" superClass="gnu.c.compiler.option.warnings.extrawarn" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1136146349" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="__posix_threads__"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1188803423" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1345895546" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">

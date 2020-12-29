@@ -29,6 +29,7 @@ extern unsigned char * __decimalpoint;
 #endif
 
 int vfscanf(FILE *stream, const char *format, va_list args) {
+	__STDIO_LOCK(stream);
 	size_t blocks = 0, incount = 0;
 	int c = 0;
 
@@ -419,7 +420,7 @@ int vfscanf(FILE *stream, const char *format, va_list args) {
 		if (!size)
 			break;
 	}
-
+	__STDIO_UNLOCK(stream);
 	if (c == EOF && !blocks)
 		return c;
 	else

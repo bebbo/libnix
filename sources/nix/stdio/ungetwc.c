@@ -5,7 +5,19 @@
 
 int __fflush(FILE *stream);
 
-wint_t ungetwc(wint_t c, FILE *stream) {
+#ifdef __posix_threads__
+static wint_t __ungetwc2(wint_t c, FILE * stream);
+#endif
+wint_t ungetwc(wint_t c,FILE *stream) {
+#ifdef __posix_threads__
+	wint_t r;
+	__STDIO_LOCK(stream);
+	r = __ungetwc2(c, stream);
+	__STDIO_UNLOCK(stream);
+	return r;
+}
+static wint_t __ungetwc2(wint_t c, FILE *stream) {
+#endif
 	size_t i;
 	wint_t cc;
 

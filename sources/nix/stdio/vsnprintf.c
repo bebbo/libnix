@@ -15,6 +15,9 @@ int vsnprintf(char *s,size_t size,const char *format,va_list args) {
 	buffer._w=size-1;
 	buffer._flags=__SSTR|__SWR;
 	buffer.linebufsize=0;
+#ifdef __posix_threads__
+	buffer.__spinlock[0] = 0;
+#endif
 	retval=__vfprintf_total_size(&buffer,format,args);
 	if (retval < size)
 		s[retval] = 0;

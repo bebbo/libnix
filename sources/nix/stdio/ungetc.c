@@ -3,8 +3,19 @@
 
 int __fflush(FILE *stream);
 
-int ungetc(int c,FILE *stream)
-{
+#ifdef __posix_threads__
+static int __ungetc2(int c, FILE * stream);
+#endif
+int ungetc(int c,FILE *stream) {
+#ifdef __posix_threads__
+	int r;
+	__STDIO_LOCK(stream);
+	r = __ungetc2(c, stream);
+	__STDIO_UNLOCK(stream);
+	return r;
+}
+static int __ungetc2(int c,FILE *stream) {
+#endif
   if(c==EOF)
     return EOF;
   if(stream->_flags&__SERR)/* Error on stream */

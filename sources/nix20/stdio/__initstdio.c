@@ -12,6 +12,12 @@
 #include <unistd.h>
 #include "stabs.h"
 
+#ifdef DEBUG
+#include "clib/debug_protos.h"
+#else
+#define KPrintF(a,...)
+#endif
+
 struct filenode {
   struct MinNode node;
   FILE theFILE;
@@ -25,15 +31,22 @@ extern struct ExecBase * SysBase;
 extern int __fflush(FILE *);
 extern void __seterrno(void);
 
+#ifdef __posix_threads__
+FILE * _stdin[3];
+FILE **__sF = &_stdin[0];
+#else
 // hack: errno is here seen as int, and it's defined as struct in __sf.c
 // stdin, stdout, stderr are attached to errno.
 FILE **__sF = (FILE **) (&errno + 1); /* stdin, stdout, stderr */
-
+#endif
 /*
  ** the internal storage
  */
 StdFileDes **__stdfiledes;
 unsigned __stdfilesize;
+#ifdef __posix_threads__
+unsigned __stdLock[2];
+#endif
 /* The normal Amiga shell sets no process->pr_CES stream -
  * we use Open("*",MODE_NEWFILE) in this case
  */
@@ -72,8 +85,10 @@ int _lx_addflags(int d, int oflags) {
 StdFileDes *_lx_fhfromfd(int d) {
 	if ((unsigned) d < __stdfilesize) {
 		StdFileDes *sfd = __stdfiledes[d];
-		if (sfd && sfd->lx_inuse)
+		if (sfd && sfd->lx_inuse) {
+			KPrintF("lx_fhfromfd %ld -> %ld [__stdfiledes=%ld, __stdfilecount=%ld]\n", d, sfd, __stdfiledes, __stdfilesize);
 			return sfd;
+		}
 	}
 	return NULL;
 }
@@ -104,6 +119,9 @@ FILE *fdopen(int filedes, const char *mode) {
 				f->tmpinc = 0;
 				f->tmpdir = 0;
 				f->name = 0;
+#ifdef __posix_threads__
+				f->__spinlock[0] = 0;
+#endif
 				return f;
 			}
 			free(node);
@@ -114,7 +132,9 @@ FILE *fdopen(int filedes, const char *mode) {
 }
 
 int __fclose(FILE * stream) {
- int error = __fflush(stream);
+	__STDIO_LOCK(stream);
+
+	int error = __fflush(stream);
 
 	if (stream->file >= 0)
 		close(stream->file);
@@ -131,6 +151,7 @@ int __fclose(FILE * stream) {
 		UnLock(CurrentDir(cd)); /* cd back, unlock t: */
 	}
 	stream->file = 0;
+	__STDIO_UNLOCK(stream);
 	return error;
 }
 
@@ -144,6 +165,7 @@ static StdFileDes * stdfiledes(BPTR fh) {
 		_setup_file(sfd);
 		sfd->lx_flags |= LX_SYS;
 	}
+	KPrintF("stdfiledes [__stdfiledes=%ld, __stdfilecount=%ld]\n", __stdfiledes, __stdfilesize);
 	return sfd;
 }
 
@@ -231,6 +253,8 @@ int fclose(FILE *stream) {
 	if (!stream) {
 		return EOF;
 	}
+
+	__STDIO_LOCK(stream);
 	retval = __fclose(stream) ? EOF : 0;
 	if (stream->_flags & __SMBF) /* Free buffer if necessary */
 	{
@@ -246,6 +270,7 @@ int fclose(FILE *stream) {
 	node = (struct filenode *) ((struct MinNode *) stream - 1);
 	Remove((struct Node * )&node->node);
 	free(node);
+	__STDIO_UNLOCK(stream);
 	return retval;
 }
 

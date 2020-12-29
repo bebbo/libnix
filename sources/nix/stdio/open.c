@@ -7,6 +7,9 @@
 
 extern StdFileDes **__stdfiledes;
 extern unsigned __stdfilesize;
+#ifdef __posix_threads__
+unsigned __stdLock[2];
+#endif
 
 StdFileDes *__allocfd(void);
 extern void _setup_file(StdFileDes *fp);
@@ -42,10 +45,21 @@ int open(const char *path, int flags, ...) {
 	return -1;
 }
 
+#ifdef __posix_threads__
+	static StdFileDes *__allocfd2(void);
+#endif
 /**
  * Reuse or allocate a StdFileDes object.
  */
 StdFileDes *__allocfd(void) {
+#ifdef __posix_threads__
+	__spinLock(__stdLock);
+	StdFileDes * sfd = __allocfd2();
+	__spinUnlock(__stdLock);
+	return sfd;
+}
+static StdFileDes *__allocfd2(void) {
+#endif
 	StdFileDes *fp, **sfd;
 	int file, max;
 
@@ -64,8 +78,8 @@ StdFileDes *__allocfd(void) {
 			return NULL;
 		}
 		__stdfiledes = sfd;
-		__stdfilesize++;
 		*(sfd = &sfd[file]) = 0;
+		__stdfilesize++;
 	}
 
 	if ((fp = sfd[0]) == NULL) {

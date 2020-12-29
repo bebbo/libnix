@@ -7,9 +7,11 @@ int __fflush(FILE *stream) /* fflush exactly one file */
 	unsigned char *subbuf;
 	long size, subsize;
 
+	__STDIO_LOCK(stream);
 	if (stream->_flags & __SERR) /* Error on stream */
 	{
 		errno = EPERM;
+		__STDIO_UNLOCK(stream);
 		return EOF;
 	}
 	if (stream->_flags & __SWR) /* Works only on output streams */
@@ -19,6 +21,7 @@ int __fflush(FILE *stream) /* fflush exactly one file */
 		while (size) {
 			if ((subsize = write(stream->file, subbuf, size)) < 0) {
 				stream->_flags |= __SERR; /* error flag */
+				__STDIO_UNLOCK(stream);
 				return EOF;
 			}
 			size -= subsize;
@@ -28,5 +31,6 @@ int __fflush(FILE *stream) /* fflush exactly one file */
 		stream->_w = 0;
 		stream->linebufsize = 0;
 	} /* Nothing to be done for input streams */
+	__STDIO_UNLOCK(stream);
 	return 0;
 }

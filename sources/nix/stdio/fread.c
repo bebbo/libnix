@@ -9,6 +9,9 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 	unsigned char *b = (unsigned char *) ptr;
 	if (!(total = size * nmemb)) /* Just in case size==0 */
 		return total;
+
+	__STDIO_LOCK(stream);
+
 	do {
 		if (stream->_r > 0) {
 			subsize = total > stream->_r ? stream->_r : total;
@@ -25,5 +28,6 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 			total--;
 		}
 	} while (total);
+	__STDIO_UNLOCK(stream);
 	return (b - (unsigned char *) ptr) / size;
 }

@@ -1,7 +1,12 @@
 #include "stdio.h"
 
-int getc(FILE *fp) {
-	if (--fp->_r >= 0)
-		return *fp->_p++;
-	return __srget(fp);
+int getc(FILE *stream) {
+	int r;
+	__STDIO_LOCK(stream);
+	if (--stream->_r >= 0)
+		r = *stream->_p++;
+	else
+		r = __srget(stream);
+	__STDIO_UNLOCK(stream);
+	return r;
 }

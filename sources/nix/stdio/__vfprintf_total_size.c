@@ -95,6 +95,9 @@ static int ___vfprintf_total_size(FILE *stream, const char *format,
 	fp._bf._base = buf;
 	fp._bf._size = sizeof(buf);
 	fp.linebufsize = 0;
+#ifdef __posix_threads__
+	fp.__spinlock[0] = 0;
+#endif
 	if (((ret = __vfprintf_total_size(&fp, format, args)) >= 0)
 			&& __fflush(&fp))
 		ret = -1;

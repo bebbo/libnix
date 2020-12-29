@@ -8,11 +8,14 @@ int __swbuf(int c, FILE *stream) /* Get next output block */
 	int out, lbs;
 	short flags = stream->_flags;
 
+	__STDIO_LOCK(stream);
+
 	if (flags & (__SSTR | __SERR | __SRD)) {
 		if (flags & (__SSTR | __SERR)) /* sprintf buffer | error on stream */
 		{
 			stream->_w = 0;
 			errno = EPERM;
+			__STDIO_UNLOCK(stream);
 			return EOF;
 		}
 
@@ -36,11 +39,16 @@ int __swbuf(int c, FILE *stream) /* Get next output block */
 	*stream->_p++ = c; /* put this character */
 	if (stream->_w < 0 && (stream->_w < lbs || (char) c == '\n')) {
 		if (__fflush(stream)) /* Buffer full */
+		{
+			__STDIO_UNLOCK(stream);
 			return EOF;
+		}
 		stream->_p = stream->_bf._base; /* reset buffer */
 		stream->_flags = flags; /* set again - __fflush cleared it. */
 	}
 	stream->linebufsize = lbs;
 	stream->_w = out;
+	__STDIO_UNLOCK(stream);
+
 	return c;
 }
