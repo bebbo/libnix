@@ -16,6 +16,7 @@ ThisTask    =    276
 
 | public symbols
 
+		.globl	_exit
 		.globl	__exit
 		.globl	_geta4
 		.global ___restore_a4
@@ -26,6 +27,9 @@ ThisTask    =    276
 start:
 		jbsr	_geta4
 
+		movel	4:W,a6
+		cmpiw	#36,20(a6) | SoftVer
+		bhis	nobss
 		movel	#___bss_init_size,d1
 		beqs	nobss
 		moveq.l #0,d2
@@ -41,7 +45,6 @@ nobss:
 		movel	d0,a4@(___commandlen:W)
 
 		movel	sp,a4@(___SaveSP:W)
-		movel	4:W,a6
 		movel	a6,a4@(_SysBase:W)
 
 		movel	a6@(ThisTask:W),a3
@@ -70,6 +73,7 @@ fromCLI:	lea	a4@(___INIT_LIST__:W),a2
 
 | exit() entry - execute all exit functions, reply wbmsg
 
+_exit:
 __exit: 	lea	a4@(___EXIT_LIST__:W),a2
 		addqw	#4,a2
 		moveql	#0,d2

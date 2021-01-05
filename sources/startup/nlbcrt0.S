@@ -17,6 +17,7 @@ Attn        =    0x128
 
 | public symbols
 
+		.globl	_exit
 		.globl	__exit
 		.globl	_geta4
 		.global ___restore_a4
@@ -25,7 +26,7 @@ Attn        =    0x128
 | first entry - init some vars, check for cli or wb start
 
 start:
-		movel	4:L,a6
+		movel	4:W,a6
 		movel	a6@(ThisTask:W),a3
 
 | wb start - get wbmsg
@@ -53,8 +54,10 @@ fromCLI:
 		bra		cleanup
 
 cpuok:
-		movel	#___bss_init_size,d1
 		jbsr	_geta4
+		cmpiw	#36,20(a6) | SoftVer
+		bhis	nobss
+		movel	#___bss_init_size,d1
 		beqs	nobss
 		lea	a4@(__edata:L),a1
 clrbss:
@@ -83,6 +86,7 @@ nobss:
 
 | exit() entry - execute all exit functions, reply wbmsg
 
+_exit:
 __exit:
 	 	lea	a4@(___EXIT_LIST__:L),a2
 		addqw	#4,a2
