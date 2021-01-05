@@ -25,7 +25,7 @@ ThisTask    =    276
 ERROR_NO_FREE_STORE =	 103
 
 | public symbols
-
+		.globl _exit
 		.globl	__exit
 		.text
 
@@ -97,6 +97,7 @@ no_reloc:	lea	a4@(0x7ffe:W),a4
 
 | exit() entry - get return val, restore stackptr
 
+_exit:
 __exit: 	lea	a4@(___EXIT_LIST__:W),a2
 		addqw	#4,a2
 		moveql	#0,d2
@@ -151,11 +152,6 @@ oldpri: 	movel	a3@+,d0
 		cmpl	d2,d3
 		jne	callfuncs
 		rts
-
-| redirection of _exit
-
-		.stabs	"_exit",11,0,0,0
-		.stabs	"__exit",1,0,0,0
 
 | data area
 

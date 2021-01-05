@@ -144,11 +144,6 @@ ___restore_a4:
 _geta4: 	lea	___a4_init,a4
 		rts
 
-| redirection of _exit
-
-		.stabs	"_exit",11,0,0,0
-		.stabs	"__exit",1,0,0,0
-
 | data area
 
 		.data
