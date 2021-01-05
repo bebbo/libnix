@@ -8,9 +8,9 @@
 #define KPrintF(a,...)
 #endif
 
-void __regargs __spinLock(unsigned * l) {
-	struct Task * dis = SysBase->ThisTask;
-	if (*l == (unsigned)dis) {
+void __regargs __spinLock(unsigned *l) {
+	struct Task *dis = SysBase->ThisTask;
+	if (*l == (unsigned) dis) {
 		++l[1];
 #ifdef DEBUG
 		if (*l == 1) {
@@ -24,16 +24,16 @@ void __regargs __spinLock(unsigned * l) {
 
 	Forbid();
 	--dis->tc_Node.ln_Pri;
-	while (*(volatile unsigned *)l != 0) {
+	while (*(volatile unsigned*) l != 0) {
 		// calling Permit() will trigger a reschedule
-		SysBase->SysFlags |= 1<<15; // trigger rescheduling on Permit();
+		SysBase->SysFlags |= 1 << 15; // trigger rescheduling on Permit();
 		KPrintF("waiting for %ld - locked by %ld\n", l, *l);
 		Permit();
 		Forbid();
 	}
 	++dis->tc_Node.ln_Pri;
 
-	*l = (unsigned)dis;
+	*l = (unsigned) dis;
 	l[1] = 1;
 	KPrintF("%ld got %ld after wait\n", dis, l);
 	Permit();
