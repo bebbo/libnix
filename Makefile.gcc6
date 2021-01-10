@@ -203,10 +203,10 @@ libc: $(STARTUPS)
 rest: swapstack.o detach.o
 
 swapstack.o: $(root)/sources/misc/swapstack.c
-	$(CC) -c $(CFLAGS) $(flags) $^ -o $@
+	$(CC) -c $(CFLAGS) $(flags) $^ -o $@ -fomit-frame-pointer
 
 detach.o: $(root)/sources/misc/detach.c
-	$(CC) -c $(CFLAGS) $(flags) $^ -o $@
+	$(CC) -c $(CFLAGS) $(flags) $^ -o $@ -fomit-frame-pointer
 
 # build the lib base on $(lib), $(kind) and $(flags)
 lib$(libname).a: $(shell find $(root)/sources/$(lib)/* -name '*.c') $(stolen) $(shell find $(root)/sources/headers/* -name '*.h') $(root)/Makefile.gcc6
