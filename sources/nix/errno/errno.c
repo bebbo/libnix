@@ -1,5 +1,5 @@
 // errno moved to __stdio.c
-extern int errno;
+#include "errno.h"
 int *__errno (void) {
 	return &errno;
 }

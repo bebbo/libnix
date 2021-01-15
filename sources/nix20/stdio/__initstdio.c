@@ -32,8 +32,8 @@ extern int __fflush(FILE *);
 extern void __seterrno(void);
 
 #ifdef __posix_threads__
-FILE * _stdin[3];
-FILE **__sF = &_stdin[0];
+FILE * ___stdin[4];
+FILE **__sF = &___stdin[1];
 #else
 // hack: errno is here seen as int, and it's defined as struct in __sf.c
 // stdin, stdout, stderr are attached to errno.
