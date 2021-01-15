@@ -8,3 +8,7 @@ double strtod(const char *nptr,char **endptr)
     *endptr=(char *)nptr+n;
   return a;
 }
+
+float strtof(const char *nptr,char **endptr) {
+	return (float)strtod(nptr, endptr);
+}
