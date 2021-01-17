@@ -3,6 +3,8 @@
  * Henry Spencer originally posted to net.sources.
  *
  * This file is in the public domain.
+ *
+ * Fixed by Bebbo.
  */
 
 #include <stdio.h>
@@ -10,7 +12,8 @@
 
 char *optarg; /* Global argument pointer. */
 int optind = 0; /* Global argv index. */
-
+int opterr = 1; /* default: print error. */
+int optopt;
 static char *scan = NULL; /* Private scan pointer. */
 
 int
@@ -36,11 +39,12 @@ getopt(int argc, char *argv[], char *optstring)
 		optind++;
 	}
 
-	c = *scan++;
+	optopt = c = *scan++;
 	place = strchr(optstring, c);
 
 	if (!place || c == ':') {
-		fprintf(stderr, "%s: unknown option -%c\n", argv[0], c);
+		if (opterr)
+			fprintf(stderr, "%s: unknown option -- '%c'\n", argv[0], c);
 		return '?';
 	}
 
@@ -53,8 +57,9 @@ getopt(int argc, char *argv[], char *optstring)
 			optarg = argv[optind];
 			optind++;
 		} else {
-			fprintf(stderr, "%s: option requires argument -%c\n", argv[0], c);
-			return ':';
+			if (opterr)
+				fprintf(stderr, "%s: option requires argument -- '%c'\n", argv[0], c);
+			return *optstring == ':' ? ':' : '?';
 		}
 	}
 
