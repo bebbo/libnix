@@ -25,7 +25,7 @@ extern char *__decimalpoint;
 extern long __gmtoffset;
 //extern int __dstflag;
 
-extern struct lconv __lconv;
+struct lconv __lconv;
 
 int __locale_mb_cur_max(void) {
 	return 0xff;
