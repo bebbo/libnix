@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <string.h>
 
-asm("_strncasecmp: .global strncasecmp");
+asm("_strncasecmp: .global _strncasecmp");
 int strnicmp(const char *s1,const char *s2,size_t len)
 { unsigned char c1,c2;
   int r;
