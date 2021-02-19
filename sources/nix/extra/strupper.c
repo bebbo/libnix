@@ -1,6 +1,6 @@
 #include <ctype.h>
 
-asm("_strupr: .global strupr");
+asm("_strupr: .global _strupr");
 char *strupper(char *s)
 { unsigned char *s1;
 
