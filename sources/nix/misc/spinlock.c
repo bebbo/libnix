@@ -8,6 +8,10 @@
 #define KPrintF(a,...)
 #endif
 
+#ifndef __regargs
+#define __regargs
+#endif
+
 void __regargs __spinLock(unsigned *l) {
 	struct Task *dis = SysBase->ThisTask;
 	if (*l == (unsigned) dis) {
