@@ -251,7 +251,11 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 						v2 = va_arg(args, signed long long);
 					else
 						v2 = va_arg(args, signed int);
-					if (v2 < 0) {
+					if (subtype == 'h')
+						v2 &= 0xffff;
+					else if (subtype == 'i')
+						v2 &= 0xff;
+					if (v2 < 0 || (subtype == 'h' && (short)v2 < 0) || (subtype == 'i' && (char)v2 < 0)) {
 						buffer1[size1++] = '-';
 						v = -v2;
 					} else {
@@ -269,6 +273,10 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 						v = va_arg(args, unsigned long long);
 					else
 						v = va_arg(args, unsigned int);
+					if (subtype == 'h')
+						v &= 0xffff;
+					else if (subtype == 'i')
+						v &= 0xff;
 					if (flags & ALTERNATEFLAG) {
 						if (type == 'o') {
 							if (!preci || v)
