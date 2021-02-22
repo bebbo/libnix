@@ -246,7 +246,6 @@ int close(int d) {
  *
  * Located here since it's called from __exitstdio
  */
-asm("_pclose: .global _pclose");
 int fclose(FILE *stream) {
 	struct filenode *node;
 	int retval;
