@@ -21,6 +21,7 @@ extern void FreeVec(void *);
 static unsigned fill(struct FileInfoBlock * fib, STRPTR buffer, unsigned size) {
 	/* next + type + nameptr + name + \0 */
 	unsigned needed = 4 + 4 + 4 + strlen(fib->fib_FileName) + 1;
+	needed =  (needed + 1) & ~1;
 	if (needed > size)
 		return 0;
 
@@ -52,10 +53,13 @@ ExAll (BPTR lock, STRPTR buffer, LONG size, LONG type, struct ExAllControl *cont
 		if (fib == NULL) {
 			fib = fib1;
 			r = Examine(lock, fib);
-		} else {
-			fib = (fib == fib1) ? fib2 : fib1;
-			r = ExNext(lock, fib);
+			fib2->fib_DiskKey = fib->fib_DiskKey;
 		}
+		fib = (fib == fib1) ? fib2 : fib1;
+		r = ExNext(lock, fib);
+		ULONG key = fib->fib_DiskKey;
+		fib1->fib_DiskKey = key;
+		fib2->fib_DiskKey = key;
 		if (!r)
 			break;
 
@@ -69,8 +73,8 @@ ExAll (BPTR lock, STRPTR buffer, LONG size, LONG type, struct ExAllControl *cont
 		next = (struct ExAllData *)buffer;
 		if (ead != NULL) {
 			ead->ed_Next = next;
-			ead = next;
 		}
+		ead = next;
 		size -= needed;
 		buffer += needed;
 		++count;
