@@ -37,6 +37,10 @@ char *setlocale(int category, const char *name) {
 	struct Locale *vec[5];
 	char *s1, *s2, c;
 
+	// set defaults
+	__lconv.decimal_point = ".";
+	__lconv.thousands_sep = "";
+
 	if (string != NULL) /* Free string if possible */
 	{
 		free(string);
@@ -154,9 +158,6 @@ char *setlocale(int category, const char *name) {
 		struct Locale *locale = __localevec[LC_NUMERIC - 1];
 		__lconv.decimal_point = (char*) locale->loc_DecimalPoint;
 		__lconv.thousands_sep = (char*) locale->loc_GroupSeparator;
-	} else {
-		__lconv.decimal_point = ".";
-		__lconv.thousands_sep = "";
 	}
 	__decimalpoint = __lconv.decimal_point;
 
@@ -173,7 +174,6 @@ void __initlocale(void) {
 		if (setlocale(LC_ALL, "") != NULL) /* Set the default locale */
 			return;
 	}
-	exit(20);
 }
 
 void __exitlocale(void) {
