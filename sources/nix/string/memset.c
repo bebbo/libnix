@@ -76,16 +76,18 @@ void *memset(void *s, int _c, size_t _n) {
 			}
 			n &= (8 * sizeof(long) - 1);
 		}
-		m = n / sizeof(long);
+		m = n >> 2;
 		if (m) {
 			for (; m; --m) {
-				*--v.l = c;
+				__asm("move.l d0,-(a0)");
 			}
 			n &= sizeof(long) - 1;
 		}
+
 		while(n--) {
 			*--v.c = c;
 		}
+
 		return s;
 	}
 }
