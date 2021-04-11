@@ -5,10 +5,13 @@
 #include <stdlib.h>
 #include "stabs.h"
 
+extern struct ExecBase *SysBase;
+extern UWORD *__SaveSP;
+
+register UWORD *a7 __asm("sp");
+
 #if defined(__KICK13__) //|| 1
 #include <exec/execbase.h>
-
-extern struct ExecBase * SysBase;
 
 extern void * AllocVec(unsigned, int);
 extern void FreeVec(void *);
@@ -16,44 +19,39 @@ extern void FreeVec(void *);
 #pragma GCC push_options
 #pragma GCC optimize ("-Os")
 
-register ULONG * a7 __asm("sp");
-
 // keeps d0/d1/a0/a1 free for local use.
-static __attribute((noinline))  __entrypoint void __StackSwap(register struct StackSwapStruct * newStack asm("a2"), register struct ExecBase * SysBase asm("a6")) {
-	Forbid();
-
+void __stkswap(register struct StackSwapStruct * newStack asm("a2"), register struct ExecBase * SysBase asm("a6")) {
+	register UWORD * tmp, *upper asm("a1"), *sp;
 	struct Task * task = SysBase->ThisTask;
 
-	ULONG * lower = newStack->stk_Lower;
+	Forbid();
+
+	tmp = (UWORD *)newStack->stk_Lower;
 	newStack->stk_Lower = task->tc_SPLower;
-	task->tc_SPLower = lower;
+	task->tc_SPLower = tmp;
 
-	// copy stack frame with ret,a2,a6,ret,memmarker
-	ULONG * upper = (ULONG *)newStack->stk_Upper;
+	tmp = (UWORD *)newStack->stk_Upper;
 	newStack->stk_Upper = (ULONG)task->tc_SPUpper;
-	task->tc_SPUpper = upper;
+	task->tc_SPUpper = tmp;
 
-	ULONG * sp = newStack->stk_Pointer + 4;
-	newStack->stk_Pointer = (APTR)a7;
+	// copy stack
+	sp = (UWORD *)newStack->stk_Upper;
+	upper = tmp;
+	while (sp != a7)
+		*--upper = *--sp;
 
-	*--sp = a7[3];
-	*--sp = a7[2];
-	*--sp = a7[1];
-	*--sp = a7[0];
-
-	a7 = sp;
+	a7 = upper;
 
 	Permit();
 }
 
 // performs the push/pop of a2/a6
-void StackSwap(struct StackSwapStruct * newStack) {
-	__StackSwap(newStack, SysBase);
+__attribute((noinline)) void StackSwap(struct StackSwapStruct * newStack) {
+	__stkswap(newStack, SysBase);
 }
 #pragma GCC pop_options
 
 #endif
-
 
 /*
  * swapstack.c
@@ -61,16 +59,14 @@ void StackSwap(struct StackSwapStruct * newStack) {
  * A libnix startup module to swap to a new stack if the old one is not
  * big enough (minimum value set by the value of the __stack variable).
  *
- * WARNING!
- * Compile with -O3, or your Amiga will explode!
- *
  * Code derived from a stackswap module by Kriton Kyrimis (kyrimis@theseas.ntua.gr)
- * with some changes to work with the libnix startups (MF).
- * You use it at your own risk.
  *
- * Usage: Define some variable 'unsigned long __stack={desired size};'
- *	  somewhere in your code and link with this module.
- *	  The file stabs.h is in the headers directory of the libnix sources.
+ * Fixed by Bebbo.
+ *
+ * Usage: put this snippet into your main:
+extern void __stkinit(void);
+void * __x = __stkinit;
+unsigned long __stack = YOUR_STACK_SIZE;
  */
 
 extern unsigned long __stack;
@@ -79,76 +75,73 @@ void __request(const char *text);
 static struct StackSwapStruct stack;
 static char *newstack;
 
-void __stkinit(long a)
-{ APTR SysBase = *(APTR *)4;
-  register char *sp asm("sp");
-  ULONG size,needed=__stack;
-  struct Process *pr;
-  char *new;
+void __stkinit() {
+	ULONG size, needed = __stack;
+	struct Process *pr;
+	char *new;
+	register UWORD *upper asm("a2"), *to asm("a0"), *sp;
 
-  asm("":"=r"(sp)); /* touch sp to get compiler happy */
+	/* Determine original stack size */
+	pr = (struct Process*) FindTask(NULL);
 
-  /* Determine original stack size */
+	size = (char*) pr->pr_Task.tc_SPUpper - (char*) pr->pr_Task.tc_SPLower;
+	if (needed <= size)
+		return;
 
-  pr=(struct Process *)FindTask(NULL);
+	/* Round size to next long word */
+	needed = (needed + (sizeof(LONG) - 1)) & ~(sizeof(LONG) - 1);
 
-  size = (char *)pr->pr_Task.tc_SPUpper - (char *)pr->pr_Task.tc_SPLower;
+	/* Allocate new stack */
+	newstack = new = AllocVec(needed, MEMF_PUBLIC);
+	if (!new) {
+		__request("Couldn't allocate new stack!");
+		exit(RETURN_FAIL);
+	}
 
-  if (pr->pr_CLI) {
-    size = *(ULONG *)pr->pr_ReturnAddr;
-  }
+	/* Build new stack structure */
+	stack.stk_Lower = new;
+	stack.stk_Upper = (ULONG) (new + needed);
 
-  if (needed <= size)
-    return;
+	/* Copy required parts of old stack */
+	to = upper = (UWORD*) stack.stk_Upper;
+	sp = __SaveSP;
 
-  /* Round size to next long word */
-  needed = (needed+(sizeof(LONG)-1))&~(sizeof(LONG)-1);
+	while (sp != a7)
+		*--to = *--sp;
 
-  /* Allocate new stack */
-  newstack = new = AllocVec(needed,MEMF_PUBLIC);
-  if (!new) {
-    __request("Couldn't allocate new stack!");
-    exit(RETURN_FAIL);
-  }
+	stack.stk_Pointer = to;
 
-  /* Build new stack structure */
-  size=(char *)&a-sp+2*sizeof(ULONG);
-  stack.stk_Lower  =new;
-  stack.stk_Upper  =(ULONG)(new+=needed);
-  stack.stk_Pointer=(APTR)(new-=size);
+	/* Switch to new stack */
+	StackSwap(&stack);
 
-  /* Copy required parts of old stack */
-  CopyMem(sp,new,size);
-
-  /* Switch to new stack */
-  StackSwap(&stack);
+	__SaveSP += upper - (UWORD*) stack.stk_Upper;
 }
 
-void __stkexit(ULONG a)
-{ APTR SysBase = *(APTR *)4;
-  register char *sp asm("sp");
-  ULONG size;
-  char *new;
+void __stkexit() {
+	ULONG size;
+	register UWORD *upper asm("a2"), *to asm("a0"), *sp;
 
-  asm("":"=r"(sp)); /* touch sp to get compiler happy */
+	if (!newstack)
+		return;
 
-  if(!(new=newstack))
-    return;
+	/* Copy required parts of old stack */
+	to = upper = (UWORD*) stack.stk_Upper;
+	sp = __SaveSP;
 
-  /* Prepare old stack */
-  size=(char *)&a-sp+3*sizeof(ULONG);
-  stack.stk_Pointer=(APTR)((char *)stack.stk_Pointer-size);
+	while (sp != a7)
+		*--to = *--sp;
 
-  /* Copy required parts of current stack */
-  CopyMem(sp,stack.stk_Pointer,size);
+	stack.stk_Pointer = to;
 
-  /* Switch back to old stack */
-  StackSwap(&stack);
+	/* Switch back to old stack */
+	StackSwap(&stack);
 
-  /* And clean up */
-  FreeVec(new);
+	__SaveSP += upper - (UWORD*) stack.stk_Upper;
+
+	/* And clean up */
+	FreeVec(newstack);
 }
 
 /* The same priority as the detach module - you cannot use them both */
-ADD2INIT(__stkinit,-70);
-ADD2EXIT(__stkexit,-70);
+ADD2INIT(__stkinit, -70);
+ADD2EXIT(__stkexit, -70);
