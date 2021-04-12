@@ -83,10 +83,13 @@ void __stkinit() {
 
 	/* Determine original stack size */
 	pr = (struct Process*) FindTask(NULL);
-
+#if defined(__KICK13__)
+	pr->pr_Task.tc_SPUpper = __SaveSP + 6;
+#else
 	size = (char*) pr->pr_Task.tc_SPUpper - (char*) pr->pr_Task.tc_SPLower;
 	if (needed <= size)
 		return;
+#endif
 
 	/* Round size to next long word */
 	needed = (needed + (sizeof(LONG) - 1)) & ~(sizeof(LONG) - 1);
