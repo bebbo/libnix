@@ -32,7 +32,7 @@ void __initlibraries(void) {
 	struct lib * l;
 	short err = 0;
 	while ((l = *list++)) {
-		if ((l->base = OldOpenLibrary(l->name)))
+		if ((l->base = strstr(l->name, ".resource") ? OpenResource(l->name) : OldOpenLibrary(l->name)))
 			continue;
 		err = 1;
 	}
@@ -46,7 +46,8 @@ void __exitlibraries(void) {
 	while ((l = *list++)) {
 		struct Library *lb = l->base;
 		if (lb != NULL) {
-			CloseLibrary(lb);
+			if (!strstr(l->name, ".resource"))
+				CloseLibrary(lb);
 		}
 	}
 }
