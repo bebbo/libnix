@@ -21,6 +21,10 @@ asm(
 "	btst	#4,d0;"
 "	jeq	error;"
 );
+asm("fmove.l fpcr,d0");
+asm("and.w #65487,d0");
+asm("fmove.l d0,fpcr");
+
 #endif
 asm(
 "	rts;"
@@ -33,7 +37,7 @@ asm(
 "	jsr	_exit;"		/* dito */
 );
 
-ADD2INIT(__cpucheck,-80); /* Highest priority */
+ADD2INIT(__cpucheck,-79); /* Highest priority */
 
 #else
 
