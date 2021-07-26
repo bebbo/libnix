@@ -96,7 +96,7 @@ libm020bb32:
 
 libm881:
 	@mkdir -p $@
-	$(MAKE) one kind=$@ flags="-m68040"
+	$(MAKE) one kind=$@ flags="-m68020 -m68881 -mhard-float"
 
 libm020bb881:
 	@mkdir -p $@
@@ -203,10 +203,10 @@ libc: $(STARTUPS)
 rest: swapstack.o detach.o
 
 swapstack.o: $(root)/sources/misc/swapstack.c
-	$(CC) -c $(CFLAGS) $(flags) $^ -o $@ -fomit-frame-pointer
+	$(CC) -c -Os -fomit-frame-pointer $(flags) $^ -o $@
 
 detach.o: $(root)/sources/misc/detach.c
-	$(CC) -c $(CFLAGS) $(flags) $^ -o $@ -fomit-frame-pointer
+	$(CC) -c -Os -fomit-frame-pointer $(flags) $^ -o $@
 
 # build the lib base on $(lib), $(kind) and $(flags)
 lib$(libname).a: $(shell find $(root)/sources/$(lib)/* -name '*.c') $(stolen) $(shell find $(root)/sources/headers/* -name '*.h') $(root)/Makefile.gcc6
