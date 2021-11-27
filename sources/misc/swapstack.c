@@ -1,3 +1,4 @@
+#include <exec/execbase.h>
 #include <exec/memory.h>
 #include <dos/dosextens.h>
 #include <proto/exec.h>
@@ -10,11 +11,13 @@ extern UWORD *__SaveSP;
 
 register UWORD *a7 __asm("sp");
 
-#if defined(__KICK13__) //|| 1
-#include <exec/execbase.h>
+#if defined(__KICK13__)
 
 extern void * AllocVec(unsigned, int);
 extern void FreeVec(void *);
+#endif
+#if 1
+#define StackSwap __StackSwap
 
 #pragma GCC push_options
 #pragma GCC optimize ("-Os")
@@ -72,7 +75,7 @@ unsigned long __stack = YOUR_STACK_SIZE;
 extern unsigned long __stack;
 void __request(const char *text);
 
-static struct StackSwapStruct stack;
+static volatile struct StackSwapStruct stack;
 static char *newstack;
 
 void __stkinit() {
