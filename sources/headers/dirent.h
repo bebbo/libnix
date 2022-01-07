@@ -1,28 +1,28 @@
 #ifndef _HEADERS_DIRENT_H
 #define _HEADERS_DIRENT_H
 
-#include <dos/exall.h>
-#include <dos/dosextens.h>
-
 struct dirent {
-  ULONG d_fileno;
-  USHORT d_reclen;
-  UBYTE d_type;
-  USHORT d_namlen;
+  unsigned long  d_fileno;
+  unsigned short d_reclen;
+  unsigned char  d_type;
+  unsigned short d_namlen;
   char d_name[256];
 };
+
+struct ExAllControl;
+struct ExAllData;
 
 typedef struct _dirdesc {
   int dd_fd;
   struct dirent dd_ent;
-  BPTR d_lock;
-  ULONG d_count;
-  LONG d_more;
+  void * d_lock;
+  unsigned long d_count;
+  long   d_more;
   struct ExAllControl *d_eac;
   struct ExAllData *current;
   union {
+	unsigned fib;
     char ead[2048];
-    struct FileInfoBlock fib;
   } _dirun;
 } DIR;
 

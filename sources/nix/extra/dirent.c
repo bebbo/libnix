@@ -4,6 +4,9 @@
 #include <exec/memory.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
+#include <dos/exall.h>
+#include <dos/dosextens.h>
+
 #include <strsup.h>
 
 #ifdef __KICK13__
@@ -88,7 +91,7 @@ DIR* opendir(const char *dirname) {
 	DIR *dirp;
 
 	if ((dirp = (DIR*) AllocVec(sizeof(DIR), MEMF_PUBLIC | MEMF_CLEAR)) != NULL) {
-		if ((dirp->d_lock = (Lock((STRPTR )dirname, SHARED_LOCK))) != 0ul) {
+		if ((dirp->d_lock = (void *)(Lock((STRPTR )dirname, SHARED_LOCK))) != 0ul) {
 //			dirp->d_count = 0;
 			dirp->d_more = DOSTRUE;
 			if ((dirp->d_eac = AllocVec(sizeof(struct ExAllControl)
@@ -101,13 +104,13 @@ DIR* opendir(const char *dirname) {
 				dirp->d_eac->eac_MatchString=NULL;
 				dirp->d_eac->eac_MatchFunc=NULL;
 #endif
-				if (Examine(dirp->d_lock, &dirp->d_info)) {
-					if (dirp->d_info.fib_EntryType >= 0)
+				if (Examine((BPTR)dirp->d_lock, (struct FileInfoBlock *)&dirp->d_info)) {
+					if ( ((struct FileInfoBlock *)&dirp->d_info)->fib_EntryType >= 0)
 						return dirp;
 				}
 				FreeVec(dirp->d_eac);
 			}
-			UnLock(dirp->d_lock);
+			UnLock((BPTR)dirp->d_lock);
 		}
 		FreeVec(dirp);
 		dirp = NULL;
@@ -119,7 +122,7 @@ struct dirent* readdir(DIR *dirp) {
 	struct dirent *result;
 
 	if (!dirp->d_count && dirp->d_more != DOSFALSE) {
-		dirp->d_more = ExAll(dirp->d_lock, (APTR)&dirp->d_ead[0], sizeof(dirp->d_ead), ED_TYPE, dirp->d_eac);
+		dirp->d_more = ExAll((BPTR)dirp->d_lock, (APTR)&dirp->d_ead[0], sizeof(dirp->d_ead), ED_TYPE, dirp->d_eac);
 		dirp->current = (struct ExAllData*) &dirp->d_ead[0];
 		dirp->d_count = dirp->d_eac->eac_Entries;
 	}
@@ -142,7 +145,7 @@ void rewinddir(DIR *dirp) {
 #ifndef __KICK13__
 	if (dirp->d_more != DOSFALSE)
 		do {
-			dirp->d_more = ExAll(dirp->d_lock, (APTR)&dirp->d_ead[0], sizeof(dirp->d_ead), ED_TYPE, dirp->d_eac);
+			dirp->d_more = ExAll((BPTR)dirp->d_lock, (APTR)&dirp->d_ead[0], sizeof(dirp->d_ead), ED_TYPE, dirp->d_eac);
 		} while (dirp->d_more != DOSFALSE);
 #endif
 	dirp->d_count = 0;
@@ -153,7 +156,7 @@ void rewinddir(DIR *dirp) {
 int closedir(DIR *dirp) {
 	rewinddir(dirp);
 	FreeVec(dirp->d_eac);
-	UnLock(dirp->d_lock);
+	UnLock((BPTR)dirp->d_lock);
 	FreeVec(dirp);
 	return 0;
 }
