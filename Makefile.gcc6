@@ -32,7 +32,7 @@ CC = m68k-amigaos-gcc
 AR = m68k-amigaos-ar
 AS = m68k-amigaos-as
 
-VARIANTS_TO_BUILD = info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
+VARIANTS_TO_BUILD = info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881 libm060 libm060bb libm060bb32
 LIBS_TO_BUILD = libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack
 STARTUPS ?= lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
 
@@ -67,7 +67,7 @@ endif
 
 .PHONY: all one rest clean install install_one
 
-.PHONY: lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881 lc
+.PHONY: lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881 libm060 libm060bb libm060bb32 lc
 all: $(VARIANTS_TO_BUILD)
 
 # the desired kinds to be build
@@ -106,12 +106,24 @@ libm020bb32881:
 	@mkdir -p $@
 	$(MAKE) one kind=$@ flags="-fbaserel32 -m68020 -m68881 -mhard-float"
 
+libm060:
+	@mkdir -p $@
+	$(MAKE) one kind=$@ flags="-m68060"
+
+libm060bb:
+	@mkdir -p $@
+	$(MAKE) one kind=$@ flags="-fbaserel -m68060"
+
+libm060bb32:
+	@mkdir -p $@
+	$(MAKE) one kind=$@ flags="-fbaserel32 -m68060"
+
 # the libs to build for each kind
 one: $(LIBS_TO_BUILD)
 
 # install all kinds into the prefix
-.PHONY: install_lib install_libb install_libm020 install_libm020bb install_libm020bb32 install_libm881 install_libm020bb881 install_libm020bb32881
-install: install_lib install_libb install_libm020 install_libm020bb install_libm020bb32 install_libm881 install_libm020bb881 install_libm020bb32881
+.PHONY: install_lib install_libb install_libm020 install_libm020bb install_libm020bb32 install_libm881 install_libm020bb881 install_libm020bb32881 install_libm060 install_libm060bb install_libm060bb32 
+install: install_lib install_libb install_libm020 install_libm020bb install_libm020bb32 install_libm881 install_libm020bb881 install_libm020bb32881 install_libm060 install_libm060bb install_libm060bb32
 	
 install_lib:
 	$(MAKE) install_one kind=lib to=""
@@ -130,6 +142,12 @@ install_libm020bb881:
 	$(MAKE) install_one kind=libm020bb881 to="libb/libm020/libm881/"
 install_libm020bb32881:
 	$(MAKE) install_one kind=libm020bb32881 to="libb32/libm020/libm881/"
+install_libm060:
+	$(MAKE) install_one kind=libm060 to="libm060/"
+install_libm060bb:
+	$(MAKE) install_one kind=libm060bb to="libb/libm060/"
+install_libm060bb32:
+	$(MAKE) install_one kind=libm060bb32 to="libb32/libm060/"
 
 # install the files for the given $(kind) into $(to)
 install_one:
