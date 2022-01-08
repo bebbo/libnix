@@ -58,7 +58,7 @@ endif
 # extend CFLAGS on first invokation
 ifeq (,$(kind))
 CFLAGS ?= -Os -fomit-frame-pointer
-CFLAGS += -I$(root)/sources/headers -fno-builtin
+CFLAGS += -I$(root)/sources/headers -fno-builtin -ffast-math
 
 ifneq (,$(lc))
 CFLAGS += -D__libnix__
