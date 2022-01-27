@@ -43,7 +43,7 @@ void __stkswap(register struct StackSwapStruct * newStack asm("a2"), register st
 	while (sp != a7)
 		*--upper = *--sp;
 
-	a7 = upper;
+	task->tc_SPReg = a7 = upper;
 
 	Permit();
 }
