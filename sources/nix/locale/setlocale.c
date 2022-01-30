@@ -22,7 +22,7 @@ static unsigned char *ctype;
 extern char *__decimalpoint;
 
 /* for LC_TIME */
-extern long __gmtoffset;
+long __gmtoffset;
 //extern int __dstflag;
 
 struct lconv __lconv;
@@ -157,9 +157,9 @@ char *setlocale(int category, const char *name) {
 	if (__localevec[LC_NUMERIC - 1] != NULL) {
 		struct Locale *locale = __localevec[LC_NUMERIC - 1];
 		__lconv.decimal_point = (char*) locale->loc_DecimalPoint;
+		__decimalpoint = __lconv.decimal_point;
 		__lconv.thousands_sep = (char*) locale->loc_GroupSeparator;
 	}
-	__decimalpoint = __lconv.decimal_point;
 
 	if (__localevec[LC_TIME - 1] != NULL)
 		__gmtoffset = __localevec[LC_TIME - 1]->loc_GMTOffset;
