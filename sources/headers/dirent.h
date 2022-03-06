@@ -2,7 +2,10 @@
 #define _HEADERS_DIRENT_H
 
 struct dirent {
-  unsigned long  d_fileno;
+  union {
+    unsigned long  d_fileno;
+    unsigned long  d_ino;
+  };
   unsigned short d_reclen;
   unsigned char  d_type;
   unsigned short d_namlen;

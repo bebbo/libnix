@@ -91,7 +91,8 @@ DIR* opendir(const char *dirname) {
 	DIR *dirp;
 
 	if ((dirp = (DIR*) AllocVec(sizeof(DIR), MEMF_PUBLIC | MEMF_CLEAR)) != NULL) {
-		if ((dirp->d_lock = (void *)(Lock((STRPTR )dirname, SHARED_LOCK))) != 0ul) {
+		dirp->d_lock = (void *)Lock(dirname, SHARED_LOCK);
+		if (dirp->d_lock != 0ul) {
 //			dirp->d_count = 0;
 			dirp->d_more = DOSTRUE;
 			if ((dirp->d_eac = AllocVec(sizeof(struct ExAllControl)
