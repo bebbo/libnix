@@ -11,41 +11,36 @@ int system(const char *string) {
 		return -1;
 	}
 #ifndef __KICK13__
-	if (((struct Library *) DOSBase)->lib_Version >= 36) {
+	if (((struct Library*) DOSBase)->lib_Version >= 36) {
 		static struct TagItem notags[] = { { TAG_END, 0 } };
 		return SystemTagList((CONST_STRPTR )string, notags);
 	} else
 #endif
-		return (int) ~Execute((STRPTR )string, 0l, Output());
+		return (int) ~Execute((STRPTR )string, Input(), Output());
 }
 
-asm("_execvp: .global _execvp");
-int execv(const char *path, char * const argv[]) {
-	char * const * p;
-	char * cmd;
-	int r, len = strlen(path) + 1;
+int execvp(const char *file, char *const argv[]) {
+	return execv(file, argv);
+}
+int execv(const char *path, char *const argv[]) {
+	char *const*p;
+	char *cmd;
+
+	int len = 1 + strlen(path);
 	for (p = argv; *p; ++p) {
 		len += 3 + strlen(*p);
 	}
 	cmd = malloc(len);
 	strcpy(cmd, path);
 
-	for (p = argv; *p; ++p) {
+	if (*argv)
+	for (p = argv+1; *p; ++p) {
 		strcat(cmd, " \"");
 		strcat(cmd, *p);
 		strcat(cmd, "\"");
 	}
-
-	r = system(cmd);
-	free(cmd);
-
-	if (r >= 0)
-		exit(0);
-	return r;
+	return system(cmd);
 }
-
-//int execvp(const char *file, char *const argv[]) {
-//}
 
 int pipe(int pipefd[2]) {
 	return -1;
