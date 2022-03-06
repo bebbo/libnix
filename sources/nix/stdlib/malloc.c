@@ -12,6 +12,86 @@
 #include "stabs.h"
 #include "stdio.h"
 
+#if 0
+
+__attribute__((noinline)) void foo(void * p, int sz, int no, int na, int nz) {
+	printf("trashed mem at %p sz=%d alloc #%d damaged: before %d, behind %d\n", p, sz, no, na, nz);
+}
+__attribute__((noinline)) void faa(void * p) {
+	printf("invalid free%p\n", p);
+}
+#if 0
+#define N 256
+#define X (size + size)
+#else
+#define N 64
+#define X 0
+#endif
+
+#define ADD (4*2 + N)
+
+static int NO;
+
+
+void * malloc(size_t size) {
+	size = (size + 3) & ~3; // round up
+
+	// protect the memory
+	char * const p = (char *)AllocVec(size + X + ADD + N, MEMF_PUBLIC);
+
+	char * q = p;
+	// size
+	*(int*)q = size;
+	q += 4;
+	// no
+	*(int*)q = ++NO;
+	q += 4;
+	// 0 1 2 3 ... 255 before
+	for (int i = 0; i < N; ++i)
+		*q++ = i;
+	q += size;
+	// 255 254 253 ... 0 behind
+	for (int i = X + N; i > 0; --i)
+		*q++ = i;
+
+	return p + ADD;
+}
+
+void free(void * _p) {
+	if (!_p)
+		return;
+
+	if (1 & (long)_p) {
+		faa(_p);
+		return;
+	}
+
+
+	unsigned char * q = _p;
+	q -= ADD;
+	char * const p = q;
+	int size = *(int*)q;
+	q += 4;
+	int no = *(int*)q;
+	q += 4;
+	int bada = 0;
+	for (int i = 0; i < N; ++i)
+		if (*q++ != (unsigned char)i)
+			++bada;
+	q += size;
+
+	int badz = 0;
+	for (int i = X + N; i > 0; --i)
+		if (*q++ != (unsigned char)i)
+			++badz;
+
+	if (bada + badz)
+		foo(p, size, no, bada, badz);
+	else
+		FreeVec(p);
+}
+
+#else
 extern ULONG _MSTEP;
 
 struct MinList __memorylist; /* memorylist (empty): free needs also access */
@@ -24,6 +104,8 @@ void *malloc(size_t size)
 
   if ((int)size < 0)
 	  return 0;
+
+  size = (size + 3) & ~3;
 
   ObtainSemaphore(__memsema);
   node=__memorylist.mlh_Head;
@@ -62,6 +144,41 @@ void *malloc(size_t size)
   return a;
 }
 
+void free(void *ptr) {
+	struct MemHeader *a;
+
+	if (!ptr) /* What does that mean ????? */
+	{
+		return;
+	}
+
+	ObtainSemaphore(__memsema);
+//  printf("free      %08x: %8d\n", ptr, ((ULONG *)ptr)[-1]); fflush(stdout);
+
+	a = (struct MemHeader *) __memorylist.mlh_Head;
+	for (;;) {
+		if (((struct MinNode *) a)->mln_Succ == NULL) /* Is not in list ????? */
+		{
+			return;
+		}
+
+		if (ptr >= a->mh_Lower && ptr < a->mh_Upper) /* Entry found */
+			break;
+
+		a = (struct MemHeader *) ((struct MinNode *) a)->mln_Succ;
+	}
+
+
+  	Deallocate(a, (ULONG * )ptr - 1, ((ULONG * )ptr)[-1]);
+	if (a->mh_Free == (size_t)((char *) a->mh_Upper - (char *) a->mh_Lower)) /* All free ? */
+	{
+		Remove(&a->mh_Node);
+		FreeMem(a, (char * )a->mh_Upper - (char * )a);
+	}
+	ReleaseSemaphore(__memsema);
+}
+
+
 
 #define NEWLIST(l) ((l)->mlh_Head = (struct MinNode *)&(l)->mlh_Tail, \
                     (l)->mlh_Tail = NULL, \
@@ -83,3 +200,5 @@ void __exitmalloc(void)
 
 ADD2EXIT(__exitmalloc,-50);
 ADD2INIT(__initmalloc,-50);
+
+#endif
