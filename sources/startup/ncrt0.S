@@ -19,6 +19,7 @@ ThisTask    =    276
 		.globl _start
 		.globl	_exit
 		.globl	__exit
+		.globl	____exit
 		.globl ___main
 		.text
 
@@ -70,7 +71,7 @@ __exit: 	lea	___EXIT_LIST__+4,a2
 		jsr	a6@(_LVOReplyMsg:W)
 
 | leave - get return val, restore stackptr
-
+____exit:
 todos:		movel	sp@(4:W),d0
 		movel	___SaveSP,sp
 		rts
