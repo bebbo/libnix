@@ -295,4 +295,13 @@ extern __stdargs StdFileDes *_lx_fhfromfd(int fd);
 #define	FILENAME_MAX	1024
 #endif
 
+// define inlines for the unlocked stuff
+#if __MISC_VISIBLE || __POSIX_VISIBLE
+static inline __stdargs int	getc_unlocked (FILE *f) { return getc(f);}
+static inline __stdargs int	getchar_unlocked (void) { return getchar();}
+static inline __stdargs int	putc_unlocked (int c, FILE *f) { return putc(c, f);}
+static inline __stdargs int	putchar_unlocked (int c) { return putchar(c);}
+#endif
+
+
 #endif /* _STDIO_H */
