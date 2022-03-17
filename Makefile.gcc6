@@ -233,7 +233,9 @@ lib$(libname).a: $(shell find $(root)/sources/$(lib)/* -name '*.c') $(stolen) $(
 	@touch -t 0001010000 $(lib)/stamp && if [ -e $@ ]; then touch -r $@ $(lib)/stamp; fi
 	@if [ "$$(find $(root)/sources/headers/* -newer $(lib)/stamp)" != "" ]; then rm -f $(lib)/*.o $@; touch -t 0001010000 $(lib)/stamp; fi
 	@if [ "$$(find $(root)/Makefile.gcc6 -newer $(lib)/stamp)" != "" ]; then rm -f $(lib)/*.o $@; touch -t 0001010000 $(lib)/stamp; fi
-	@cd $(lib) && files="$$(find $^ -name '*.c' -newer stamp)" && echo "$(CC) -c $(CFLAGS) $(flags) $$files" && $(CC) -c $(CFLAGS) $(flags) $$files 
+	@cd $(lib) && files="$$(find $^ -name '*.c' -newer stamp)" && echo "$(CC) -c $(CFLAGS) $(flags) $$files" && \
+	$(CC) -c $(CFLAGS) $(flags) $$files && \
+	$(CC) -c $(CFLAGS) $(flags) -fomit-frame-pointer $(root)/sources/misc/swapstack.c
 	@#echo archive $(kind)/$@
 	@$(AR) rcs $@ $$(find ./$(lib)/* -name '*.o' -newer $(lib)/stamp)
 
