@@ -27,7 +27,7 @@ void __stkswap(register struct StackSwapStruct * newStack asm("a2"), register st
 	register UWORD * tmp, *upper asm("a1"), *sp;
 	struct Task * task = SysBase->ThisTask;
 
-	Forbid();
+	Disable();
 
 	tmp = (UWORD *)newStack->stk_Lower;
 	newStack->stk_Lower = task->tc_SPLower;
@@ -45,7 +45,7 @@ void __stkswap(register struct StackSwapStruct * newStack asm("a2"), register st
 
 	task->tc_SPReg = a7 = upper;
 
-	Permit();
+	Enable();
 }
 
 // performs the push/pop of a2/a6
