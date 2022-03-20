@@ -1,6 +1,4 @@
 asm(
-"		.globl	_div;"
-"		.globl	_ldiv;"
 "		.globl	___modsi3;"
 "		.globl	___divsi3;"
 
