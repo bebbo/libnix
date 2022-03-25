@@ -464,7 +464,6 @@ getopt (int argc, char *const argv[], const char *optstring)
 }
 
 #ifdef __amiga__
-getopt_long_only
 asm("_getopt_long_only: .globl _getopt_long_only\n");
 #endif
 int
