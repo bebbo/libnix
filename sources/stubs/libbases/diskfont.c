@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,8 +7,15 @@ extern "C" {
 #if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* DiskfontBase = 0;
+void ** __getDiskfontBase() { return &DiskfontBase; }
+static void * __init[2] = { __getDiskfontBase, "diskfont.library"};
+ADD2LIB(__init);
+#else
 void* DiskfontBase[2] = { 0, "diskfont.library" };
 ADD2LIB(DiskfontBase);
+#endif
 
 #elif defined (__AMIGAOS4__)
 

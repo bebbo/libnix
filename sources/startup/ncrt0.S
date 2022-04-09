@@ -122,7 +122,6 @@ ___main:
 .comm		___env,4
 .lcomm		cleanupflag,4
 
-.ifdef __elf__
 	.globl	___LIB_LIST__
 	.globl	___INIT_LIST__
 	.globl	___EXIT_LIST__
@@ -148,5 +147,4 @@ ___CTOR_LIST__:
 .section	.list___DTOR_LIST__,"aw"
 ___DTOR_LIST__:
 		.long 0
-.endif
 

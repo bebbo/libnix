@@ -1,14 +1,21 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#if 0 && defined (__libnix__)
+#if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* RamdriveDevice = 0;
+void ** __getRamdriveDevice() { return &RamdriveDevice; }
+static void * __init[2] = { __getRamdriveDevice, "ramdrive.device"};
+ADD2LIB(__init);
+#else
 void* RamdriveDevice[2] = { 0, "ramdrive.device" };
 ADD2LIB(RamdriveDevice);
+#endif
 
 #elif defined (__AMIGAOS4__)
 

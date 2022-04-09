@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,8 +7,15 @@ extern "C" {
 #if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* WorkbenchBase = 0;
+void ** __getWorkbenchBase() { return &WorkbenchBase; }
+static void * __init[2] = { __getWorkbenchBase, "workbench.library"};
+ADD2LIB(__init);
+#else
 void* WorkbenchBase[2] = { 0, "workbench.library" };
 ADD2LIB(WorkbenchBase);
+#endif
 
 #elif defined (__AMIGAOS4__)
 

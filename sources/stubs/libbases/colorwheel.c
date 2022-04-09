@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,8 +7,15 @@ extern "C" {
 #if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* ColorWheelBase = 0;
+void ** __getColorWheelBase() { return &ColorWheelBase; }
+static void * __init[2] = { __getColorWheelBase, "colorwheel.library"};
+ADD2LIB(__init);
+#else
 void* ColorWheelBase[2] = { 0, "colorwheel.library" };
 ADD2LIB(ColorWheelBase);
+#endif
 
 #elif defined (__AMIGAOS4__)
 

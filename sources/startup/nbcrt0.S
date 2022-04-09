@@ -61,7 +61,7 @@ fromWB: 	lea	a3@(pr_MsgPort:W),a0
 
 | execute all init functions then call main
 
-fromCLI:	lea	a4@(___INIT_LIST__:W),a2
+fromCLI:	lea	___INIT_LIST__,a2
 		addqw	#4,a2
 		moveql	#-1,d2
 		jbsr	callfuncs
@@ -74,7 +74,7 @@ fromCLI:	lea	a4@(___INIT_LIST__:W),a2
 | exit() entry - execute all exit functions, reply wbmsg
 
 _exit:
-__exit: 	lea	a4@(___EXIT_LIST__:W),a2
+__exit: 	lea	___EXIT_LIST__,a2
 		addqw	#4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
@@ -142,3 +142,29 @@ _geta4: 	lea	___a4_init,a4
 .comm		___argv,4
 .comm		___env,4
 .lcomm		cleanupflag,4
+
+	.globl	___LIB_LIST__
+	.globl	___INIT_LIST__
+	.globl	___EXIT_LIST__
+	.globl	___CTOR_LIST__
+	.globl	___DTOR_LIST__
+
+.section	.list___LIB_LIST__,"aw"
+___LIB_LIST__:
+		.long ___initlibraries
+
+.section	.list___INIT_LIST__,"aw"
+___INIT_LIST__:
+		.long 0
+
+.section	.list___EXIT_LIST__,"aw"
+___EXIT_LIST__:
+		.long 0
+
+.section	.list___CTOR_LIST__,"aw"
+___CTOR_LIST__:
+		.long ___initcpp
+
+.section	.list___DTOR_LIST__,"aw"
+___DTOR_LIST__:
+		.long 0

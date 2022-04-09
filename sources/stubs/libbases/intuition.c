@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,8 +7,15 @@ extern "C" {
 #if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* IntuitionBase = 0;
+void ** __getIntuitionBase() { return &IntuitionBase; }
+static void * __init[2] = { __getIntuitionBase, "intuition.library"};
+ADD2LIB(__init);
+#else
 void* IntuitionBase[2] = { 0, "intuition.library" };
 ADD2LIB(IntuitionBase);
+#endif
 
 #elif defined (__AMIGAOS4__)
 

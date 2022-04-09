@@ -1,14 +1,21 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#if 0 && defined (__libnix__)
+#if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* InputBase = 0;
+void ** __getInputBase() { return &InputBase; }
+static void * __init[2] = { __getInputBase, "input.device"};
+ADD2LIB(__init);
+#else
 void* InputBase[2] = { 0, "input.device" };
 ADD2LIB(InputBase);
+#endif
 
 #elif defined (__AMIGAOS4__)
 

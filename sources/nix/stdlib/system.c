@@ -18,10 +18,12 @@ int system(const char *string) {
 #endif
 		return (int) ~Execute((STRPTR )string, Input(), Output());
 }
-
+#if 0
 int execvp(const char *file, char *const argv[]) {
 	return execv(file, argv);
 }
+#endif
+asm("_execvp: .globl _execvp\n");
 int execv(const char *path, char *const argv[]) {
 	char *const*p;
 	char *cmd;

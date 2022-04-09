@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,8 +7,15 @@ extern "C" {
 #if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* BattClockBase = 0;
+void ** __getBattClockBase() { return &BattClockBase; }
+static void * __init[2] = { __getBattClockBase, "battclock.resource"};
+ADD2LIB(__init);
+#else
 void* BattClockBase[2] = { 0, "battclock.resource" };
 ADD2LIB(BattClockBase);
+#endif
 
 #elif defined (__AMIGAOS4__)
 

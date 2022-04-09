@@ -102,7 +102,7 @@ no_reloc:	lea	a4@(0x7ffe:L),a4
 
 | call main() - push args onto stack
 
-		lea	a4@(___INIT_LIST__:L),a2
+		lea	___INIT_LIST__,a2
 		addqw	#4,a2
 		moveql	#-1,d2
 		jbsr	callfuncs
@@ -116,7 +116,7 @@ no_reloc:	lea	a4@(0x7ffe:L),a4
 
 _exit:
 __exit:
-	 	lea	a4@(___EXIT_LIST__:L),a2
+	 	lea	___EXIT_LIST__,a2
 		addqw	#4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
@@ -190,3 +190,29 @@ oldpri: 	movel	a3@+,d0
 .comm		___argv,4
 .comm		___env,4
 .lcomm		cleanupflag,4
+
+	.globl	___LIB_LIST__
+	.globl	___INIT_LIST__
+	.globl	___EXIT_LIST__
+	.globl	___CTOR_LIST___
+	.globl	___DTOR_LIST__
+
+.section	.list___LIB_LIST__,"aw"
+___LIB_LIST__:
+		.long ___initlibraries
+
+.section	.list___INIT_LIST__,"aw"
+___INIT_LIST__:
+		.long 0
+
+.section	.list___EXIT_LIST__,"aw"
+___EXIT_LIST__:
+		.long 0
+
+.section	.list___CTOR_LIST__,"aw"
+___CTOR_LIST__:
+		.long ___initcpp
+
+.section	.list___DTOR_LIST__,"aw"
+___DTOR_LIST__:
+		.long 0

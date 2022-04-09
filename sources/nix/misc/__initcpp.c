@@ -2,8 +2,8 @@
 
 typedef void (*func_ptr) (void);
 
-extern func_ptr __CTOR_LIST__[];
-extern func_ptr __DTOR_LIST__[];
+extern __far func_ptr __CTOR_LIST__[];
+extern __far func_ptr __DTOR_LIST__[];
 
 void __initcpp() {
   func_ptr *p0 = __CTOR_LIST__ + 1;

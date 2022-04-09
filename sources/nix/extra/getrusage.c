@@ -19,8 +19,6 @@ void __inittimer()
   timer(initclock);
 }
 
-ADD2INIT(__inittimer,1);
-
 int getrusage(int who, struct rusage *rusage)
 {
   static struct rusage r0 =
@@ -50,3 +48,5 @@ int getrusage(int who, struct rusage *rusage)
   }
   return status;
 }
+
+ADD2INIT(__inittimer,1);

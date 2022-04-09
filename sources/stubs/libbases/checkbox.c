@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,8 +7,15 @@ extern "C" {
 #if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* CheckBoxBase = 0;
+void ** __getCheckBoxBase() { return &CheckBoxBase; }
+static void * __init[2] = { __getCheckBoxBase, "checkbox.library"};
+ADD2LIB(__init);
+#else
 void* CheckBoxBase[2] = { 0, "checkbox.library" };
 ADD2LIB(CheckBoxBase);
+#endif
 
 #elif defined (__AMIGAOS4__)
 

@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,8 +7,15 @@ extern "C" {
 #if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* PotgoBase = 0;
+void ** __getPotgoBase() { return &PotgoBase; }
+static void * __init[2] = { __getPotgoBase, "potgo.resource"};
+ADD2LIB(__init);
+#else
 void* PotgoBase[2] = { 0, "potgo.resource" };
 ADD2LIB(PotgoBase);
+#endif
 
 #elif defined (__AMIGAOS4__)
 

@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11)! Do not edit! */
+/* Automatically generated header (sfdc 1.11d)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,8 +7,15 @@ extern "C" {
 #if defined (__libnix__)
 
 #include <stabs.h>
+#ifdef __baserel__
+void* LabelBase = 0;
+void ** __getLabelBase() { return &LabelBase; }
+static void * __init[2] = { __getLabelBase, "label.library"};
+ADD2LIB(__init);
+#else
 void* LabelBase[2] = { 0, "label.library" };
 ADD2LIB(LabelBase);
+#endif
 
 #elif defined (__AMIGAOS4__)
 
