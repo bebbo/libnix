@@ -8,7 +8,7 @@ struct dirent {
   };
   unsigned short d_reclen;
   unsigned char  d_type;
-  unsigned short d_namlen;
+  unsigned char  d_namlen;
   char d_name[256];
 };
 
