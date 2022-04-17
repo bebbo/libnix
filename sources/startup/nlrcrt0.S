@@ -194,7 +194,7 @@ oldpri: 	movel	a3@+,d0
 	.globl	___LIB_LIST__
 	.globl	___INIT_LIST__
 	.globl	___EXIT_LIST__
-	.globl	___CTOR_LIST___
+	.globl	___CTOR_LIST__
 	.globl	___DTOR_LIST__
 
 .section	.list___LIB_LIST__,"aw"

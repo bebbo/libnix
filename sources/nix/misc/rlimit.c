@@ -5,6 +5,6 @@ __stdargs int getrlimit(int resource, struct rlimit *rlim) {
 	if (!rlim)
 		return EFAULT;
 
-	rlim->rlim_cur = rlim->rlim_max = (unsigned)-1;
+	rlim->rlim_cur = rlim->rlim_max = RLIM_INFINITY;
 	return 0;
 }
