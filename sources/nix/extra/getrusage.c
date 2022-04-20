@@ -21,13 +21,10 @@ void __inittimer()
 
 int getrusage(int who, struct rusage *rusage)
 {
-  static struct rusage r0 =
-    { { 0, 0 }, { 0, 0 } };
-  long clock[2];
-  int status = 0;
-
+  if (rusage)
   switch(who) {
-    case RUSAGE_SELF:
+    case RUSAGE_SELF: {
+   	  long * clock = &rusage->ru_utime.tv_sec;
       timer(clock);
       clock[0] -= initclock[0];
       clock[1] -= initclock[1];
@@ -35,18 +32,19 @@ int getrusage(int who, struct rusage *rusage)
         clock[1] += 1000000;
         clock[0] --;
       }
-      memcpy(rusage,&r0,sizeof(struct rusage));
-      rusage->ru_utime.tv_sec = clock[0];
-      rusage->ru_utime.tv_usec = clock[1];
-      break;
+    }
+      rusage->ru_stime.tv_sec = 0;
+      rusage->ru_stime.tv_usec = 0;
+      return 0;
     case RUSAGE_CHILDREN:
-      memcpy(rusage,&r0,sizeof(struct rusage));
-      break;
-    default:
-      errno = EINVAL;
-      status = -1;
+        rusage->ru_utime.tv_sec = 0;
+        rusage->ru_utime.tv_usec = 0;
+        rusage->ru_stime.tv_sec = 0;
+        rusage->ru_stime.tv_usec = 0;
+      return 0;
   }
-  return status;
+  errno = EINVAL;
+  return -1;
 }
 
 ADD2INIT(__inittimer,1);
