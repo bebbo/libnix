@@ -49,7 +49,7 @@ AR = m68k-elf-ar
 AS = m68k-elf-as
 
 TGT = --defsym __elf__=1
-VARIANTS_TO_BUILD = info libm020
+VARIANTS_TO_BUILD ?= info libm020
 LIBS_TO_BUILD = libc libm
 STARTUPS ?= lib/ncrt0.o lib/xcrt0.o
 
