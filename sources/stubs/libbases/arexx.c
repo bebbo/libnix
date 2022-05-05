@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* ARexxBase = 0;
 void ** __getARexxBase() { return &ARexxBase; }
-static void * __init[2] = { __getARexxBase, "arexx.library"};
+static void * const __init[2] = { __getARexxBase, "arexx.library"};
 ADD2LIB(__init);
 #else
 void* ARexxBase[2] = { 0, "arexx.library" };

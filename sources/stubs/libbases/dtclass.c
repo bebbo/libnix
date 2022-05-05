@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* DTClassBase = 0;
 void ** __getDTClassBase() { return &DTClassBase; }
-static void * __init[2] = { __getDTClassBase, "dtclass.library"};
+static void * const __init[2] = { __getDTClassBase, "dtclass.library"};
 ADD2LIB(__init);
 #else
 void* DTClassBase[2] = { 0, "dtclass.library" };

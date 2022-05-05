@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* IntegerBase = 0;
 void ** __getIntegerBase() { return &IntegerBase; }
-static void * __init[2] = { __getIntegerBase, "integer.library"};
+static void * const __init[2] = { __getIntegerBase, "integer.library"};
 ADD2LIB(__init);
 #else
 void* IntegerBase[2] = { 0, "integer.library" };

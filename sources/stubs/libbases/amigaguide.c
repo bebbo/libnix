@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* AmigaGuideBase = 0;
 void ** __getAmigaGuideBase() { return &AmigaGuideBase; }
-static void * __init[2] = { __getAmigaGuideBase, "amigaguide.library"};
+static void * const __init[2] = { __getAmigaGuideBase, "amigaguide.library"};
 ADD2LIB(__init);
 #else
 void* AmigaGuideBase[2] = { 0, "amigaguide.library" };

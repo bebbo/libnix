@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* IFFParseBase = 0;
 void ** __getIFFParseBase() { return &IFFParseBase; }
-static void * __init[2] = { __getIFFParseBase, "iffparse.library"};
+static void * const __init[2] = { __getIFFParseBase, "iffparse.library"};
 ADD2LIB(__init);
 #else
 void* IFFParseBase[2] = { 0, "iffparse.library" };

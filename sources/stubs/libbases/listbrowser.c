@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* ListBrowserBase = 0;
 void ** __getListBrowserBase() { return &ListBrowserBase; }
-static void * __init[2] = { __getListBrowserBase, "listbrowser.library"};
+static void * const __init[2] = { __getListBrowserBase, "listbrowser.library"};
 ADD2LIB(__init);
 #else
 void* ListBrowserBase[2] = { 0, "listbrowser.library" };

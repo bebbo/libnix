@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* PaletteBase = 0;
 void ** __getPaletteBase() { return &PaletteBase; }
-static void * __init[2] = { __getPaletteBase, "palette.library"};
+static void * const __init[2] = { __getPaletteBase, "palette.library"};
 ADD2LIB(__init);
 #else
 void* PaletteBase[2] = { 0, "palette.library" };

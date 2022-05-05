@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* NVBase = 0;
 void ** __getNVBase() { return &NVBase; }
-static void * __init[2] = { __getNVBase, "nonvolatile.library"};
+static void * const __init[2] = { __getNVBase, "nonvolatile.library"};
 ADD2LIB(__init);
 #else
 void* NVBase[2] = { 0, "nonvolatile.library" };

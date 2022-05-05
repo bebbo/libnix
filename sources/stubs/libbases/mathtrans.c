@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* MathTransBase = 0;
 void ** __getMathTransBase() { return &MathTransBase; }
-static void * __init[2] = { __getMathTransBase, "mathtrans.library"};
+static void * const __init[2] = { __getMathTransBase, "mathtrans.library"};
 ADD2LIB(__init);
 #else
 void* MathTransBase[2] = { 0, "mathtrans.library" };

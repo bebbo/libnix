@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* LocaleBase = 0;
 void ** __getLocaleBase() { return &LocaleBase; }
-static void * __init[2] = { __getLocaleBase, "locale.library"};
+static void * const __init[2] = { __getLocaleBase, "locale.library"};
 ADD2LIB(__init);
 #else
 void* LocaleBase[2] = { 0, "locale.library" };

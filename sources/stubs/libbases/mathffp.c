@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* MathBase = 0;
 void ** __getMathBase() { return &MathBase; }
-static void * __init[2] = { __getMathBase, "mathffp.library"};
+static void * const __init[2] = { __getMathBase, "mathffp.library"};
 ADD2LIB(__init);
 #else
 void* MathBase[2] = { 0, "mathffp.library" };

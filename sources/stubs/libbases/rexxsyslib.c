@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* RexxSysBase = 0;
 void ** __getRexxSysBase() { return &RexxSysBase; }
-static void * __init[2] = { __getRexxSysBase, "rexxsyslib.library"};
+static void * const __init[2] = { __getRexxSysBase, "rexxsyslib.library"};
 ADD2LIB(__init);
 #else
 void* RexxSysBase[2] = { 0, "rexxsyslib.library" };

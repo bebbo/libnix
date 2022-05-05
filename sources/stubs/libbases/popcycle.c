@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* PopCycleBase = 0;
 void ** __getPopCycleBase() { return &PopCycleBase; }
-static void * __init[2] = { __getPopCycleBase, "popcycle.library"};
+static void * const __init[2] = { __getPopCycleBase, "popcycle.library"};
 ADD2LIB(__init);
 #else
 void* PopCycleBase[2] = { 0, "popcycle.library" };

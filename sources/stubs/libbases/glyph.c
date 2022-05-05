@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* GlyphBase = 0;
 void ** __getGlyphBase() { return &GlyphBase; }
-static void * __init[2] = { __getGlyphBase, "glyph.library"};
+static void * const __init[2] = { __getGlyphBase, "glyph.library"};
 ADD2LIB(__init);
 #else
 void* GlyphBase[2] = { 0, "glyph.library" };

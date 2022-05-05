@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* CxBase = 0;
 void ** __getCxBase() { return &CxBase; }
-static void * __init[2] = { __getCxBase, "commodities.library"};
+static void * const __init[2] = { __getCxBase, "commodities.library"};
 ADD2LIB(__init);
 #else
 void* CxBase[2] = { 0, "commodities.library" };

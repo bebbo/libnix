@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* TranslatorBase = 0;
 void ** __getTranslatorBase() { return &TranslatorBase; }
-static void * __init[2] = { __getTranslatorBase, "translator.library"};
+static void * const __init[2] = { __getTranslatorBase, "translator.library"};
 ADD2LIB(__init);
 #else
 void* TranslatorBase[2] = { 0, "translator.library" };

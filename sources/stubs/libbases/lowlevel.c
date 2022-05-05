@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* LowLevelBase = 0;
 void ** __getLowLevelBase() { return &LowLevelBase; }
-static void * __init[2] = { __getLowLevelBase, "lowlevel.library"};
+static void * const __init[2] = { __getLowLevelBase, "lowlevel.library"};
 ADD2LIB(__init);
 #else
 void* LowLevelBase[2] = { 0, "lowlevel.library" };

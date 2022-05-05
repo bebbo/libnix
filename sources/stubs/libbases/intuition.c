@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* IntuitionBase = 0;
 void ** __getIntuitionBase() { return &IntuitionBase; }
-static void * __init[2] = { __getIntuitionBase, "intuition.library"};
+static void * const __init[2] = { __getIntuitionBase, "intuition.library"};
 ADD2LIB(__init);
 #else
 void* IntuitionBase[2] = { 0, "intuition.library" };

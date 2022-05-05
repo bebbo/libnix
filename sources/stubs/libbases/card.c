@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* CardResource = 0;
 void ** __getCardResource() { return &CardResource; }
-static void * __init[2] = { __getCardResource, "card.resource"};
+static void * const __init[2] = { __getCardResource, "card.resource"};
 ADD2LIB(__init);
 #else
 void* CardResource[2] = { 0, "card.resource" };

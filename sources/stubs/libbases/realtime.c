@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* RealTimeBase = 0;
 void ** __getRealTimeBase() { return &RealTimeBase; }
-static void * __init[2] = { __getRealTimeBase, "realtime.library"};
+static void * const __init[2] = { __getRealTimeBase, "realtime.library"};
 ADD2LIB(__init);
 #else
 void* RealTimeBase[2] = { 0, "realtime.library" };

@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* PotgoBase = 0;
 void ** __getPotgoBase() { return &PotgoBase; }
-static void * __init[2] = { __getPotgoBase, "potgo.resource"};
+static void * const __init[2] = { __getPotgoBase, "potgo.resource"};
 ADD2LIB(__init);
 #else
 void* PotgoBase[2] = { 0, "potgo.resource" };

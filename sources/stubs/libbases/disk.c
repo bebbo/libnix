@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* DiskBase = 0;
 void ** __getDiskBase() { return &DiskBase; }
-static void * __init[2] = { __getDiskBase, "disk.resource"};
+static void * const __init[2] = { __getDiskBase, "disk.resource"};
 ADD2LIB(__init);
 #else
 void* DiskBase[2] = { 0, "disk.resource" };

@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* SpaceBase = 0;
 void ** __getSpaceBase() { return &SpaceBase; }
-static void * __init[2] = { __getSpaceBase, "space.library"};
+static void * const __init[2] = { __getSpaceBase, "space.library"};
 ADD2LIB(__init);
 #else
 void* SpaceBase[2] = { 0, "space.library" };

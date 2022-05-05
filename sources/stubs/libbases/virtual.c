@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* VirtualBase = 0;
 void ** __getVirtualBase() { return &VirtualBase; }
-static void * __init[2] = { __getVirtualBase, "virtual.library"};
+static void * const __init[2] = { __getVirtualBase, "virtual.library"};
 ADD2LIB(__init);
 #else
 void* VirtualBase[2] = { 0, "virtual.library" };

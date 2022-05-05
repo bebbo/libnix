@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* TextFieldBase = 0;
 void ** __getTextFieldBase() { return &TextFieldBase; }
-static void * __init[2] = { __getTextFieldBase, "texteditor.library"};
+static void * const __init[2] = { __getTextFieldBase, "texteditor.library"};
 ADD2LIB(__init);
 #else
 void* TextFieldBase[2] = { 0, "texteditor.library" };

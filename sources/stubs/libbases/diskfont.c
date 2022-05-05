@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* DiskfontBase = 0;
 void ** __getDiskfontBase() { return &DiskfontBase; }
-static void * __init[2] = { __getDiskfontBase, "diskfont.library"};
+static void * const __init[2] = { __getDiskfontBase, "diskfont.library"};
 ADD2LIB(__init);
 #else
 void* DiskfontBase[2] = { 0, "diskfont.library" };

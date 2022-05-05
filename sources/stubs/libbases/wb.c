@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* WorkbenchBase = 0;
 void ** __getWorkbenchBase() { return &WorkbenchBase; }
-static void * __init[2] = { __getWorkbenchBase, "workbench.library"};
+static void * const __init[2] = { __getWorkbenchBase, "workbench.library"};
 ADD2LIB(__init);
 #else
 void* WorkbenchBase[2] = { 0, "workbench.library" };

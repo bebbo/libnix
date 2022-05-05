@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* IconBase = 0;
 void ** __getIconBase() { return &IconBase; }
-static void * __init[2] = { __getIconBase, "icon.library"};
+static void * const __init[2] = { __getIconBase, "icon.library"};
 ADD2LIB(__init);
 #else
 void* IconBase[2] = { 0, "icon.library" };

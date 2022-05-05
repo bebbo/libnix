@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* LabelBase = 0;
 void ** __getLabelBase() { return &LabelBase; }
-static void * __init[2] = { __getLabelBase, "label.library"};
+static void * const __init[2] = { __getLabelBase, "label.library"};
 ADD2LIB(__init);
 #else
 void* LabelBase[2] = { 0, "label.library" };

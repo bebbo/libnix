@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* DOSBase = 0;
 void ** __getDOSBase() { return &DOSBase; }
-static void * __init[2] = { __getDOSBase, "dos.library"};
+static void * const __init[2] = { __getDOSBase, "dos.library"};
 ADD2LIB(__init);
 #else
 void* DOSBase[2] = { 0, "dos.library" };

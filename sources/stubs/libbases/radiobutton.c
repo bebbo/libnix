@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* RadioButtonBase = 0;
 void ** __getRadioButtonBase() { return &RadioButtonBase; }
-static void * __init[2] = { __getRadioButtonBase, "radiobutton.library"};
+static void * const __init[2] = { __getRadioButtonBase, "radiobutton.library"};
 ADD2LIB(__init);
 #else
 void* RadioButtonBase[2] = { 0, "radiobutton.library" };

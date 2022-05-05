@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* MathIeeeDoubBasBase = 0;
 void ** __getMathIeeeDoubBasBase() { return &MathIeeeDoubBasBase; }
-static void * __init[2] = { __getMathIeeeDoubBasBase, "mathieeedoubbas.library"};
+static void * const __init[2] = { __getMathIeeeDoubBasBase, "mathieeedoubbas.library"};
 ADD2LIB(__init);
 #else
 void* MathIeeeDoubBasBase[2] = { 0, "mathieeedoubbas.library" };

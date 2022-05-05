@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* SliderBase = 0;
 void ** __getSliderBase() { return &SliderBase; }
-static void * __init[2] = { __getSliderBase, "slider.library"};
+static void * const __init[2] = { __getSliderBase, "slider.library"};
 ADD2LIB(__init);
 #else
 void* SliderBase[2] = { 0, "slider.library" };

@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* BattMemBase = 0;
 void ** __getBattMemBase() { return &BattMemBase; }
-static void * __init[2] = { __getBattMemBase, "battmem.resource"};
+static void * const __init[2] = { __getBattMemBase, "battmem.resource"};
 ADD2LIB(__init);
 #else
 void* BattMemBase[2] = { 0, "battmem.resource" };

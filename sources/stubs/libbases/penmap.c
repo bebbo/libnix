@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* PenMapBase = 0;
 void ** __getPenMapBase() { return &PenMapBase; }
-static void * __init[2] = { __getPenMapBase, "penmap.library"};
+static void * const __init[2] = { __getPenMapBase, "penmap.library"};
 ADD2LIB(__init);
 #else
 void* PenMapBase[2] = { 0, "penmap.library" };

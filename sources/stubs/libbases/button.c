@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* ButtonBase = 0;
 void ** __getButtonBase() { return &ButtonBase; }
-static void * __init[2] = { __getButtonBase, "button.library"};
+static void * const __init[2] = { __getButtonBase, "button.library"};
 ADD2LIB(__init);
 #else
 void* ButtonBase[2] = { 0, "button.library" };

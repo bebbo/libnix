@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* BattClockBase = 0;
 void ** __getBattClockBase() { return &BattClockBase; }
-static void * __init[2] = { __getBattClockBase, "battclock.resource"};
+static void * const __init[2] = { __getBattClockBase, "battclock.resource"};
 ADD2LIB(__init);
 #else
 void* BattClockBase[2] = { 0, "battclock.resource" };

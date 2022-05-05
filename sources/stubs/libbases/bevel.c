@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* BevelBase = 0;
 void ** __getBevelBase() { return &BevelBase; }
-static void * __init[2] = { __getBevelBase, "bevel.library"};
+static void * const __init[2] = { __getBevelBase, "bevel.library"};
 ADD2LIB(__init);
 #else
 void* BevelBase[2] = { 0, "bevel.library" };

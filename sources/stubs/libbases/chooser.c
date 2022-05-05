@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* ChooserBase = 0;
 void ** __getChooserBase() { return &ChooserBase; }
-static void * __init[2] = { __getChooserBase, "chooser.library"};
+static void * const __init[2] = { __getChooserBase, "chooser.library"};
 ADD2LIB(__init);
 #else
 void* ChooserBase[2] = { 0, "chooser.library" };

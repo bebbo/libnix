@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* StringBase = 0;
 void ** __getStringBase() { return &StringBase; }
-static void * __init[2] = { __getStringBase, "string.library"};
+static void * const __init[2] = { __getStringBase, "string.library"};
 ADD2LIB(__init);
 #else
 void* StringBase[2] = { 0, "string.library" };

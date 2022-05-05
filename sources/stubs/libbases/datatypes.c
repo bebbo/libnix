@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* DataTypesBase = 0;
 void ** __getDataTypesBase() { return &DataTypesBase; }
-static void * __init[2] = { __getDataTypesBase, "datatypes.library"};
+static void * const __init[2] = { __getDataTypesBase, "datatypes.library"};
 ADD2LIB(__init);
 #else
 void* DataTypesBase[2] = { 0, "datatypes.library" };

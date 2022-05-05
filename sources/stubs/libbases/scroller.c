@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* ScrollerBase = 0;
 void ** __getScrollerBase() { return &ScrollerBase; }
-static void * __init[2] = { __getScrollerBase, "scroller.library"};
+static void * const __init[2] = { __getScrollerBase, "scroller.library"};
 ADD2LIB(__init);
 #else
 void* ScrollerBase[2] = { 0, "scroller.library" };

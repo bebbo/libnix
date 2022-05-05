@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* BulletBase = 0;
 void ** __getBulletBase() { return &BulletBase; }
-static void * __init[2] = { __getBulletBase, "bullet.library"};
+static void * const __init[2] = { __getBulletBase, "bullet.library"};
 ADD2LIB(__init);
 #else
 void* BulletBase[2] = { 0, "bullet.library" };

@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* GetScreenModeBase = 0;
 void ** __getGetScreenModeBase() { return &GetScreenModeBase; }
-static void * __init[2] = { __getGetScreenModeBase, "getscreenmode.library"};
+static void * const __init[2] = { __getGetScreenModeBase, "getscreenmode.library"};
 ADD2LIB(__init);
 #else
 void* GetScreenModeBase[2] = { 0, "getscreenmode.library" };

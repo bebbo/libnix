@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* GadToolsBase = 0;
 void ** __getGadToolsBase() { return &GadToolsBase; }
-static void * __init[2] = { __getGadToolsBase, "gadtools.library"};
+static void * const __init[2] = { __getGadToolsBase, "gadtools.library"};
 ADD2LIB(__init);
 #else
 void* GadToolsBase[2] = { 0, "gadtools.library" };

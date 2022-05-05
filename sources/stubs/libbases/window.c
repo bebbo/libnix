@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* WindowBase = 0;
 void ** __getWindowBase() { return &WindowBase; }
-static void * __init[2] = { __getWindowBase, "window.library"};
+static void * const __init[2] = { __getWindowBase, "window.library"};
 ADD2LIB(__init);
 #else
 void* WindowBase[2] = { 0, "window.library" };

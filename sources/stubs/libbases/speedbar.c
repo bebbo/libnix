@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* SpeedBarBase = 0;
 void ** __getSpeedBarBase() { return &SpeedBarBase; }
-static void * __init[2] = { __getSpeedBarBase, "speedbar.library"};
+static void * const __init[2] = { __getSpeedBarBase, "speedbar.library"};
 ADD2LIB(__init);
 #else
 void* SpeedBarBase[2] = { 0, "speedbar.library" };

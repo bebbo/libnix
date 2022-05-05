@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* AslBase = 0;
 void ** __getAslBase() { return &AslBase; }
-static void * __init[2] = { __getAslBase, "asl.library"};
+static void * const __init[2] = { __getAslBase, "asl.library"};
 ADD2LIB(__init);
 #else
 void* AslBase[2] = { 0, "asl.library" };

@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* BitMapBase = 0;
 void ** __getBitMapBase() { return &BitMapBase; }
-static void * __init[2] = { __getBitMapBase, "bitmap.library"};
+static void * const __init[2] = { __getBitMapBase, "bitmap.library"};
 ADD2LIB(__init);
 #else
 void* BitMapBase[2] = { 0, "bitmap.library" };

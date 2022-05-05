@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* CheckBoxBase = 0;
 void ** __getCheckBoxBase() { return &CheckBoxBase; }
-static void * __init[2] = { __getCheckBoxBase, "checkbox.library"};
+static void * const __init[2] = { __getCheckBoxBase, "checkbox.library"};
 ADD2LIB(__init);
 #else
 void* CheckBoxBase[2] = { 0, "checkbox.library" };

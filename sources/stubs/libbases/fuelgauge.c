@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* FuelGaugeBase = 0;
 void ** __getFuelGaugeBase() { return &FuelGaugeBase; }
-static void * __init[2] = { __getFuelGaugeBase, "fuelgauge.library"};
+static void * const __init[2] = { __getFuelGaugeBase, "fuelgauge.library"};
 ADD2LIB(__init);
 #else
 void* FuelGaugeBase[2] = { 0, "fuelgauge.library" };

@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* UtilityBase = 0;
 void ** __getUtilityBase() { return &UtilityBase; }
-static void * __init[2] = { __getUtilityBase, "utility.library"};
+static void * const __init[2] = { __getUtilityBase, "utility.library"};
 ADD2LIB(__init);
 #else
 void* UtilityBase[2] = { 0, "utility.library" };

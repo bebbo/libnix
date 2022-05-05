@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* ConsoleDevice = 0;
 void ** __getConsoleDevice() { return &ConsoleDevice; }
-static void * __init[2] = { __getConsoleDevice, "console.device"};
+static void * const __init[2] = { __getConsoleDevice, "console.device"};
 ADD2LIB(__init);
 #else
 void* ConsoleDevice[2] = { 0, "console.device" };

@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* ClickTabBase = 0;
 void ** __getClickTabBase() { return &ClickTabBase; }
-static void * __init[2] = { __getClickTabBase, "clicktab.library"};
+static void * const __init[2] = { __getClickTabBase, "clicktab.library"};
 ADD2LIB(__init);
 #else
 void* ClickTabBase[2] = { 0, "clicktab.library" };

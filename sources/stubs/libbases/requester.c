@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* RequesterBase = 0;
 void ** __getRequesterBase() { return &RequesterBase; }
-static void * __init[2] = { __getRequesterBase, "requester.library"};
+static void * const __init[2] = { __getRequesterBase, "requester.library"};
 ADD2LIB(__init);
 #else
 void* RequesterBase[2] = { 0, "requester.library" };

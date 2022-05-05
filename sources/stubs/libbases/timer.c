@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* TimerBase = 0;
 void ** __getTimerBase() { return &TimerBase; }
-static void * __init[2] = { __getTimerBase, "timer.device"};
+static void * const __init[2] = { __getTimerBase, "timer.device"};
 ADD2LIB(__init);
 #else
 void* TimerBase[2] = { 0, "timer.device" };

@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* RamdriveDevice = 0;
 void ** __getRamdriveDevice() { return &RamdriveDevice; }
-static void * __init[2] = { __getRamdriveDevice, "ramdrive.device"};
+static void * const __init[2] = { __getRamdriveDevice, "ramdrive.device"};
 ADD2LIB(__init);
 #else
 void* RamdriveDevice[2] = { 0, "ramdrive.device" };

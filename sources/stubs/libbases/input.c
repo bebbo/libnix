@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* InputBase = 0;
 void ** __getInputBase() { return &InputBase; }
-static void * __init[2] = { __getInputBase, "input.device"};
+static void * const __init[2] = { __getInputBase, "input.device"};
 ADD2LIB(__init);
 #else
 void* InputBase[2] = { 0, "input.device" };

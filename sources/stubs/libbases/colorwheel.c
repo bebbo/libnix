@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* ColorWheelBase = 0;
 void ** __getColorWheelBase() { return &ColorWheelBase; }
-static void * __init[2] = { __getColorWheelBase, "colorwheel.library"};
+static void * const __init[2] = { __getColorWheelBase, "colorwheel.library"};
 ADD2LIB(__init);
 #else
 void* ColorWheelBase[2] = { 0, "colorwheel.library" };

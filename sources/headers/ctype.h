@@ -177,7 +177,7 @@ __stdargs const char *__locale_ctype_ptr_l (locale_t);
 #endif /* !__cplusplus */
 
 /* For C++ backward-compatibility only.  */
-extern const char	*_ctype_;
+extern const char	* const _ctype_;
 
 _END_STD_C
 

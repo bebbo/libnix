@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* DrawListBase = 0;
 void ** __getDrawListBase() { return &DrawListBase; }
-static void * __init[2] = { __getDrawListBase, "drawlist.library"};
+static void * const __init[2] = { __getDrawListBase, "drawlist.library"};
 ADD2LIB(__init);
 #else
 void* DrawListBase[2] = { 0, "drawlist.library" };

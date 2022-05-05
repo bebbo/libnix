@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* LayersBase = 0;
 void ** __getLayersBase() { return &LayersBase; }
-static void * __init[2] = { __getLayersBase, "layers.library"};
+static void * const __init[2] = { __getLayersBase, "layers.library"};
 ADD2LIB(__init);
 #else
 void* LayersBase[2] = { 0, "layers.library" };

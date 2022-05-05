@@ -10,7 +10,7 @@ extern "C" {
 #ifdef __baserel__
 void* AmlBase = 0;
 void ** __getAmlBase() { return &AmlBase; }
-static void * __init[2] = { __getAmlBase, "aml.library"};
+static void * const __init[2] = { __getAmlBase, "aml.library"};
 ADD2LIB(__init);
 #else
 void* AmlBase[2] = { 0, "aml.library" };
