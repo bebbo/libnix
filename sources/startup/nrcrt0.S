@@ -56,7 +56,7 @@ fromCLI:	movql	#ERROR_NO_FREE_STORE,d7
 		movel	d2,d0
 		movql	#1,d1
 		swap	d1
-		jsr	a6@(_LVOAllocM_em:W)
+		jsr	a6@(_LVOAllocMem:W)
 		movel	d0,a4
 		movel	a4,d0
 		beq	cleanup
