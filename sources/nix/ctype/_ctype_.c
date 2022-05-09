@@ -19,7 +19,8 @@ const unsigned char __ctype[]=
   0x00,0x00,0x00
 };
 
-const unsigned char * const _ctype_=__ctype;
+__near
+const unsigned char * _ctype_=__ctype;
 
 const unsigned char *
 __locale_ctype_ptr (void)
