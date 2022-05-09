@@ -15,7 +15,7 @@ extern struct Locale *__localevec[];
 
 /* for LC_CTYPE */
 extern const unsigned char __ctype[];
-extern const unsigned char *_ctype_;
+extern const unsigned char * const _ctype_;
 static unsigned char *ctype;
 
 /* for LC_NUMERIC */
