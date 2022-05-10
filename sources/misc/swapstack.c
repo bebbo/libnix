@@ -1,8 +1,7 @@
 #include <exec/execbase.h>
-#include <exec/memory.h>
+#define DEVICES_TIMER_H
 #include <dos/dosextens.h>
 #include <proto/exec.h>
-#include <proto/dos.h>
 #include <stdlib.h>
 #include "stabs.h"
 
@@ -12,33 +11,35 @@ extern UWORD *__SaveSP;
 register UWORD *a7 __asm("sp");
 
 #if defined(__KICK13__)
-
 extern void * AllocVec(unsigned, int);
 extern void FreeVec(void *);
 #endif
-#if 1
+
+#undef StackSwap
 #define StackSwap __StackSwap
 
 #pragma GCC push_options
 #pragma GCC optimize ("-Os")
 
 // keeps d0/d1/a0/a1 free for local use.
-void __stkswap(register struct StackSwapStruct * newStack asm("a2"), register struct ExecBase * SysBase asm("a6")) {
-	register UWORD * tmp, *upper asm("a1"), *sp;
-	struct Task * task = SysBase->ThisTask;
+void __stkswap() {
+	register struct StackSwapStruct *newStack asm("a2");
+	register struct ExecBase *SysBase asm("a6");
+	register UWORD *tmp, *upper asm("a1"), *sp;
+	struct Task *task = SysBase->ThisTask;
 
 	Disable();
 
-	tmp = (UWORD *)newStack->stk_Lower;
+	tmp = (UWORD*) newStack->stk_Lower;
 	newStack->stk_Lower = task->tc_SPLower;
 	task->tc_SPLower = tmp;
 
-	tmp = (UWORD *)newStack->stk_Upper;
-	newStack->stk_Upper = (ULONG)task->tc_SPUpper;
+	tmp = (UWORD*) newStack->stk_Upper;
+	newStack->stk_Upper = (ULONG) task->tc_SPUpper;
 	task->tc_SPUpper = tmp;
 
 	// copy stack
-	sp = (UWORD *)newStack->stk_Upper;
+	sp = (UWORD*) newStack->stk_Upper;
 	upper = tmp;
 	while (sp != a7)
 		*--upper = *--sp;
@@ -48,13 +49,13 @@ void __stkswap(register struct StackSwapStruct * newStack asm("a2"), register st
 	Enable();
 }
 
-// performs the push/pop of a2/a6
-__attribute((noinline)) void StackSwap(struct StackSwapStruct * newStack) {
-	__stkswap(newStack, SysBase);
+// performs no push/pop of a2/a6, it's not necessary...
+__attribute((noinline)) void StackSwap(volatile struct StackSwapStruct *newStack) {
+	asm("move.l %0,a2"::"r" (newStack));
+	asm("move.l %0,a6"::"r" (SysBase));
+	__stkswap();
 }
 #pragma GCC pop_options
-
-#endif
 
 /*
  * swapstack.c
@@ -67,9 +68,9 @@ __attribute((noinline)) void StackSwap(struct StackSwapStruct * newStack) {
  * Fixed by Bebbo.
  *
  * Usage: put this snippet into your main:
-extern void __stkinit(void);
-void * __x = __stkinit;
-unsigned long __stack = YOUR_STACK_SIZE;
+ extern void __stkinit(void);
+ void * __x = __stkinit;
+ unsigned long __stack = YOUR_STACK_SIZE;
  */
 
 extern unsigned long __stack;
