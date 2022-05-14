@@ -481,15 +481,24 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 							}
 							// overflow
 							if (pos <= startPos) {
-								startPos = 0;
 								if (type != 0) {
+									if (pos < startPos) {
+										startPos = pos;
+										buffer[pos] = '1';
+									}
 									++exponent;
 									--stopPos;
-									buffer[0] = '1'; // overflow
-								} else if (type == 0 && exponent < 0) {
-									if (dotZero > 0)
-										--dotZero;
-									buffer[1] = '1'; // overflow
+								} else if (type == 0) {
+									if (exponent < 0) {
+										if (dotZero > 0) {
+											startPos = 0;
+											--dotZero;
+										}
+									} else if (pos < startPos ){
+										startPos = pos;
+										buffer[pos] = '1';
+										++leading;
+									}
 								}
 							}
 						}
