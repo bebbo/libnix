@@ -3,6 +3,10 @@
 #include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <stdlib.h>
+
+// force using the section based init
+#define __libnix__ 1
+
 #include "stabs.h"
 
 extern struct ExecBase *SysBase;
