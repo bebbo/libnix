@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* IFFParseBase = 0;
-void ** __getIFFParseBase() { return &IFFParseBase; }
-static void * const __init[2] = { __getIFFParseBase, "iffparse.library"};
-ADD2LIB(__init);
-#else
+__attribute__((section(".list___LIB_LIST__")))
 void* IFFParseBase[2] = { 0, "iffparse.library" };
-ADD2LIB(IFFParseBase);
-#endif
 
 #elif defined (__AMIGAOS4__)
 

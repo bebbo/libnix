@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* IconBase = 0;
-void ** __getIconBase() { return &IconBase; }
-static void * const __init[2] = { __getIconBase, "icon.library"};
-ADD2LIB(__init);
-#else
+__attribute__((section(".list___LIB_LIST__")))
 void* IconBase[2] = { 0, "icon.library" };
-ADD2LIB(IconBase);
-#endif
 
 #elif defined (__AMIGAOS4__)
 

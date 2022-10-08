@@ -18,7 +18,7 @@ asm(
 #ifdef __HAVE_68881__
 asm(
 "	move.l	#0x68881,d1;"
-"	btst	#4,d0;"
+"	and.b	#240,d0;"
 "	jeq	error;"
 );
 asm("fmove.l fpcr,d0");

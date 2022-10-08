@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* RequesterBase = 0;
-void ** __getRequesterBase() { return &RequesterBase; }
-static void * const __init[2] = { __getRequesterBase, "requester.library"};
-ADD2LIB(__init);
-#else
+__attribute__((section(".list___LIB_LIST__")))
 void* RequesterBase[2] = { 0, "requester.library" };
-ADD2LIB(RequesterBase);
-#endif
 
 #elif defined (__AMIGAOS4__)
 

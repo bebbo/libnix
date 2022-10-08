@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* BitMapBase = 0;
-void ** __getBitMapBase() { return &BitMapBase; }
-static void * const __init[2] = { __getBitMapBase, "bitmap.library"};
-ADD2LIB(__init);
-#else
+__attribute__((section(".list___LIB_LIST__")))
 void* BitMapBase[2] = { 0, "bitmap.library" };
-ADD2LIB(BitMapBase);
-#endif
 
 #elif defined (__AMIGAOS4__)
 

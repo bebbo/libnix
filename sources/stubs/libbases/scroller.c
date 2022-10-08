@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* ScrollerBase = 0;
-void ** __getScrollerBase() { return &ScrollerBase; }
-static void * const __init[2] = { __getScrollerBase, "scroller.library"};
-ADD2LIB(__init);
-#else
+__attribute__((section(".list___LIB_LIST__")))
 void* ScrollerBase[2] = { 0, "scroller.library" };
-ADD2LIB(ScrollerBase);
-#endif
 
 #elif defined (__AMIGAOS4__)
 

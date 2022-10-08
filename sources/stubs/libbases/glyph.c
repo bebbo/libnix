@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* GlyphBase = 0;
-void ** __getGlyphBase() { return &GlyphBase; }
-static void * const __init[2] = { __getGlyphBase, "glyph.library"};
-ADD2LIB(__init);
-#else
+__attribute__((section(".list___LIB_LIST__")))
 void* GlyphBase[2] = { 0, "glyph.library" };
-ADD2LIB(GlyphBase);
-#endif
 
 #elif defined (__AMIGAOS4__)
 

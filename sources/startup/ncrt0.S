@@ -107,10 +107,7 @@ ___main:
 
 
 | data area
-
 		.data
-
-		.long ___nocommandline
 
 .comm		_SysBase,4
 .comm		___SaveSP,4
@@ -122,29 +119,4 @@ ___main:
 .comm		___env,4
 .lcomm		cleanupflag,4
 
-	.globl	___LIB_LIST__
-	.globl	___INIT_LIST__
-	.globl	___EXIT_LIST__
-	.globl	___CTOR_LIST__
-	.globl	___DTOR_LIST__
-
-.section	.list___LIB_LIST__,"aw"
-___LIB_LIST__:
-		.long ___initlibraries
-
-.section	.list___INIT_LIST__,"aw"
-___INIT_LIST__:
-		.long 0
-
-.section	.list___EXIT_LIST__,"aw"
-___EXIT_LIST__:
-		.long 0
-
-.section	.list___CTOR_LIST__,"aw"
-___CTOR_LIST__:
-		.long ___initcpp
-
-.section	.list___DTOR_LIST__,"aw"
-___DTOR_LIST__:
-		.long 0
 

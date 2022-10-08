@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* SpeedBarBase = 0;
-void ** __getSpeedBarBase() { return &SpeedBarBase; }
-static void * const __init[2] = { __getSpeedBarBase, "speedbar.library"};
-ADD2LIB(__init);
-#else
+__attribute__((section(".list___LIB_LIST__")))
 void* SpeedBarBase[2] = { 0, "speedbar.library" };
-ADD2LIB(SpeedBarBase);
-#endif
 
 #elif defined (__AMIGAOS4__)
 

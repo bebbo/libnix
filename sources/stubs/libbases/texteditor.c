@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* TextFieldBase = 0;
-void ** __getTextFieldBase() { return &TextFieldBase; }
-static void * const __init[2] = { __getTextFieldBase, "texteditor.library"};
-ADD2LIB(__init);
-#else
+__attribute__((section(".list___LIB_LIST__")))
 void* TextFieldBase[2] = { 0, "texteditor.library" };
-ADD2LIB(TextFieldBase);
-#endif
 
 #elif defined (__AMIGAOS4__)
 

@@ -34,7 +34,7 @@ AS = m68k-amigaos-as
 
 VARIANTS_TO_BUILD = info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881 libm060 libm060bb libm060bb32
 LIBS_TO_BUILD = libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack libstub
-STARTUPS ?= lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o lib/xcrt0.o
+STARTUPS ?= lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
 
 ifneq (,$(lib))
 ifeq (nix13,$(lib))
@@ -51,7 +51,7 @@ AS = m68k-elf-as
 TGT = --defsym __elf__=1
 VARIANTS_TO_BUILD ?= info libm020
 LIBS_TO_BUILD = libc libm
-STARTUPS ?= lib/ncrt0.o lib/xcrt0.o
+STARTUPS ?= lib/ncrt0.o
 
 endif
 
@@ -74,7 +74,6 @@ all: $(VARIANTS_TO_BUILD)
 lib: $(STARTUPS)
 	@mkdir -p $@
 	$(MAKE) one kind=$@
-	if [ -e $(PREFIX)/m68k-amigaos/lib/libstubs.a ]; then cp $(PREFIX)/m68k-amigaos/lib/libstubs.a lib/libstubs.a; touch -t 0001010000 lib/libstubs.a; fi
 	if [ -e lib/libstubs.a ] && [ "$$(m68k-amigaos-ar t lib/libstubs.a | grep __initlib)" != "" ]; then rm -f lib/libstubs.a; fi
 		
 libb:
@@ -170,9 +169,6 @@ lib/libinitr.o: $(root)/sources/startup/libinitr.c libdir
 	$(CC) -c $(CFLAGS) $(flags) $< -o $@
 
 lib/ncrt0.o: $(root)/sources/startup/ncrt0.S libdir
-	$(AS) $(TGT) -m68000 $< -o $@
-
-lib/xcrt0.o: $(root)/sources/startup/xcrt0.S libdir
 	$(AS) $(TGT) -m68000 $< -o $@
 
 lib/nbcrt0.o: $(root)/sources/startup/nbcrt0.S libdir

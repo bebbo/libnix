@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* ARexxBase = 0;
-void ** __getARexxBase() { return &ARexxBase; }
-static void * const __init[2] = { __getARexxBase, "arexx.library"};
-ADD2LIB(__init);
-#else
+__attribute__((section(".list___LIB_LIST__")))
 void* ARexxBase[2] = { 0, "arexx.library" };
-ADD2LIB(ARexxBase);
-#endif
 
 #elif defined (__AMIGAOS4__)
 
