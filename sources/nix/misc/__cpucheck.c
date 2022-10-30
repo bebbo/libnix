@@ -1,7 +1,7 @@
 #include "bases.h"
 #include "stabs.h"
 
-#if defined(mc68020)
+#if defined(mc68020) || defined(mc68030) || defined(mc68040) || defined(mc68060) || defined(mc68080)
 
 asm(
 "	.text;"
