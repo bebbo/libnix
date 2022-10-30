@@ -8,5 +8,6 @@
  */
 
 struct Locale *__localevec[5] = { 0, 0, 0, 0, 0 };
-
+#else
+void *__localevec[5] = { 0, 0, 0, 0, 0 };
 #endif
