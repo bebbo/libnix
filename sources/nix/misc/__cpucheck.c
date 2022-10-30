@@ -37,7 +37,7 @@ asm(
 "	jsr	_exit;"		/* dito */
 );
 
-ADD2INIT(__cpucheck,-79); /* Highest priority */
+ADD2INIT(__cpucheck,-80); /* Highest priority */
 
 #else
 

@@ -60,5 +60,5 @@ void __exitlibraries(void) {
 	}
 }
 
-ADD2INIT(__initlibraries, -80);
-ADD2EXIT(__exitlibraries, -80);
+ADD2INIT(__initlibraries, -79);
+ADD2EXIT(__exitlibraries, -79);
