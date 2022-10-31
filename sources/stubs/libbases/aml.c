@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* AmlBase = 0;
-void ** __getAmlBase() { return &AmlBase; }
-static void * const __init[2] = { __getAmlBase, "aml.library"};
-ADD2LIB(__init);
-#else
-void* AmlBase[2] = { 0, "aml.library" };
-ADD2LIB(AmlBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* AmlBase[2] = { (void*)-1, "aml.library" };
 
 #elif defined (__AMIGAOS4__)
 

@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* CxBase = 0;
-void ** __getCxBase() { return &CxBase; }
-static void * const __init[2] = { __getCxBase, "commodities.library"};
-ADD2LIB(__init);
-#else
-void* CxBase[2] = { 0, "commodities.library" };
-ADD2LIB(CxBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* CxBase[2] = { (void*)-1, "commodities.library" };
 
 #elif defined (__AMIGAOS4__)
 

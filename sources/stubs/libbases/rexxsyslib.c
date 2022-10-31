@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* RexxSysBase = 0;
-void ** __getRexxSysBase() { return &RexxSysBase; }
-static void * const __init[2] = { __getRexxSysBase, "rexxsyslib.library"};
-ADD2LIB(__init);
-#else
-void* RexxSysBase[2] = { 0, "rexxsyslib.library" };
-ADD2LIB(RexxSysBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* RexxSysBase[2] = { (void*)-1, "rexxsyslib.library" };
 
 #elif defined (__AMIGAOS4__)
 

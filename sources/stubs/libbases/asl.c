@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* AslBase = 0;
-void ** __getAslBase() { return &AslBase; }
-static void * const __init[2] = { __getAslBase, "asl.library"};
-ADD2LIB(__init);
-#else
-void* AslBase[2] = { 0, "asl.library" };
-ADD2LIB(AslBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* AslBase[2] = { (void*)-1, "asl.library" };
 
 #elif defined (__AMIGAOS4__)
 

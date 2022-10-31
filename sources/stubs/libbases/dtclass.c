@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* DTClassBase = 0;
-void ** __getDTClassBase() { return &DTClassBase; }
-static void * const __init[2] = { __getDTClassBase, "dtclass.library"};
-ADD2LIB(__init);
-#else
-void* DTClassBase[2] = { 0, "dtclass.library" };
-ADD2LIB(DTClassBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* DTClassBase[2] = { (void*)-1, "dtclass.library" };
 
 #elif defined (__AMIGAOS4__)
 

@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* MathBase = 0;
-void ** __getMathBase() { return &MathBase; }
-static void * const __init[2] = { __getMathBase, "mathffp.library"};
-ADD2LIB(__init);
-#else
-void* MathBase[2] = { 0, "mathffp.library" };
-ADD2LIB(MathBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* MathBase[2] = { (void*)-1, "mathffp.library" };
 
 #elif defined (__AMIGAOS4__)
 

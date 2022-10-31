@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* DOSBase = 0;
-void ** __getDOSBase() { return &DOSBase; }
-static void * const __init[2] = { __getDOSBase, "dos.library"};
-ADD2LIB(__init);
-#else
-void* DOSBase[2] = { 0, "dos.library" };
-ADD2LIB(DOSBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* DOSBase[2] = { (void*)-1, "dos.library" };
 
 #elif defined (__AMIGAOS4__)
 

@@ -127,11 +127,14 @@ ___restore_a4:
 _geta4: 	lea	___a4_init,a4
 		rts
 
+		.long ___nocommandline
+		.long ___initlibraries
+		.long ___initcpp
+
 | data area
 
 		.data
 
-		.long ___nocommandline
 
 .comm		_SysBase,4
 .comm		___SaveSP,4
@@ -149,9 +152,9 @@ _geta4: 	lea	___a4_init,a4
 	.globl	___CTOR_LIST__
 	.globl	___DTOR_LIST__
 
-.section	.list___LIB_LIST__,"aw"
+.section	.dlist___LIB_LIST__,"aw"
 ___LIB_LIST__:
-		.long ___initlibraries
+		.long 0
 
 .section	.list___INIT_LIST__,"aw"
 ___INIT_LIST__:
@@ -163,8 +166,14 @@ ___EXIT_LIST__:
 
 .section	.list___CTOR_LIST__,"aw"
 ___CTOR_LIST__:
-		.long ___initcpp
+		.long 0
 
 .section	.list___DTOR_LIST__,"aw"
 ___DTOR_LIST__:
+		.long 0
+
+
+.section	.end_of_lists,"aw"
+		.long 0
+.section	.end_of_dlists,"aw"
 		.long 0

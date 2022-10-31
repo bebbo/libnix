@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* AmigaGuideBase = 0;
-void ** __getAmigaGuideBase() { return &AmigaGuideBase; }
-static void * const __init[2] = { __getAmigaGuideBase, "amigaguide.library"};
-ADD2LIB(__init);
-#else
-void* AmigaGuideBase[2] = { 0, "amigaguide.library" };
-ADD2LIB(AmigaGuideBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* AmigaGuideBase[2] = { (void*)-1, "amigaguide.library" };
 
 #elif defined (__AMIGAOS4__)
 

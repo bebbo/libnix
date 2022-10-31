@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* BattMemBase = 0;
-void ** __getBattMemBase() { return &BattMemBase; }
-static void * const __init[2] = { __getBattMemBase, "battmem.resource"};
-ADD2LIB(__init);
-#else
-void* BattMemBase[2] = { 0, "battmem.resource" };
-ADD2LIB(BattMemBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* BattMemBase[2] = { (void*)-1, "battmem.resource" };
 
 #elif defined (__AMIGAOS4__)
 

@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* ExpansionBase = 0;
-void ** __getExpansionBase() { return &ExpansionBase; }
-static void * const __init[2] = { __getExpansionBase, "expansion.library"};
-ADD2LIB(__init);
-#else
-void* ExpansionBase[2] = { 0, "expansion.library" };
-ADD2LIB(ExpansionBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* ExpansionBase[2] = { (void*)-1, "expansion.library" };
 
 #elif defined (__AMIGAOS4__)
 

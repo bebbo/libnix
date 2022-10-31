@@ -1,4 +1,4 @@
-/* Automatically generated header (sfdc 1.11d)! Do not edit! */
+/* Automatically generated header (sfdc 1.11e)! Do not edit! */
 
 #ifdef __cplusplus
 extern "C" {
@@ -6,16 +6,8 @@ extern "C" {
 
 #if defined (__libnix__)
 
-#include <stabs.h>
-#ifdef __baserel__
-void* MathIeeeSingTransBase = 0;
-void ** __getMathIeeeSingTransBase() { return &MathIeeeSingTransBase; }
-static void * const __init[2] = { __getMathIeeeSingTransBase, "mathieeesingtrans.library"};
-ADD2LIB(__init);
-#else
-void* MathIeeeSingTransBase[2] = { 0, "mathieeesingtrans.library" };
-ADD2LIB(MathIeeeSingTransBase);
-#endif
+__attribute__((section(".dlist___LIB_LIST__")))
+void* MathIeeeSingTransBase[2] = { (void*)-1, "mathieeesingtrans.library" };
 
 #elif defined (__AMIGAOS4__)
 
