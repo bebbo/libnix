@@ -1,28 +1,29 @@
 #include <exec/execbase.h>
+#include <exec/memory.h>
 #include <inline/exec.h>
 
-#ifdef AllocVec
+#undef AllocDosObject
+#undef FreeDosObject
+
 #undef AllocVec
-#endif
-
-#ifdef FreeVec
 #undef FreeVec
-#endif
 
-extern struct Execbase * SysBase;
+extern void * AllocVec(unsigned, int);
+extern void FreeVec(void *);
 
-void * AllocVec(unsigned size, unsigned flags) {
-	unsigned * ptr = AllocMem(size += 4, flags);
-	if (ptr)
-		*ptr++ = size;
-	return ptr;
+void * AllocDosObject(unsigned type, void * ti) {
+	switch (type) {
+	case DOS_EXALLCONTROL:
+	case DOS_FIB:
+		return AllocVec(sizeof(struct FileInfoBlock), MEMF_PUBLIC | MEMF_CLEAR);
+	}
+	return 0;
 }
 
-void FreeVec(unsigned * ptr) {
-	unsigned sz;
-
-	if (!ptr)
-		return;
-	sz = *--ptr;
-	FreeMem(ptr, sz);
+void FreeDosObject(unsigned type, void * ptr) {
+	switch (type) {
+	case DOS_EXALLCONTROL:
+	case DOS_FIB:
+		FreeVec(ptr);
+	}
 }

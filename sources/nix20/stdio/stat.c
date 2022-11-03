@@ -4,6 +4,20 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#ifdef __KICK13__
+#include <exec/execbase.h>
+#include <dos/dosextens.h>
+
+extern struct ExecBase * SysBase;
+
+#undef AllocDosObject
+#undef FreeDosObject
+
+extern void * AllocDosObject(long, long);
+extern void FreeDosObject(long, void *);
+#endif
+
+
 extern int __stat(struct stat *buf,struct FileInfoBlock *fib);
 extern void __seterrno(void);
 extern char *__amigapath(const char *path);
