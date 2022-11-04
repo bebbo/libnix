@@ -49,7 +49,7 @@ int __srget(FILE *stream) /* Get next input block */
 		}
 	}
 	stream->_flags |= __SRD;
-	stream->_r = read(stream->file, stream->_bf._base, stream->_bf._size);
+	stream->_r = read(stream->file, stream->_bf._base, 1);
 	if (!stream->_r) /* EOF found */
 	{
 		stream->_flags |= __SEOF;
