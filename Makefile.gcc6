@@ -37,11 +37,14 @@ LIBS_TO_BUILD = libnix libnix13 libnix20 libnixmain libnix_main libm libsocket l
 STARTUPS ?= lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
 
 ifneq (,$(lib))
-ifeq (nix13,$(lib))
-CFLAGS += -mcrt=nix13
-else
-CFLAGS += -noixemul
+crt = -mcrt=nix13
+ifeq (nix20,$(lib))
+crt  = -noixemul
 endif
+ifeq (socket,$(lib))
+crt = -noixemul
+endif
+CFLAGS += $(crt)
 endif
 else
 CC = m68k-elf-gcc
@@ -58,7 +61,7 @@ endif
 # extend CFLAGS on first invokation
 ifeq (,$(kind))
 
-CFLAGS += -I$(root)/sources/headers -fno-builtin -ffast-math -D__libnix__
+CFLAGS += -I$(root)/sources/headers -fno-builtin -ffast-math -D__libnix__ -Werror
 
 ifneq (,$(lc))
 CFLAGS += -D__libnix__

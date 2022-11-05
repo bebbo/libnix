@@ -81,8 +81,11 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix13/extra"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix13/math"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20/extra"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20/locale"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20/math"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20/misc"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20/stdio"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix20/stdlib"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/arpa"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/extra"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/netdb"/>

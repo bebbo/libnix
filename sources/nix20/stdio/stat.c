@@ -13,7 +13,7 @@ extern struct ExecBase * SysBase;
 #undef AllocDosObject
 #undef FreeDosObject
 
-extern void * AllocDosObject(long, long);
+extern void * AllocDosObject(long, void *);
 extern void FreeDosObject(long, void *);
 #endif
 

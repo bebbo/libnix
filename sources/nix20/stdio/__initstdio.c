@@ -73,7 +73,7 @@ int isatty(int d) {
 /*
  **
  */
-int _lx_addflags(int d, int oflags) {
+static int _lx_addflags(int d, int oflags) {
 	StdFileDes *sfd = _lx_fhfromfd(d);
 
 	return sfd ? sfd->lx_oflags |= oflags : 0;
@@ -97,7 +97,6 @@ StdFileDes *_lx_fhfromfd(int d) {
  * Open the file stream for the file descriptor.
  */
 FILE *fdopen(int filedes, const char *mode) {
-	extern int _lx_addflags(int, int);
 	if (mode != NULL) {
 		struct filenode *node = (struct filenode *) malloc(sizeof(*node));
 		if (node != NULL) {
@@ -175,7 +174,9 @@ static StdFileDes * stdfiledes(BPTR fh) {
 void __initstdio(void) {
 	extern struct WBStartup *_WBenchMsg;
 	StdFileDes *sfd;
-
+#ifdef __KICK13__
+	__stdfilesize = 0;
+#endif
 	if ((__stdfiledes = (StdFileDes **) malloc(4 * sizeof(StdFileDes *)))) {
 		if ((sfd = stdfiledes(Input()))) {
 			sfd->lx_oflags = O_RDONLY;
@@ -231,8 +232,10 @@ int close(int d) {
 		if (!(sfd->lx_inuse -= 1)) {
 			if (!(sfd->lx_flags & LX_SYS)) {
 				if (!Close(sfd->lx_fh)) {
+#ifndef __KICK13__
 					__seterrno();
 					return EOF;
+#endif
 				}
 			}
 		}

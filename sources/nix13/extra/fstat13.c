@@ -6,6 +6,7 @@
 #include "string.h"
 #include "stdio.h"
 
+extern off_t lseek(int d, off_t offset, int whence);
 
 int fstat(int d,struct stat *buf) {
 	if (!buf)
