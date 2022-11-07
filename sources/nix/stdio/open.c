@@ -27,14 +27,18 @@ int open(const char *path, int flags, ...) {
 	if((path=__amigapath(path))==NULL)
 	return -1;
 #endif
-
 	if ((sfd = __allocfd())) {
 		long mode;
 
 		sfd->lx_oflags = flags;
 
 		mode = flags&O_TRUNC?MODE_NEWFILE: flags&O_CREAT?MODE_READWRITE:MODE_OLDFILE;
-		if ((sfd->lx_fh = (int)Open((CONST_STRPTR)path, mode))) {
+		sfd->lx_fh = (int)Open((CONST_STRPTR)path, mode);
+
+		// workaround for RAM: and maybe other handlers which do not create a file on MODE_READWRITE.
+		if (!sfd->lx_fh && (flags&O_CREAT))
+			sfd->lx_fh = (int)Open((CONST_STRPTR)path, MODE_NEWFILE);
+		if (sfd->lx_fh) {
 			_setup_file(sfd);
 			return sfd->lx_pos;
 		}
