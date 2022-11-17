@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
+#include <proto/dos.h>
 
 extern void (*__signalfunc[])(int);
 extern int __signalmask,__signalpending;
@@ -27,7 +28,8 @@ int raise(int sig)
         {
           if(sig==SIGINT)
           {
-            write(2,wlen("***Break\n")); exit(20);
+            Write(Output(), "***Break\n", 9);
+            exit(20);
           }
         }else
           (*__signalfunc[sig-1])(sig);
