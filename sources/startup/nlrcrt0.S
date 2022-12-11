@@ -173,7 +173,9 @@ oldpri: 	movel	a3@+,d0
 		jne	callfuncs
 		rts
 
+_SysBase:	.globl _SysBase
 		.long ___nocommandline
+___SaveSP:
 		.long ___cpucheck
 		.long ___initlibraries
 		.long ___initcpp
@@ -182,8 +184,6 @@ oldpri: 	movel	a3@+,d0
 
 		.data
 
-.comm		_SysBase,4
-.comm		___SaveSP,4
 .comm		__WBenchMsg,4
 .comm		___commandline,4
 .comm		___commandlen,4

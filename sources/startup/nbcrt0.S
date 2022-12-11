@@ -127,7 +127,9 @@ ___restore_a4:
 _geta4: 	lea	___a4_init,a4
 		rts
 
+_SysBase:	.globl _SysBase
 		.long ___nocommandline
+___SaveSP:
 		.long ___initlibraries
 		.long ___initcpp
 
@@ -136,8 +138,6 @@ _geta4: 	lea	___a4_init,a4
 		.data
 
 
-.comm		_SysBase,4
-.comm		___SaveSP,4
 .comm		__WBenchMsg,4
 .comm		___commandline,4
 .comm		___commandlen,4
