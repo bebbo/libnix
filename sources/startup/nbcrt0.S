@@ -127,6 +127,8 @@ ___restore_a4:
 _geta4: 	lea	___a4_init,a4
 		rts
 
+		.data
+
 _SysBase:	.globl _SysBase
 		.long ___nocommandline
 ___SaveSP:
@@ -134,9 +136,6 @@ ___SaveSP:
 		.long ___initcpp
 
 | data area
-
-		.data
-
 
 .comm		__WBenchMsg,4
 .comm		___commandline,4

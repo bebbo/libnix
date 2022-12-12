@@ -105,6 +105,8 @@ oldpri: 	movel	a3@+,d0
 ___main:
 		rts
 
+		.data
+
 _SysBase:	.globl _SysBase
 		.long ___nocommandline
 ___SaveSP:
@@ -112,8 +114,6 @@ ___SaveSP:
 		.long ___initcpp
 
 | data area
-
-		.data
 
 .comm		__WBenchMsg,4
 .comm		___commandline,4
