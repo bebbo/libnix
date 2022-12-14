@@ -109,7 +109,7 @@ ___main:
 
 _SysBase:	.globl _SysBase
 		.long ___nocommandline
-___SaveSP:
+___SaveSP:	.globl ___SaveSP
 		.long ___initlibraries
 		.long ___initcpp
 

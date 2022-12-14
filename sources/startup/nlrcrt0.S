@@ -177,7 +177,7 @@ oldpri: 	movel	a3@+,d0
 
 _SysBase:	.globl _SysBase
 		.long ___nocommandline
-___SaveSP:
+___SaveSP:	.globl ___SaveSP
 		.long ___cpucheck
 		.long ___initlibraries
 		.long ___initcpp

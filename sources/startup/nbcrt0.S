@@ -131,7 +131,7 @@ _geta4: 	lea	___a4_init,a4
 
 _SysBase:	.globl _SysBase
 		.long ___nocommandline
-___SaveSP:
+___SaveSP:	.globl ___SaveSP
 		.long ___initlibraries
 		.long ___initcpp
 
