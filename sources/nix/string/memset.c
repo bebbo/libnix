@@ -7,25 +7,26 @@ union V {
 	long *l;
 };
 
-void *memset(void *s, int _c, size_t _n) {
-	if (_n < 8) {
-		char * p = (char *) s;
-		if (_n--) {
-			*p++ = _c;
-			if (_n--) {
-				*p++ = _c;
-				if (_n--) {
-					*p++ = _c;
-					if (_n--) {
-						*p++ = _c;
-						if (_n--) {
-							*p++ = _c;
-							if (_n--) {
-								*p++ = _c;
-								if (_n--) {
-									*p++ = _c;
-									if (_n--) {
-										*p++ = _c;
+void *memset(void *s, int _c, size_t n) {
+	register unsigned c __asm("d2") = _c;
+	if (n < 8) {
+	    char * p = (char *) s;
+		if (n) {
+			*p++ = c;
+			if (--n) {
+				*p++ = c;
+				if (--n) {
+					*p++ = c;
+					if (--n) {
+						*p++ = c;
+						if (--n) {
+							*p++ = c;
+							if (--n) {
+								*p++ = c;
+								if (--n) {
+									*p++ = c;
+									if (--n) {
+										*p = c;
 									}
 								}
 							}
@@ -38,54 +39,44 @@ void *memset(void *s, int _c, size_t _n) {
 	}
 
 	{
-		register unsigned c __asm("d0");
-		register size_t n __asm("d1");
-		register union V v __asm("a0");
-		size_t m;
-
-		v.v = s;
+	    register char * p __asm("a0") = n + (char *) s;
 
 		c = _c & 0xff;
 		c |= c << 8;
 		c |= c << 16;
 
-		n = _n;
-		v.c += n;
-
-		if ((long) v.l & 1) {
-			--v.c;
-			*v.c = c;
-			n--;
+		if ((long) p & 1) {
+			__asm("move.b d2,-(a0)" :: "r" (c, p));
+			--n;
 		}
-		if ((long) v.l & 2) {
-			--v.s;
-			*v.s = c;
-			n -= 2;
+		if ((long) p & 2) {
+			__asm("move.w d2,-(a0)" :: "r" (c,p));
+			__asm("subq #2,d1");
 		}
-		m = n / (8 * sizeof(long));
+		size_t m  = n / (8 * sizeof(long));
 		if (m) {
-			__asm("move.l d0,a6" ::: "a6");
-			__asm("move.l d0,d5" ::: "d5");
-			__asm("move.l d0,d6" ::: "d6");
-			__asm("move.l d0,d7" ::: "d7");
-			__asm("move.l d0,a1" ::: "a1");
-			__asm("move.l d0,a2" ::: "a2");
-			__asm("move.l d0,a3" ::: "a3");
+			__asm("move.l d2,a6" ::"r" (c): "a6");
+			__asm("move.l d2,d5" ::"r" (c): "d5");
+			__asm("move.l d2,d6" ::"r" (c): "d6");
+			__asm("move.l d2,d7" ::"r" (c): "d7");
+			__asm("move.l d2,a1" ::"r" (c): "a1");
+			__asm("move.l d2,a2" ::"r" (c): "a2");
+			__asm("move.l d2,a3" ::"r" (c): "a3");
 			while (m--) {
-				__asm("movem.l d0/d5/d6/d7/a1/a2/a3/a6,-(a0)");
+				__asm("movem.l d2/d5/d6/d7/a1/a2/a3/a6,-(a0)" ::"r" (c, p));
 			}
 			n &= (8 * sizeof(long) - 1);
 		}
-		m = n >> 2;
-		if (m) {
-			for (; m; --m) {
-				__asm("move.l d0,-(a0)");
+        {
+		    size_t k = n >> 2;
+			for (; k; --k) {
+				__asm("move.l d2,-(a0)" :: "r" (c, p));
 			}
 			n &= sizeof(long) - 1;
 		}
 
 		while(n--) {
-			*--v.c = c;
+			__asm("move.b d2,-(a0)" :: "r" (c, p));
 		}
 
 		return s;
