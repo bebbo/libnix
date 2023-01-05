@@ -16,26 +16,26 @@ void bcopy(const void *s1, void *s2, size_t n) {
 			if (((((char)(long)from) ^ ((char)(long)to))) % 2 == 0) {
 #endif
 			if (((long) to) & 1) {
-				asm volatile("move.b (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.b (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
 				n--;
 			}
 			if (((long) to) & 2) {
-				asm volatile("move.w (%0)+,(%1)+" : "+rm" (to), "+rm" (from): "r" (to), "r" (from));
+				asm volatile("move.w (%1)+,(%0)+" : "+rm" (to), "+rm" (from): "r" (to), "r" (from));
 				n -= 2;
 			}
 			for (m = n / (8 * sizeof(long)); m; --m) {
-				asm volatile("move.l (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
 			}
 			n &= 8 * sizeof(long) - 1;
 			for (m = n / sizeof(long); m; --m)
-				asm volatile("move.l (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
 			n &= sizeof(long) - 1;
 			if (!n)
 				return;
@@ -44,7 +44,7 @@ void bcopy(const void *s1, void *s2, size_t n) {
 		}
 #endif
 		while (n--){
-			asm volatile("move.b (%0)+,(%1)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+			asm volatile("move.b (%1)+,(%0)+" : "=r" (to), "=r" (from): "r" (to), "r" (from));
         }
 	} else {
 		from += n;
@@ -54,26 +54,26 @@ void bcopy(const void *s1, void *s2, size_t n) {
 #endif
 		if (n > NNN) {
 			if (((long) to) & 1) {
-				asm volatile("move.b -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.b -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
 				n--;
 			}
 			if (((long) to) & 2) {
-				asm volatile("move.w -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.w -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
 				n -= 2;
 			}
 			for (m = n / (8 * sizeof(long)); m; --m) {
-				asm volatile("move.l -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
-				asm volatile("move.l -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
 			}
 			n &= 8 * sizeof(long) - 1;
 			for (m = n / sizeof(long); m; --m)
-				asm volatile("move.l -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+				asm volatile("move.l -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
 			n &= sizeof(long) - 1;
 			if (!n)
 				return;
@@ -82,7 +82,7 @@ void bcopy(const void *s1, void *s2, size_t n) {
 		}
 #endif
 		while (n--){
-            asm volatile("move.b -(%0),-(%1)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
+            asm volatile("move.b -(%1),-(%0)" : "=r" (to), "=r" (from): "r" (to), "r" (from));
         }
 	}
 }
