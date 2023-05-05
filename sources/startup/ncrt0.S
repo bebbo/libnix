@@ -21,7 +21,7 @@ ThisTask    =    276
 		.globl	__exit
 		.globl	____exit
 		.globl ___main
-		.text
+		.section .text
 
 | first entry - init some vars, check for cli or wb start
 
