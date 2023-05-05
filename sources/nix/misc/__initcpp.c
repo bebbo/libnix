@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "stabs.h"
 
 typedef void (*func_ptr) (void);
