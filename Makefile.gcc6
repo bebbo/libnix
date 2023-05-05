@@ -152,10 +152,9 @@ install_libm060bb32:
 
 # install the files for the given $(kind) into $(to)
 install_one:
-	mkdir -p $(PREFIX)/m68k-amigaos/libnix/lib/$(to)
-	cp $(kind)/*.a $(PREFIX)/m68k-amigaos/libnix/lib/$(to)
-	cp $(kind)/*.o $(PREFIX)/m68k-amigaos/libnix/lib/$(to)
-	
+	mkdir -p $(PREFIX)/m68k-amigaos/libnix/lib/$(to)/
+	rsync $(kind)/*.a $(PREFIX)/m68k-amigaos/libnix/lib/$(to)/ --exclude=$(kind)/libstubs.a
+	cp $(kind)/*.o $(PREFIX)/m68k-amigaos/libnix/lib/$(to)/
 
 # startup stuff
 .PHONY: libdir
