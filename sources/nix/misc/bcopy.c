@@ -2,6 +2,7 @@
 
 #define NNN 16
 
+asm("___bcopz: .globl ___bcopz");
 /* This is a _fast_ block move routine! */
 void bcopy(const void *s1, void *s2, size_t n) {
 	size_t m;
