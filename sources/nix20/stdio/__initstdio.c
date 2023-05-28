@@ -198,15 +198,19 @@ void __initstdio(void) {
 				  (_WBenchMsg || (bstderr = stderrdes = Open((CONST_STRPTR)"*", MODE_OLDFILE)) == 0))
 					bstderr = __stdfiledes[STDOUT_FILENO]->lx_fh;
 
-				__BUFSIZ = 4;
 				if ((sfd = stdfiledes(bstderr))) {
 					__stdfiledes[3] = 0; // have a free one
 					{
 						short flags;
 						// fdopen stdin, stdout and stderr and make stderr unbuffered
 						FILE **f = __sF, *err;
-						if (((*f++ = fdopen(STDIN_FILENO, "r")) == NULL) || ((*f++ = fdopen(STDOUT_FILENO, "w")) == NULL) || ((*f = err = fdopen(STDERR_FILENO, "w")) == NULL))
+						if (((*f++ = fdopen(STDIN_FILENO, "r")) == NULL) || ((*f++ = fdopen(STDOUT_FILENO, "w")) == NULL))
 							exit(20);
+
+						if ((*f = err = fdopen(STDERR_FILENO, "w")) == NULL)
+							exit(20);
+						__BUFSIZ = 4;
+
 						free(err->_bf._base);
 						flags = err->_flags & ~(__SMBF | __SLBF);
 						err->_flags = flags | __SNBF;
