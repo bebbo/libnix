@@ -23,7 +23,7 @@ extern int setgrent(void);
 **
 */
 static int logname_valid = 1;
-static char logname[MAXLOGNAME];
+static char logname[MAXLOGNAME + 1];
 static uid_t ruid, euid;
 static gid_t rgid, egid;
 static int ngroups;
