@@ -79,8 +79,9 @@ __exit: 	lea	___EXIT_LIST__,a2
 		moveql	#0,d2
 		jbsr	callfuncs
 
+__Exit: .globl	__Exit
+____exit: .globl	____exit
 		movel	a4@(_SysBase:W),a6
-
 		movel	a4@(__WBenchMsg:W),d2
 		beq	todos
 		jsr	a6@(_LVOForbid:W)

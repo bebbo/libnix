@@ -103,6 +103,8 @@ __exit: 	lea	___EXIT_LIST__,a2
 		moveql	#0,d2
 		jbsr	callfuncs
 
+__Exit: .globl	__Exit
+____exit: .globl	____exit
 		movel	sp@(4:W),d7
 		movel	a4@(___SaveSP:W),sp
 

@@ -93,6 +93,8 @@ __exit:
 		moveql	#0,d2
 		jbsr	callfuncs
 
+__Exit: .globl	__Exit
+____exit: .globl	____exit
 		movel	a4@(___SaveSP:L),sp
 		movel	sp@(4:L),d7
 

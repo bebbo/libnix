@@ -62,8 +62,9 @@ __exit: 	lea	___EXIT_LIST__+4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
 
+__Exit: .globl	__Exit
+____exit: .globl	____exit
 		movel	_SysBase,a6
-
 		movel	__WBenchMsg,d2
 		beq	todos
 		jsr	a6@(_LVOForbid:W)
@@ -71,7 +72,6 @@ __exit: 	lea	___EXIT_LIST__+4,a2
 		jsr	a6@(_LVOReplyMsg:W)
 
 | leave - get return val, restore stackptr
-____exit:
 todos:		movel	sp@(4:W),d0
 		movel	___SaveSP,sp
 		rts
