@@ -11,6 +11,7 @@ int gettimeofday(struct timeval * __restrict tv, struct timezone * __restrict tz
   if (tv) {
       GetSysTime(tv);
       tv->tv_sec += 60 * __gmtoffset;
+      tv->tv_sec += 252460800;
   }
   if (tz) {
       tz->tz_dsttime = 0;
