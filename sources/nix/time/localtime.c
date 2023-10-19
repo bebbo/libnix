@@ -1,9 +1,9 @@
 #include <time.h>
 
-extern long __gmtoffset;
+extern long timezone;
 
 struct tm *localtime(const time_t *t)
 { time_t ti=*t;
-  ti-=__gmtoffset*60;
+  ti-=timezone*60;
   return gmtime(&ti);
 }

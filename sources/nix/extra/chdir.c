@@ -24,6 +24,15 @@ int chdir(const char *path)
   return ret;
 }
 
+int fchdir(int fd) {
+	StdFileDes *sfd = _lx_fhfromfd(fd);
+	if (!sfd)
+		return ERROR_DIR_NOT_FOUND;
+	char buffer[256];
+	NameFromLock(sfd->lx_fh, buffer, 255);
+	return chdir(buffer);
+}
+
 void __initchdir(void)
 {
   BPTR fl;

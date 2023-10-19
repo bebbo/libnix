@@ -27,15 +27,6 @@ static gid_t grouplist[NGROUPS_MAX];
 /*
 **
 */
-uid_t getuid(void)
-{
-  return ruid;
-}
-
-uid_t geteuid(void)
-{
-  return euid;
-}
 
 int setuid(uid_t uid)
 {
@@ -62,16 +53,6 @@ int setreuid(uid_t truid, uid_t teuid)
 /*
 **
 */
-gid_t getgid(void)
-{
-  return rgid;
-}
-
-gid_t getegid(void)
-{
-  return egid;
-}
-
 int setgid(gid_t tgid)
 {
   return setregid((int)tgid, (int)tgid);

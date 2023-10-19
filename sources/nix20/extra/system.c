@@ -44,6 +44,10 @@ int execv(const char *path, char *const argv[]) {
 	return system(cmd);
 }
 
+int execve(const char *path, char *const argv[], char *const envp[]) {
+	return execv(path, argv);
+}
+
 int pipe(int pipefd[2]) {
 	return -1;
 }
