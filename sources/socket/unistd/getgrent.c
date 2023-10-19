@@ -114,8 +114,8 @@ int setgroupent(int stayopen) {
 	return 1;
 }
 
-int setgrent(void) {
-	return setgroupent(0);
+void setgrent(void) {
+	setgroupent(0);
 }
 
 void endgrent(void) {

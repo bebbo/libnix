@@ -14,11 +14,6 @@
 	, USERGROUP_BASE_NAME)
 
 
-extern void endgrent(void);
-extern struct group *getgrent(void);
-extern int setgrent(void);
-
-
 /*
 **
 */
@@ -172,7 +167,7 @@ int setgroups(int gidsetlen, const gid_t *gidset)
   return 0;
 }
 
-int initgroups(const char *name, int basegid)
+int initgroups(const char *name, gid_t basegid)
 { struct SocketSettings *lss = _lx_get_socket_settings();
   gid_t gidset[NGROUPS_MAX];
   int ngroups = 2;
