@@ -124,7 +124,7 @@ LibOpen(REG(a6,__LIB lib))
 /* initialization function called by MakeLibrary()                            */
 /*                                                                            */
 /******************************************************************************/
-
+#ifdef __BASEREL__
 static __inline APTR __GetDataSeg(void)
 { APTR res;
 
@@ -142,6 +142,7 @@ static __inline APTR __GetBssStart(void)
 
   __asm("lea __edata,%0" : "=a" (res)); return res;
 }
+#endif __BASEREL
 
 APTR
 LibInit(REG(a0,LONG SegList),REG(d0,__LIB lib),REG(a6,struct Library *SysBase))
@@ -161,7 +162,7 @@ LibInit(REG(a0,LONG SegList),REG(d0,__LIB lib),REG(a6,struct Library *SysBase))
   lib->SegList = SegList;
   lib->SysBase = SysBase;
 
-#if 1
+#ifdef __BASEREL__
 
   lib->DataSeg = __GetDataSeg();
 

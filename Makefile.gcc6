@@ -34,7 +34,7 @@ AS = m68k-amigaos-as
 
 VARIANTS_TO_BUILD = info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881 libm060 libm060bb libm060bb32
 LIBS_TO_BUILD = libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack libstub
-STARTUPS ?= lib/devinit.o lib/libinit.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
+STARTUPS ?= lib/devinit.o lib/libinit.o lib/libinitb.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
 
 ifneq (,$(lib))
 crt = -mcrt=nix13
@@ -166,6 +166,9 @@ lib/devinit.o: $(root)/sources/startup/devinit.c libdir
 
 lib/libinit.o: $(root)/sources/startup/libinit.c libdir
 	$(CC) -c $(CFLAGS) $(flags) $< -o $@
+
+lib/libinitb.o: $(root)/sources/startup/libinit.c libdir
+	$(CC) -c $(CFLAGS) $(flags) -D__BASEREL__ $< -o $@
 
 lib/libinitr.o: $(root)/sources/startup/libinitr.c libdir
 	$(CC) -c $(CFLAGS) $(flags) $< -o $@
