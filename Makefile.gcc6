@@ -77,7 +77,7 @@ all: $(VARIANTS_TO_BUILD)
 lib: $(STARTUPS)
 	@mkdir -p $@
 	$(MAKE) one kind=$@
-	if [ -e lib/libstubs.a ] && [ "$$(m68k-amigaos-ar t lib/libstubs.a | grep __initlib)" != "" ]; then rm -f lib/libstubs.a; fi
+	if [ -e lib/libstubs.a ] && [ "$$($(AR) t lib/libstubs.a | grep __initlib)" != "" ]; then rm -f lib/libstubs.a; fi
 		
 libb:
 	@mkdir -p $@

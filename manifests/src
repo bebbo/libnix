@@ -264,7 +264,7 @@ sysdep/libnix/sources/nix/string/strspn.c
 sysdep/libnix/sources/nix/string/strstr.c
 sysdep/libnix/sources/nix/string/strtok.c
 sysdep/libnix/sources/nix/string/strxfrm.c
-sysdep/libnix/sources/nix/time/__gmtoffset.c
+sysdep/libnix/sources/nix/time/timezone.c
 sysdep/libnix/sources/nix/time/asctime.c
 sysdep/libnix/sources/nix/time/clock.c
 sysdep/libnix/sources/nix/time/difftime.c
