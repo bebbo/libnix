@@ -22,13 +22,16 @@ union _d_bits {
 extern unsigned char *__decimalpoint;
 #endif
 
-extern int __vfprintf_total_size(FILE *stream, const char *fmt, va_list args);
+extern int __vwfprintf_total_size(FILE *stream, const wchar_t *fmt, va_list args);
 
 /* a little macro to make life easier */
 
-#define OUT(c)  do                           \
-                { putc((c),stream);         \
-                  outcount++;                \
+#define OUT(c)  do {                         \
+                  putc((c >> 24),stream);    \
+                  putc((c >> 16),stream);    \
+                  putc((c >>  8),stream);    \
+                  putc((c      ),stream);    \
+                  outcount += 4;             \
                 }while(0)
 
 #define MINFLOATSIZE (DBL_DIG+3)
@@ -82,30 +85,6 @@ static const char flagc[] = { '#', '0', '-', ' ', '+' };
  */
 #define HAS_PRECI 32
 
-#if 0
-static int ___vfprintf_total_size(FILE *stream, const char *format,
-		va_list args) {
-	unsigned char buf[64];
-	FILE fp;
-	int ret;
-
-	fp._w = 0;
-	fp._flags = stream->_flags & ~(__SWO | __SWR | __SNBF);
-	fp.file = stream->file;
-	fp._bf._base = buf;
-	fp._bf._size = sizeof(buf);
-	fp.linebufsize = 0;
-#ifdef __posix_threads__
-	fp.__spinlock[0] = 0;
-#endif
-	if (((ret = __vfprintf_total_size(&fp, format, args)) >= 0)
-			&& __fflush(&fp))
-		ret = -1;
-	if (fp._flags & __SERR)
-		stream->_flags |= __SERR;
-	return ret;
-}
-#endif
 
 extern unsigned __ulldivus(unsigned long long * llp, unsigned short n);
 
@@ -114,7 +93,7 @@ extern unsigned __ulldivus(unsigned long long * llp, unsigned short n);
  *  would've been written if there were sufficient space in file.
  *  Required for vsnprintf
  */
-int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
+int __vwfprintf_total_size(FILE *stream, const wchar_t *format, va_list args) {
 	size_t outcount = 0;
 
 	__STDIO_LOCK(stream);
@@ -138,7 +117,7 @@ int __vfprintf_total_size(FILE *stream, const char *format, va_list args) {
 			char buffer[REQUIREDBUFFER]; /* The body */
 			char *buffer2 = buffer; /* So we can set this to any other strings */
 			size_t size1 = 0, size2 = 0; /* How many chars in buffer? */
-			const char *ptr = format + 1; /* pointer to format string */
+			const wchar_t *ptr = format + 1; /* pointer to format string */
 			unsigned short i, pad; /* Some temporary variables */
 
 			do /* read flags */
