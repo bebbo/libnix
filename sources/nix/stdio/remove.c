@@ -13,7 +13,6 @@ int remove(const char *filename)
   if((filename=__amigapath(filename))==NULL)
     return -1;
 #endif
-puts(filename);
   if(DeleteFile((CONST_STRPTR)filename))
     return 0;
   else
