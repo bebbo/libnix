@@ -6,7 +6,7 @@ char* utoa(unsigned int value, char *str, int base) {
 	// our digits for any base from 2-16
 	static const char *__digits = "0123456789ABCDEF";
 	// allocate a buffer large enough, base 2 is 32-bits + null
-	char buffer[33], *b, c;
+	char buffer[34], *b, c;
 	// store our initial pointer for return value
 	char *_str;
 	char const *digits;
@@ -18,7 +18,7 @@ char* utoa(unsigned int value, char *str, int base) {
 	digits = __digits;
 
 	// avoid stupid inputs
-	if ((base > 2) && (base <= 16)) {
+	if ((base >= 2) && (base <= 16)) {
 		// null-terminate in reverse order
 		*b++ = 0;
 		// copy characters in reverse order
