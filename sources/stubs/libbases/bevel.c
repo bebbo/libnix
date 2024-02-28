@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* BevelBase[2] = { (void*)-1, "bevel.library" };
+void* BevelBase[2] = { (void*)-1, "gadgets/bevel.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* PaletteBase[2] = { (void*)-1, "palette.library" };
+void* PaletteBase[2] = { (void*)-1, "gadgets/palette.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

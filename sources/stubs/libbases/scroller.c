@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* ScrollerBase[2] = { (void*)-1, "scroller.library" };
+void* ScrollerBase[2] = { (void*)-1, "gadgets/scroller.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

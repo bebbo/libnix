@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* ChooserBase[2] = { (void*)-1, "chooser.library" };
+void* ChooserBase[2] = { (void*)-1, "gadgets/chooser.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

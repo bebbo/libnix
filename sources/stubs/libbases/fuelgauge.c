@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* FuelGaugeBase[2] = { (void*)-1, "fuelgauge.library" };
+void* FuelGaugeBase[2] = { (void*)-1, "gadgets/fuelgauge.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

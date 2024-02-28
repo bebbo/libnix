@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* GetScreenModeBase[2] = { (void*)-1, "getscreenmode.library" };
+void* GetScreenModeBase[2] = { (void*)-1, "gadgets/getscreenmode.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

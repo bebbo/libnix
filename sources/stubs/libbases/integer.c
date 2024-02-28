@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* IntegerBase[2] = { (void*)-1, "integer.library" };
+void* IntegerBase[2] = { (void*)-1, "gadgets/integer.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

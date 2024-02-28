@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* DateBrowserBase[2] = { (void*)-1, "datebrowser.library" };
+void* DateBrowserBase[2] = { (void*)-1, "gadgets/datebrowser.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

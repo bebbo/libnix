@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* GetFileBase[2] = { (void*)-1, "getfile.library" };
+void* GetFileBase[2] = { (void*)-1, "gadgets/getfile.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* CheckBoxBase[2] = { (void*)-1, "checkbox.library" };
+void* CheckBoxBase[2] = { (void*)-1, "gadgets/checkbox.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

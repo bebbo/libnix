@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* RadioButtonBase[2] = { (void*)-1, "radiobutton.library" };
+void* RadioButtonBase[2] = { (void*)-1, "gadgets/radiobutton.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

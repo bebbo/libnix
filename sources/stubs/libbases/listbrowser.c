@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* ListBrowserBase[2] = { (void*)-1, "listbrowser.library" };
+void* ListBrowserBase[2] = { (void*)-1, "gadgets/listbrowser.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

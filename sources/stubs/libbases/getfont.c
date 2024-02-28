@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* GetFontBase[2] = { (void*)-1, "getfont.library" };
+void* GetFontBase[2] = { (void*)-1, "gadgets/getfont.gadget" };
 
 #elif defined (__AMIGAOS4__)
 
