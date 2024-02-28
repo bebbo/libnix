@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* SpaceBase[2] = { (void*)-1, "space.library" };
+void* SpaceBase[2] = { (void*)-1, "gadgets/space.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

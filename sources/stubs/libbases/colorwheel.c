@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* ColorWheelBase[2] = { (void*)-1, "colorwheel.library" };
+void* ColorWheelBase[2] = { (void*)-1, "gadgets/colorwheel.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

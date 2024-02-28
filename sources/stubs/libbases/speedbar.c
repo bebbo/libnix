@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* SpeedBarBase[2] = { (void*)-1, "speedbar.library" };
+void* SpeedBarBase[2] = { (void*)-1, "gadgets/speedbar.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

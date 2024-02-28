@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* DrawListBase[2] = { (void*)-1, "drawlist.library" };
+void* DrawListBase[2] = { (void*)-1, "gadgets/drawlist.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

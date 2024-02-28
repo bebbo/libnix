@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* ClickTabBase[2] = { (void*)-1, "clicktab.library" };
+void* ClickTabBase[2] = { (void*)-1, "gadgets/clicktab.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

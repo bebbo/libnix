@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* GlyphBase[2] = { (void*)-1, "glyph.library" };
+void* GlyphBase[2] = { (void*)-1, "gadgets/glyph.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

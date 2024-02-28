@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* BitMapBase[2] = { (void*)-1, "bitmap.library" };
+void* BitMapBase[2] = { (void*)-1, "gadgets/bitmap.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

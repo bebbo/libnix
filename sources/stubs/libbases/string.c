@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* StringBase[2] = { (void*)-1, "string.library" };
+void* StringBase[2] = { (void*)-1, "gadgets/string.gadget" };
 
 #elif defined (__AMIGAOS4__)
 

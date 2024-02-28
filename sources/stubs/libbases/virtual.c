@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* VirtualBase[2] = { (void*)-1, "virtual.library" };
+void* VirtualBase[2] = { (void*)-1, "gadgets/virtual.gadget" };
 
 #elif defined (__AMIGAOS4__)
 
