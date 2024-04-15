@@ -62,6 +62,7 @@
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/amiga/misc"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math/extra"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math/math"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math/stdio"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math/stdlib"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/math/trans"/>
@@ -70,7 +71,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/errno"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/extra"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/locale"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/math"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/misc"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/setjmp"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/nix/signal"/>
@@ -90,7 +90,6 @@
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/extra"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/netdb"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/socket"/>
-						<entry excluding="math" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/stdio"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/socket/unistd"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/stack"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="sources/startup"/>
