@@ -1,6 +1,4 @@
 #include <exec/execbase.h>
-#define DEVICES_TIMER_H
-#include <dos/dosextens.h>
 #include <proto/exec.h>
 #include <stdlib.h>
 
@@ -85,16 +83,16 @@ static char *newstack;
 
 void __stkinit() {
 	ULONG size, needed = __stack;
-	struct Process *pr;
+	struct Task *task;
 	char *new;
 	register UWORD *upper asm("a2"), *to asm("a0"), *sp;
 
 	/* Determine original stack size */
-	pr = (struct Process*) FindTask(NULL);
+	task = SysBase->ThisTask;
 #if defined(__KICK13__)
-	pr->pr_Task.tc_SPUpper = __SaveSP + 6;
+	task->tc_SPUpper = __SaveSP + 6;
 #else
-	size = (char*) pr->pr_Task.tc_SPUpper - (char*) pr->pr_Task.tc_SPLower;
+	size = (char*) task->tc_SPUpper - (char*) task->tc_SPLower;
 	if (needed <= size)
 		return;
 #endif

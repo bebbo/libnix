@@ -18,6 +18,7 @@ _LVOReplyMsg	=	-378
 _LVOWaitPort	=	-384
 _LVOCopyMemQuick =	-630
 
+tc_TrapData =     46
 pr_MsgPort	=	  92
 pr_CLI		=	 172
 ThisTask    =    276
@@ -92,6 +93,7 @@ do_reloc:	movel	a0@+,a1
 		subql	#1,d0
 		bne	do_reloc
 no_reloc:	lea	a4@(0x7ffe:L),a4
+		movel	a4,tc_TrapData(a3)
 
 		movel	sp,a4@(___SaveSP:L)
 		movel	a6,a4@(_SysBase:L)
@@ -145,6 +147,13 @@ cleanup:
 		jsr	a6@(_LVOReplyMsg:L)
 todos:
 		movel	d7,d0
+		rts
+
+___restore_a4: .globl ___restore_a4
+_geta4: 	lea	___a4_init,a4
+		movel	4:W,a4
+		movel	a4@(ThisTask:W),a4
+		movel	tc_TrapData(a4),a4
 		rts
 
 | call all functions in the NULL terminated list pointed to by a2
