@@ -1,7 +1,6 @@
 #include <proto/dos.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "stabs.h"
 
 extern void __seterrno(void);
 
