@@ -10,7 +10,6 @@
 extern "C" {
 #endif
 
-#ifdef REPLACE_STDIO
 #define puts(a) amiputs(a)
 #define gets(a,b) amigets(a, b)
 #define fputs(a,f) FPuts(f, a)
@@ -25,15 +24,14 @@ extern "C" {
 #define stdout Output()
 #define stderr amistderr()
 #define fflush(f) Flush(f)
-#endif
 
-extern int amiputs(char const * s);
-extern int amigets(char * s, unsigned sz);
-extern int amiprintf(char const * ftm,...);
-extern int amifprintf(BPTR f, char const * ftm,...);
-extern int amivfprintf(BPTR f, const char *fmt, va_list args);
-extern void amiputchar(char c);
-extern BPTR amistderr();
+extern __stdargs int amiputs(char const * s);
+extern __stdargs int amigets(char * s, unsigned sz);
+extern __stdargs int amiprintf(char const * ftm,...);
+extern __stdargs int amifprintf(BPTR f, char const * ftm,...);
+extern __stdargs int amivfprintf(BPTR f, const char *fmt, va_list args);
+extern __stdargs void amiputchar(char c);
+extern __stdargs BPTR amistderr();
 
 #ifdef __cplusplus
 }
