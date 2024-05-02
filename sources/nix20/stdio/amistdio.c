@@ -9,14 +9,10 @@
 int amigets(char *p, unsigned sz) {
 	BPTR in = Input();
 	*p = 0;
-	int l = FGets(in, p, sz);
-//	if (l == 0) {
-//		struct FileHandle * fh = (struct FileHandle *)BADDR(in);
-//		if (fh->fh_Type != 0) {
-//			WaitForChar(in, 0x7fffffff);
-//			l = FGets(in, p, sz);
-//		}
-//	}
+	STRPTR s = FGets(in, p, sz);
+	if (!s)
+		return 0;
+	int l = strlen(s);
 	while (l > 0 && (p[l-1] == '\n' || p[l-1] == '\r')) {
 		p[--l] = 0;
 	}
