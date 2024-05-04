@@ -3,6 +3,7 @@
 #include <stabs.h>
 
 #include <dos/dosextens.h>
+#include <exec/execbase.h>
 #include <proto/dos.h>
 #include <proto/exec.h>
 
