@@ -26,7 +26,9 @@ int amiputs(char const *s) {
 }
 
 void amiputchar(char c) {
-	Write(Output(), &c, 1);
+	BPTR o = Output();
+	Flush(o);
+	Write(o, &c, 1);
 }
 
 static int bsz = 128;

@@ -4,7 +4,13 @@
 #define _STDIO_H
 
 #include <stdarg.h>
+
+#ifndef DOS_DOS_H
 #include <dos/dos.h>
+#endif
+#ifndef PROTO_DOS_H
+#include <proto/dos.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
