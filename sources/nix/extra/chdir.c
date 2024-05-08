@@ -1,6 +1,8 @@
-#include <proto/dos.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#include <proto/dos.h>
+
 #include "stabs.h"
 
 extern void __seterrno(void);
@@ -28,9 +30,11 @@ int fchdir(int fd) {
 	StdFileDes *sfd = _lx_fhfromfd(fd);
 	if (!sfd)
 		return ERROR_DIR_NOT_FOUND;
-	char buffer[256];
-	NameFromLock(sfd->lx_fh, buffer, 255);
-	return chdir(buffer);
+
+	BPTR old = CurrentDir(sfd->lx_fh);
+	if (old)
+		UnLock(old);
+	return old != 0;
 }
 
 void __initchdir(void)

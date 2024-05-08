@@ -17,7 +17,8 @@ int wcsncmp(const wchar_t *p1,const wchar_t *p2, size_t n)
 		  b = *--p2;
 		  return (short)a - b;
 	  }
-	  return 0;
+	  break;
 	}
+  return 0;
 }
 

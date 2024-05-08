@@ -13,6 +13,7 @@ int strcmp(const char *p1,const char *p2)
 
 	  a = *--p1;
 	  b = *--p2;
-	  return (short)a - b;
+	  break;
 	}
+  return (short)a - b;
 }
