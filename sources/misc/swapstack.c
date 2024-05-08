@@ -22,6 +22,7 @@ extern void FreeVec(void *);
 
 #pragma GCC push_options
 #pragma GCC optimize ("-Os")
+#pragma GCC optimize ("-fomit-frame-pointer")
 
 // keeps d0/d1/a0/a1 free for local use.
 void __stkswap() {
@@ -57,7 +58,6 @@ __attribute((noinline)) void StackSwap(volatile struct StackSwapStruct *newStack
 	asm("move.l %0,a6"::"r" (SysBase));
 	__stkswap();
 }
-#pragma GCC pop_options
 
 /*
  * swapstack.c
