@@ -88,6 +88,11 @@ nobss:
 
 _exit:
 __exit:
+		movel	(sp)+,a0
+		movel	(sp)+,d0
+		movel	a4@(___SaveSP:L),sp
+		movel	d0,-(sp)
+		movel	a0,-(sp)
 	 	lea	___EXIT_LIST__,a2
 		addqw	#4,a2
 		moveql	#0,d2

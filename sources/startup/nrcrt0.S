@@ -100,11 +100,16 @@ no_reloc:	lea	a4@(0x7ffe:W),a4
 | exit() entry - get return val, restore stackptr
 
 _exit:
-__exit: 	lea	___EXIT_LIST__,a2
+__exit:
+		movel	(sp)+,a0
+		movel	(sp)+,d0
+		movel	a4@(___SaveSP:W),sp
+		movel	d0,-(sp)
+		movel	a0,-(sp)
+		lea	___EXIT_LIST__,a2
 		addqw	#4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
-
 __Exit: .globl	__Exit
 ____exit: .globl	____exit
 		movel	sp@(4:W),d7
