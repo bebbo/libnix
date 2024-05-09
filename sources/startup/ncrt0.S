@@ -58,7 +58,13 @@ fromCLI:	lea	___INIT_LIST__+4,a2
 | exit() entry - execute all exit functions, reply wbmsg
 
 _exit:
-__exit: 	lea	___EXIT_LIST__+4,a2
+__exit:
+		movel	(sp)+,a0
+		movel	(sp)+,d0
+		movel	___SaveSP,sp
+		movel	d0,-(sp)
+		movel	a0,-(sp)
+	 	lea	___EXIT_LIST__+4,a2
 		moveql	#0,d2
 		jbsr	callfuncs
 

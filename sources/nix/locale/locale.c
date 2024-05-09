@@ -1,4 +1,5 @@
 #include <locale.h>
+#include <string.h>
 
 struct __locale_t {
 	int unknown;

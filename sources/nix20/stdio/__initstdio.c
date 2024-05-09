@@ -174,7 +174,6 @@ static StdFileDes * stdfiledes(BPTR fh) {
  **
  */
 void __initstdio(void) {
-	extern struct WBStartup *_WBenchMsg;
 	StdFileDes *sfd;
 #ifdef __KICK13__
 	__stdfilesize = 0;
@@ -195,7 +194,7 @@ void __initstdio(void) {
 				bstderr = proc->pr_CES;
 #endif
 				if(bstderr == 0 &&
-				  (_WBenchMsg || (bstderr = stderrdes = Open((CONST_STRPTR)"*", MODE_OLDFILE)) == 0))
+				  (!proc->pr_CLI || (bstderr = stderrdes = Open((CONST_STRPTR)"*", MODE_OLDFILE)) == 0))
 					bstderr = __stdfiledes[STDOUT_FILENO]->lx_fh;
 
 				if ((sfd = stdfiledes(bstderr))) {

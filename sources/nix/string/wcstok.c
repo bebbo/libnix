@@ -42,9 +42,10 @@ cont:
 				else
 					s[-1] = L'\0';
 				*lasts = s;
-				return (tok);
+				goto End;
 			}
 		} while (sc != L'\0');
 	}
-	/* NOTREACHED */
+	End:
+	return (tok);
 }

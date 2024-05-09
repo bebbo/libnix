@@ -77,7 +77,7 @@ static inline int net_select(int s, fd_set *in, fd_set *out, fd_set *exc, struct
     break;
 
     case LX_AMITCP:
-      rc = TCP_WaitSelect(s, in, out, exc, timeout, sigs);
+      rc = TCP_WaitSelect(s, in, out, exc, timeout, (ULONG*)sigs);
     break;
 
     default:
@@ -156,7 +156,7 @@ static inline int lx_select(int nfd, fd_set *ifd, fd_set *ofd, fd_set *efd, stru
 
     wait_sigs = SIGBREAKF_CTRL_C  | origmask;
 
-    if (cmd=SELCMD_POLL,skipped_wait) {
+    if ((cmd=SELCMD_POLL,skipped_wait) != 0) {
 
       if (dotout)  {
         _treq->tr_node.io_Command = TR_ADDREQUEST;

@@ -1,5 +1,7 @@
 #include "amistdio.h"
 #include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stabs.h>
 
 #include <dos/dosextens.h>

@@ -20,7 +20,9 @@ extern void FreeDosObject(long, void *);
 
 extern int __stat(struct stat *buf,struct FileInfoBlock *fib);
 extern void __seterrno(void);
+#ifdef IXPATHS
 extern char *__amigapath(const char *path);
+#endif
 
 asm("_lstat: .global _lstat");
 int stat(const char *name,struct stat *buf)

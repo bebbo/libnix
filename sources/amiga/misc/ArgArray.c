@@ -52,7 +52,7 @@ STRPTR ArgString(UBYTE **tt, STRPTR entry, STRPTR defstr)
 {
   STRPTR str;
 
-  if (!entry || !(str=FindToolType(tt,entry)))
+  if (!entry || !(str=FindToolType((CONST_STRPTR*)tt,entry)))
     str=defstr;
   return str;
 }
@@ -61,7 +61,7 @@ LONG ArgInt(UBYTE **tt, STRPTR entry, long defval)
 {
   STRPTR str;
 
-  if (entry && (str=FindToolType(tt,entry)))
+  if (entry && (str=FindToolType((CONST_STRPTR*)tt,entry)))
     StrToLong(str,&defval);
   return defval;
 }

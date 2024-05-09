@@ -6,7 +6,9 @@
 #include <sys/stat.h>
 
 extern void __seterrno(void);
+#ifdef IXPATHS
 extern char *__amigapath(const char *path);
+#endif
 
 int chmod(const char *name, mode_t mode)
 {
