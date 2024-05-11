@@ -180,7 +180,7 @@ lib/nlrcrt0.o: $(root)/sources/startup/nlrcrt0.S libdir
 	$(AS) -m68020 $< -o $@
 
 lib/init_shared.o: $(root)/sources/startup/init_shared.c libdir
-	$(CC) -fbaserel -m68000 -Os -c $< -o $@ 
+	$(CC) $(CFLAGS) -fbaserel -m68000 -Os -c $< -o $@ 
 
 .PHONY: libnix libnix13 libnix20 libnixmain libnix_main libm libsocket
 libnix:
