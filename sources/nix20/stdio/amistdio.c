@@ -9,43 +9,23 @@
 #include <proto/dos.h>
 #include <proto/exec.h>
 
-int amigets(char *p, unsigned sz) {
-	BPTR in = Input();
-	*p = 0;
-	STRPTR s = FGets(in, p, sz);
-	if (!s)
-		return 0;
-	int l = strlen(s);
-	while (l > 0 && (p[l-1] == '\n' || p[l-1] == '\r')) {
-		p[--l] = 0;
-	}
-	return l;
-}
-
-int amiputs(char const *s) {
-	BPTR f = Output();
-	FPuts(f, s);
-	return FPuts(f, "\r\n");
-}
-
-void amiputchar(char c) {
-	BPTR o = Output();
-	Flush(o);
-	Write(o, &c, 1);
-}
-
 static int bsz = 128;
 static char *buffer;
 static char *end;
 static char *last;
 
+void __freeBuff() {
+	if (buffer)
+		FreeVec(buffer);
+}
 void __initBuff() {
 	bsz += bsz;
-	free(buffer);
-	buffer = (char*) malloc(bsz);
+	__freeBuff();
+	buffer = (char*) AllocVec(bsz, MEMF_PUBLIC);
 	end = bsz + buffer;
 }
 ADD2INIT(__initBuff, -42);
+ADD2EXIT(__freeBuff, -42);
 
 __saveds
 static void pc(register char *ptr asm("a3")) {
@@ -82,7 +62,3 @@ int amivfprintf(BPTR f, const char *fmt, va_list args) {
 	return last - buffer;
 }
 
-BPTR amistderr() {
-	struct Process * p = (struct Process *)SysBase->ThisTask;
-	return p->pr_CES ? p->pr_CES : Output();
-}

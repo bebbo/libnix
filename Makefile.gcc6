@@ -7,7 +7,7 @@ CFLAGS ?= -Os -fomit-frame-pointer
 uname := $(shell uname)
 root ?= $(shell echo $$PWD)
 export root
-
+ 
 MAKEFILES=$(root)/Makefile.gcc6
 
 # special path handling for msys2 started from Eclipse
@@ -33,8 +33,8 @@ AR = m68k-amigaos-ar
 AS = m68k-amigaos-as
 
 VARIANTS_TO_BUILD = info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
-LIBS_TO_BUILD ?= libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack libstub
-STARTUPS ?= lib/devinit.o lib/libinit.o lib/libinitb.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o
+LIBS_TO_BUILD ?= libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstub
+STARTUPS ?= lib/devinit.o lib/libinit.o lib/libinitb.o lib/libinitr.o lib/ncrt0.o lib/nbcrt0.o lib/nlbcrt0.o lib/nrcrt0.o lib/nlrcrt0.o lib/init_shared.o
 
 ifneq (,$(lib))
 crt = -mcrt=nix13
@@ -179,7 +179,10 @@ lib/nrcrt0.o: $(root)/sources/startup/nrcrt0.S libdir
 lib/nlrcrt0.o: $(root)/sources/startup/nlrcrt0.S libdir
 	$(AS) -m68020 $< -o $@
 
-.PHONY: libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstack
+lib/init_shared.o: $(root)/sources/startup/init_shared.c libdir
+	$(CC) $(CFLAGS) -fbaserel -m68000 -Os -c $< -o $@ 
+
+.PHONY: libnix libnix13 libnix20 libnixmain libnix_main libm libsocket
 libnix:
 	$(MAKE) -C $(kind) rest libnix.a lib=nix
 libnix13:
@@ -192,8 +195,6 @@ libm:
 	$(MAKE) -C $(kind) libm.a lib=math libname=m flags="$(flags) -DFULL_SPECIFIERS"
 libsocket:
 	$(MAKE) -C $(kind) libsocket.a lib=socket
-libstack:
-	$(MAKE) -C $(kind) libstack.a lib=stack
 
 libstub:
 	$(MAKE) -C $(kind) libstubs.a lib=stubs
@@ -211,10 +212,7 @@ libc: $(STARTUPS)
 	$$(find ./$(lc)/nixmain/* -name '*.o' -newer $(lc)/libc.a) \
 	$$(find ./$(lc)/nix20/* -name '*.o' -newer $(lc)/libc.a)
 
-rest: swapstack.o detach.o
-
-swapstack.o: $(root)/sources/misc/swapstack.c
-	$(CC) -c -Os -fomit-frame-pointer $(flags) $^ -o $@
+rest: detach.o
 
 detach.o: $(root)/sources/misc/detach.c
 	$(CC) -c -Os -fomit-frame-pointer $(flags) $^ -o $@
