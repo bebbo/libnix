@@ -6,7 +6,6 @@
 #pragma GCC push_options
 #pragma GCC optimize ("-Os")
 #pragma GCC optimize ("-fno-toplevel-reorder")
-#pragma GCC optimize ("-fbaserel")
 #pragma GCC optimize ("-fomit-frame-pointer")
 
 // make cli happy
@@ -31,7 +30,8 @@ const APTR __FuncTable__[];
 
 struct ExecBase *SysBase = 0;
 struct Library *__theMasterLib = 0;
-long __segList = 42;
+long __segList = 0;
+long __initFailed = 0;
 
 // needed per instance
 unsigned short __cleanupflag = 0;
@@ -59,6 +59,7 @@ const int __ZZZ_LIST__[1] = {0};
 __attribute__((section(".end_of_dlists")))
 int __ZZZ_DLIST__[1] = {0};
 
+long __LibClose(struct Library * childLib asm("a6"));
 void __callfuncs(const int * p asm("a2"), unsigned short prioo asm("d2"));
 
 void __restore_a4() {
@@ -193,6 +194,11 @@ __LibOpen(struct Library *_masterlib asm("a6")) {
 	// run init
 	__callfuncs(&__INIT_LIST__[1], 0);
 
+	if (__initFailed) {
+		__LibClose(childLib);
+		return 0;
+	}
+
 	return childLib;
 }
 
@@ -299,5 +305,5 @@ void __callfuncs(const int * q asm("a2"), unsigned short order asm("d2")) {
 }
 
 void exit(int x) {
-	__segList = -1;
+	__initFailed = -1;
 }
