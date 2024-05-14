@@ -2,13 +2,13 @@
 | (c) by M.Fleischer and G.Nikl Wed Apr 13 17:45 1994
 | No bugs known
 
-| some specific defines
+| some specific defines (disabled to prevent multiple definition - main source = libamiga.a
 
-_LVOForbid	=	-132
-_LVOFindTask	=	-294
-_LVOGetMsg	=	-372
-_LVOReplyMsg	=	-378
-_LVOWaitPort	=	-384
+| _LVOForbid	=	-132
+| _LVOFindTask	=	-294
+| _LVOGetMsg	=	-372
+| _LVOReplyMsg	=	-378
+| _LVOWaitPort	=	-384
 
 pr_MsgPort	=	  92
 pr_CLI		=	 172
