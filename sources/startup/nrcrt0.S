@@ -7,16 +7,16 @@
 |
 | You should use the non-resident startup-code if you need it !
 
-| some specific defines
+| some specific defines (disabled, main source = libamiga.a)
 
-_LVOForbid	=	-132
-_LVOAllocMem	=	-198
-_LVOFindTask	=	-294
-_LVOFreeMem	=	-210
-_LVOGetMsg	=	-372
-_LVOReplyMsg	=	-378
-_LVOWaitPort	=	-384
-_LVOCopyMemQuick =	-630
+| _LVOForbid	=	-132
+| _LVOAllocMem	=	-198
+| _LVOFindTask	=	-294
+| _LVOFreeMem	=	-210
+| _LVOGetMsg	=	-372
+| _LVOReplyMsg	=	-378
+| _LVOWaitPort	=	-384
+| _LVOCopyMemQuick =	-630
 
 tc_TrapData =     46
 pr_MsgPort	=	  92
