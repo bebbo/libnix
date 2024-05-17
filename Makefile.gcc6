@@ -113,6 +113,7 @@ one: $(LIBS_TO_BUILD)
 # install all kinds into the prefix
 .PHONY: install_lib install_libb install_libm020 install_libm020bb install_libm020bb32 install_libm881 install_libm020bb881 install_libm020bb32881  
 install: install_lib install_libb install_libm020 install_libm020bb install_libm020bb32 install_libm881 install_libm020bb881 install_libm020bb32881
+	cp $(root)/mkstub $(PREFIX)/bin
 	
 install_lib:
 	$(MAKE) install_one kind=lib to=""
