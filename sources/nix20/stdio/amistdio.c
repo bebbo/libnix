@@ -22,17 +22,35 @@ void __initBuff() {
 	bsz += bsz;
 	__freeBuff();
 	buffer = (char*) AllocVec(bsz, MEMF_PUBLIC);
-	end = bsz + buffer;
+	if (buffer) {
+		end = bsz + buffer;
+	} else {
+		end = buffer;
+		exit(10);
+	}
 }
 ADD2INIT(__initBuff, -42);
 ADD2EXIT(__freeBuff, -42);
 
-__saveds
+#ifdef __baserel__
+// needed to set a4 in the callback function
+static void * mya4;
+#endif
+
+// the callback per character, checks for end of buffer!
 static void pc(register char *ptr asm("a3")) {
-	if (ptr >= end)
-		return;
-	last = ptr;
-	asm volatile("move.b d0,(a3)+");
+#ifdef __baserel__
+	register void * a4 asm("a4");
+	asm volatile("move.l	a4,-(a7)" :: "r"(a4));
+	asm volatile("move.l %1,%0" : "=r"(a4) : "m"(mya4));
+#endif
+	if (ptr < end) {
+		last = ptr;
+		asm volatile("move.b d0,(a3)+");
+	}
+#ifdef __baserel__
+	asm volatile("move.l	(a7)+,a4" : "=r"(a4));
+#endif
 }
 
 int amiprintf(char const *fmt, ...) {
@@ -52,6 +70,10 @@ int amifprintf(BPTR f, char const *fmt, ...) {
 }
 
 int amivfprintf(BPTR f, const char *fmt, va_list args) {
+#ifdef __baserel__
+	register void * a4 asm("a4");
+	asm volatile("move.l %1,%0" : "=m"(mya4) : "r"(a4));
+#endif
 	for (;;) {
 		RawDoFmt(fmt, args, pc, buffer);
 		if (last < end)

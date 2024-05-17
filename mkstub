@@ -1,0 +1,128 @@
+#!/bin/bash 
+out=$1
+dir=$out-support
+
+shift
+
+echo creating support files in $dir
+
+rm -rf $dir
+mkdir -p $dir
+
+echo >$dir/init-stub-${out}.c "// STUB to load and init the so file
+#include <proto/dos.h>
+#include <proto/exec.h>
+#include <stabs.h>
+
+void * ${out}Base = 0;
+void * __${out}_sp = 0;
+void * __${out}_a4[3] = {0};
+
+// linked first stub
+__attribute__((section(\".dlist_so_${out}\")))
+static long __so_${out}_start[1] = {0};
+
+// init all references by name
+void __so_${out}_open() {
+  ${out}Base = OldOpenLibrary(\"$out.library\");
+  if (!${out}Base) {
+	FPuts(Output(), \"failed to load $out.library\n\");
+    exit(10);
+  }
+  register long * a0 asm(\"a0\") = &__so_${out}_start[1];
+  register void * a6 asm(\"a6\") = ${out}Base;
+  asm volatile(\"jsr (-30,a6)\"::\"r\"(a0), \"r\"(a6));
+}
+
+void __so_${out}_close() {
+  if (${out}Base)
+    CloseLibrary(${out}Base);
+}
+
+ADD2INIT(__so_${out}_open, -78); // one less than __initlibraries
+ADD2EXIT(__so_${out}_close, -78);
+"
+
+# get last word = var name of exported functions
+m68k-amigaos-objdump -t $* | grep "0000 01 " | while read line; do
+
+n=$(echo $line | awk '{ print $NF }' | grep -v "___")
+n=${n:1}
+
+if [[ "$n" == "" ]]; then
+  continue;
+fi
+
+# only normal variables  
+
+echo >>$dir/export-$out.c "
+
+extern void * $n;
+__attribute__((section(\".dlist_so_export_$n\")))
+char const * __name_$n = \"$n\";
+__attribute__((section(\".dlist_so_export_$n\")))
+void ** __ptr_to_$n = (void**)&$n;
+"
+
+  echo creating $dir/stub-$n.c
+  
+  text=${line##*.text}
+# text segment -> function with stub
+  if [[ "$text" != "$line" ]]; then
+echo >$dir/stub-$n.c  "//=== BEGIN stubs for $n
+extern void * ${out}Base;
+extern void * __${out}_sp;
+extern void * __${out}_a4[2];
+
+__attribute__((section(\".data.${out}_$n\")))
+long (*__ptr_$n)();
+__attribute__((section(\".text.${out_}$n\")))
+void $n() {
+    asm volatile(\"move.l (sp)+,%0\" : \"=m\"(__${out}_sp));
+    asm volatile(\"movem.l a4-a6,%0\" : \"=m\"(__${out}_a4));
+    asm volatile(\"move.l %0,a4;\nmove.l a4,a6;\nadd.l #32766,a4\" :: \"m\"(${out}Base));
+	asm volatile(\"move.l %0,a5;jsr (a5)\" :: \"m\"(__ptr_$n));
+    asm volatile(\"movem.l %0,a4-a6\" :: \"m\"(__${out}_a4));
+    asm volatile(\"move.l %0,-(sp)\" :: \"m\"(__${out}_sp));
+}
+
+__attribute__((section(\".dlist_so_${out}z_$n\")))
+char const * __name_$n = \"$n\";
+__attribute__((section(\".dlist_so_${out}z_$n\")))
+void ** __to_ptr_$n = (void**)&__ptr_$n;
+//=== END
+
+"
+else
+echo >$dir/stub-$n.c "//=== BEGIN stubs for $n
+extern void *__${out}_sp;
+
+__attribute__((section(\".data.${out}_$n\")))
+void * $n = (void *)&__${out}_sp;
+
+__attribute__((section(\".dlist_so_${out}z_$n\")))
+char const * __name_$n = \"$n\";
+__attribute__((section(\".dlist_so_${out}z_$n\")))
+void ** __to_ptr_$n = &$n;
+//=== END
+"
+fi
+
+done
+
+pushd $dir >/dev/null
+echo compiling stubs
+echo m68k-amigaos-gcc -Os -fomit-frame-pointer *stub*.c -c
+m68k-amigaos-gcc -Os -fomit-frame-pointer *stub*.c -c
+
+echo create link lib $out.a
+rm -f ../$out.a
+echo m68k-amigaos-ar rcs ../$out.a *stub*.o
+m68k-amigaos-ar rcs ../$out.a *stub*.o
+
+echo m68k-amigaos-gcc -resident -Os -fomit-frame-pointer export*.c -c
+m68k-amigaos-gcc -resident -Os -fomit-frame-pointer export*.c -c
+
+popd >/dev/null
+
+
