@@ -79,11 +79,12 @@ long (*__ptr_$n)();
 __attribute__((section(\".text.${out_}$n\")))
 void $n() {
     asm volatile(\"move.l (sp)+,%0\" : \"=m\"(__${out}_sp));
-    asm volatile(\"movem.l a4-a6,%0\" : \"=m\"(__${out}_a4));
-    asm volatile(\"move.l %0,a4;\nmove.l a4,a6;\nadd.l #32766,a4\" :: \"m\"(${out}Base));
-	asm volatile(\"move.l %0,a5;jsr (a5)\" :: \"m\"(__ptr_$n));
-    asm volatile(\"movem.l %0,a4-a6\" :: \"m\"(__${out}_a4));
-    asm volatile(\"move.l %0,-(sp)\" :: \"m\"(__${out}_sp));
+    asm volatile(\"movem.l a5/a6,%0\nmove.l a4,a6\" : \"=m\"(__${out}_a4));
+	asm volatile(\"move.l %0,a5\" :: \"m\"(__ptr_$n));
+    asm volatile(\"move.l %0,a4\nadd.l #32766,a4\" :: \"m\"(${out}Base));
+	asm volatile(\"jsr (a5)\" :: \"m\"(__ptr_$n));
+    asm volatile(\"move.l a6,a4\nmovem.l %0,a5/a6\" : \"=m\"(__${out}_a4));
+    asm volatile(\"move.l %0,-(sp)\" : \"=m\"(__${out}_sp));
 }
 
 __attribute__((section(\".dlist_so_${out}z_$n\")))
@@ -112,8 +113,8 @@ done
 
 pushd $dir >/dev/null
 echo compiling stubs
-echo m68k-amigaos-gcc -Os -fomit-frame-pointer *stub*.c -c
-m68k-amigaos-gcc -Os -fomit-frame-pointer *stub*.c -c
+echo m68k-amigaos-gcc ${LIB_MODE} -Os -fomit-frame-pointer *stub*.c -c
+m68k-amigaos-gcc ${LIB_MODE} -Os -fomit-frame-pointer *stub*.c -c
 
 echo create link lib $out.a
 rm -f ../$out.a

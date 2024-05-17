@@ -32,17 +32,12 @@ void __initBuff() {
 ADD2INIT(__initBuff, -42);
 ADD2EXIT(__freeBuff, -42);
 
-#ifdef __baserel__
-// needed to set a4 in the callback function
-static void * mya4;
-#endif
-
 // the callback per character, checks for end of buffer!
 static void pc(register char *ptr asm("a3")) {
 #ifdef __baserel__
 	register void * a4 asm("a4");
 	asm volatile("move.l	a4,-(a7)" :: "r"(a4));
-	asm volatile("move.l %1,%0" : "=r"(a4) : "m"(mya4));
+	asm volatile("move.l	d7,%0" : "=r"(a4));
 #endif
 	if (ptr < end) {
 		last = ptr;
@@ -71,8 +66,9 @@ int amifprintf(BPTR f, char const *fmt, ...) {
 
 int amivfprintf(BPTR f, const char *fmt, va_list args) {
 #ifdef __baserel__
-	register void * a4 asm("a4");
-	asm volatile("move.l %1,%0" : "=m"(mya4) : "r"(a4));
+	// luckily d7 seems to be free...
+	register void * d7 asm("d7");
+	asm volatile("move.l a4,%0" : "=r"(d7));
 #endif
 	for (;;) {
 		RawDoFmt(fmt, args, pc, buffer);
@@ -83,4 +79,3 @@ int amivfprintf(BPTR f, const char *fmt, va_list args) {
 	FPuts(f, buffer);
 	return last - buffer;
 }
-
