@@ -26,6 +26,8 @@ extern "C" {
 #define printf(...) amiprintf(__VA_ARGS__)
 #define fprintf(...) amifprintf(__VA_ARGS__)
 #define vfprintf(...) amivfprintf(__VA_ARGS__)
+#define snprintf(...) amisnprintf(__VA_ARGS__)
+#define vsnprintf(...) amivsnprintf(__VA_ARGS__)
 #define stdin Input()
 #define stdout Output()
 #define stderr amistderr()
@@ -38,6 +40,8 @@ extern __stdargs int amifprintf(BPTR f, char const * ftm,...);
 extern __stdargs int amivfprintf(BPTR f, const char *fmt, va_list args);
 extern __stdargs void amiputchar(char c);
 extern __stdargs BPTR amistderr();
+extern __stdargs int amivsnprintf(char * buffer, int sz, const char *fmt, va_list args);
+extern __stdargs int amisnprintf(char * buffer, int sz, const char *fmt, ...);
 
 #ifdef __cplusplus
 }
