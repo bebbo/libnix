@@ -12,5 +12,7 @@
 int amiputs(char const *s) {
 	BPTR f = Output();
 	FPuts(f, s);
-	return FPuts(f, "\r\n");
+	int r = FPuts(f, "\r\n");
+	Flush(f);
+	return r;
 }

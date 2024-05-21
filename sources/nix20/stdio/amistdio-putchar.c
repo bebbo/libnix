@@ -11,6 +11,5 @@
 
 void amiputchar(char c) {
 	BPTR o = Output();
-	Flush(o);
-	Write(o, &c, 1);
+	FPutC(o, c);
 }

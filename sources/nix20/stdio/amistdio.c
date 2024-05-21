@@ -10,42 +10,61 @@
 #include <proto/exec.h>
 
 static int bsz = 128;
+static char __printf_default_buffer[128];
 static char *buffer;
-static char *end;
-static char *last;
+
+void __allocBuff() {
+	buffer = __printf_default_buffer;
+}
 
 void __freeBuff() {
-	if (buffer)
+	if (buffer && buffer != __printf_default_buffer) {
 		FreeVec(buffer);
-}
-void __initBuff() {
-	bsz += bsz;
-	__freeBuff();
-	buffer = (char*) AllocVec(bsz, MEMF_PUBLIC);
-	if (buffer) {
-		end = bsz + buffer;
-	} else {
-		end = buffer;
-		exit(10);
+		buffer = 0;
 	}
 }
-ADD2INIT(__initBuff, -42);
+
+void setPrintfBufferSize(int sz) {
+	char * p = (char*) AllocVec(sz, MEMF_PUBLIC);
+	if (p) {
+		__freeBuff();
+		buffer = p;
+		bsz = sz;
+	}
+}
+
+ADD2INIT(__allocBuff, -42);
 ADD2EXIT(__freeBuff, -42);
 
 // the callback per character, checks for end of buffer!
-static void pc(register char *ptr asm("a3")) {
-#ifdef __baserel__
-	register void * a4 asm("a4");
-	asm volatile("move.l	a4,-(a7)" :: "r"(a4));
-	asm volatile("move.l	d7,%0" : "=r"(a4));
-#endif
-	if (ptr < end) {
-		last = ptr;
-		asm volatile("move.b d0,(a3)+");
-	}
-#ifdef __baserel__
-	asm volatile("move.l	(a7)+,a4" : "=r"(a4));
-#endif
+void __amiputs_putchar_callback(register char *ptr asm("a3")) {
+	asm volatile("cmp.b #-1,(a3)");
+	asm volatile("bne.s __Skip");
+	asm volatile("move.b d0,(a3)+");
+	asm volatile("__Skip:");
+}
+
+int amivsnprintf(char * buff, int sz, const char *fmt, va_list args) {
+	memset(buff, 0xff, sz - 1);
+	buff[sz - 1] = 0;
+	RawDoFmt(fmt, args, __amiputs_putchar_callback, buff);
+	return strlen(buff);
+}
+
+int amivfprintf(BPTR f, const char *fmt, va_list args) {
+	int r = amivsnprintf(buffer, bsz, fmt, args);
+	FPuts(f, buffer);
+	if (strchr(buffer, '\n'))
+		Flush(f);
+	return r;
+}
+
+int amisnprintf(char * to, int sz, char const *fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	int retval = amivsnprintf(to, sz, fmt, args);
+	va_end(args);
+	return retval;
 }
 
 int amiprintf(char const *fmt, ...) {
@@ -62,20 +81,4 @@ int amifprintf(BPTR f, char const *fmt, ...) {
 	int retval = amivfprintf(f, fmt, args);
 	va_end(args);
 	return retval;
-}
-
-int amivfprintf(BPTR f, const char *fmt, va_list args) {
-#ifdef __baserel__
-	// luckily d7 seems to be free...
-	register void * d7 asm("d7");
-	asm volatile("move.l a4,%0" : "=r"(d7));
-#endif
-	for (;;) {
-		RawDoFmt(fmt, args, pc, buffer);
-		if (last < end)
-			break;
-		__initBuff();
-	}
-	FPuts(f, buffer);
-	return last - buffer;
 }
