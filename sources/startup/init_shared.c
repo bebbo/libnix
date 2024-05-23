@@ -240,6 +240,8 @@ long __LibClose(struct Library *childLib asm("a6")) {
 		Remove((struct Node* )&childLib[1]);
 		FreeVec(((char* )childLib) - childLib->lib_NegSize);
 
+		// load a4 with initila data segment
+		asm volatile("lea	___a4_init,%0;\n" : "=r"(a4));
 		/* one less user */
 		if (!__theMasterLib->lib_OpenCnt && (__theMasterLib->lib_Flags & LIBF_DELEXP))
 			r = __LibExpunge(__theMasterLib);
