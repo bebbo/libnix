@@ -3,9 +3,12 @@
 #include <proto/dos.h>
 #include <proto/exec.h>
 
+static int __dlerror;
+
 // the linker inserts this id behind the idString
 static char id[3] = {0x0b, 0xeb, 0xb0};
 void *dlopen (__const char *__file, int __mode) {
+	__dlerror = 0;
 	struct Library * lib = OldOpenLibrary(__file);
 	if (lib) {
 		// only one exported function -> neg size == 32, magic marker "bebb0" behind id string!
@@ -15,7 +18,10 @@ void *dlopen (__const char *__file, int __mode) {
 #endif
 			CloseLibrary(lib);
 			lib = 0;
+			__dlerror = 2;
 		}
+	} else {
+		__dlerror = 1;
 	}
 	return lib;
 }
@@ -54,4 +60,14 @@ void *dlvsym (void *__restrict __handle,
 void *dlsym (void *__restrict __handle,
 		    __const char *__restrict __name) {
 	return dlvsym(__handle, __name, 0);
+}
+
+char const * dlerror() {
+	switch (__dlerror) {
+	case 1:
+		return "shared library not found";
+	case 2:
+		return "invalid library found";
+	}
+	return "";
 }
