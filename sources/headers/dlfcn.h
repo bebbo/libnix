@@ -4,7 +4,7 @@
 /*
  * To be used withlibraries created with -noixemul -shared
  */
-
+char const * __stdargs dlerror();
 void * __stdargs dlopen (__const char *__file, int __mode);
 int __stdargs dlclose (void *__handle);
 void * __stdargs dlvsym (void *__restrict __handle,
