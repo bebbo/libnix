@@ -13,4 +13,10 @@ void * __stdargs dlvsym (void *__restrict __handle,
 void * __stdargs dlsym (void *__restrict __handle,
 		    __const char *__restrict __name);
 
+// the implementation ignores these flags...
+#define RTLD_LAZY   0
+#define RTLD_NOW    1
+#define RTLD_GLOBAL 2
+#define RTLD_LOCAL  4
+
 #endif //__DLFCN_H__
