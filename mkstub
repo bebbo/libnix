@@ -4,6 +4,21 @@ dir=$out-support
 
 shift
 
+if [[ "$1" == "" ]] || [[  "$out" == "" ]]; then
+  echo "USAGE mkstub <libname> <def file>"
+  echo "USAGE mkstub <libname> <object files...>"
+  exit 1
+fi
+
+if [[ "${1%%.def}" != "$1" ]]; then
+  if [ -f "$1" ]; then
+  echo "Using DEF file $1"
+  else
+	echo "$1 not found"
+	exit 1
+  fi
+fi
+
 echo creating support files in $dir
 
 rm -rf $dir
@@ -44,7 +59,7 @@ ADD2EXIT(__so_${out}_close, -78);
 "
 
 # get last word = var name of exported functions
-m68k-amigaos-objdump -t $* | grep "0000 01 " | while read line; do
+(if [[ "${1%%.def}" != "$1" ]]; then cat $1; else m68k-amigaos-objdump -t $* | grep "0000 01 "; fi) | while read line; do
 
 n=$(echo $line | awk '{ print $NF }' | grep -v "___")
 n=${n:1}
