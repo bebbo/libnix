@@ -38,6 +38,8 @@ long __initFailed = 0;
 
 // needed per instance
 unsigned short __cleanupflag = 0;
+long __save_a4;
+long __save_sp;
 
 __attribute__((section(".list___INIT_LIST__")))
 const int __INIT_LIST__[1] = { 0 };
@@ -110,8 +112,9 @@ APTR __LibInit(long __segListIn asm("a0"), struct Library *_masterlib asm("d0"),
 
 	__NewList(&__libList);
 
-	/* this will be added to SysBase->LibList or NULL (init error) */
 	asm volatile("move.l	(a7)+,a4" : "=r"(a4));
+
+	/* this will be added to SysBase->LibList */
 	return masterlib;
 }
 
@@ -266,6 +269,8 @@ void __so_xlib_init(char const *name, void **to) {
 		void *v = (void*) *p++;
 		if (0 == strcmp(name, oname)) {
 			*to = v;
+			register long * l asm("a2") = (long *)v - 1;
+			asm volatile("move.l a4,(%0)" :: "r"(l));
 			break;
 		}
 	}

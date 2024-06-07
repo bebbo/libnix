@@ -30,8 +30,6 @@ echo >$dir/init-stub-${out}.c "// STUB to load and init the so file
 #include <stabs.h>
 
 void * ${out}Base = 0;
-void * __${out}_sp = 0;
-void * __${out}_a4[3] = {0};
 
 // linked first stub
 __attribute__((section(\".dlist_so_${out}\")))
@@ -54,7 +52,7 @@ void __so_${out}_close() {
     CloseLibrary(${out}Base);
 }
 
-ADD2INIT(__so_${out}_open, -78); // one less than __initlibraries
+ADD2INIT(__so_${out}_open,  -78); // priority one less than __initlibraries
 ADD2EXIT(__so_${out}_close, -78);
 "
 
@@ -64,63 +62,84 @@ ADD2EXIT(__so_${out}_close, -78);
 n=$(echo $line | awk '{ print $NF }' | grep -v "___")
 n=${n:1}
 
-if [[ "$n" == "" ]]; then
+if [[ "${n}" == "" ]]; then
   continue;
 fi
 
-# only normal variables  
-
-echo >>$dir/export-$out.c "
-
-extern void * $n;
-__attribute__((section(\".dlist_so_export_$n\")))
-char const * __name_$n = \"$n\";
-__attribute__((section(\".dlist_so_export_$n\")))
-void ** __ptr_to_$n = (void**)&$n;
-"
-
-  echo creating $dir/stub-$n.c
-  
   text=${line##*.text}
 # text segment -> function with stub
   if [[ "$text" != "$line" ]]; then
-echo >$dir/stub-$n.c  "//=== BEGIN stubs for $n
-extern void * ${out}Base;
-extern void * __${out}_sp;
-extern void * __${out}_a4[2];
+  	
+  	echo "create export function for ${n}" 
+	echo >>$dir/export-$out.c "
 
-__attribute__((section(\".data.${out}_$n\")))
-long (*__ptr_$n)();
-__attribute__((section(\".text.${out_}$n\")))
-void $n() {
-    asm volatile(\"move.l (sp)+,%0\" : \"=m\"(__${out}_sp));
-    asm volatile(\"movem.l a5/a6,%0\nmove.l a4,a6\" : \"=m\"(__${out}_a4));
-	asm volatile(\"move.l %0,a5\" :: \"m\"(__ptr_$n));
-    asm volatile(\"move.l %0,a4\nadd.l #32766,a4\" :: \"m\"(${out}Base));
-	asm volatile(\"jsr (a5)\" :: \"m\"(__ptr_$n));
-    asm volatile(\"move.l a6,a4\nmovem.l %0,a5/a6\" : \"=m\"(__${out}_a4));
-    asm volatile(\"move.l %0,-(sp)\" : \"=m\"(__${out}_sp));
-}
+	asm(\"\"
+	\".section .data.export_${n} \n\"
+\"___export_${n}_a4: \n\"
+\"	.long 0 | <-- contains the a4 value to use \n\"
+\"___export_${n}: \n\"
+\"	move.l a4,-(sp) \n\"
+\"	move.l -8(pc),a4 | <-- read the correct a4 value \n\"
+\"	move.l (sp)+,(___save_a4:W,a4) \n\"
+\"	move.l (sp)+,(___save_sp:W,a4) \n\"
+\"	jsr    _${n} \n\"
+\"	move.l (___save_sp:W,a4),-(sp) \n\"
+\"	move.l (___save_a4:W,a4),a4 \n\"
+\"	rts \n\");
+	
+extern void * __export_${n};
+__attribute__((section(\".dlist_so_export_${n}\")))
+char const * __name_${n} = \"${n}\";
+__attribute__((section(\".dlist_so_export_${n}\")))
+void ** __ptr_to_${n} = &__export_${n};
+"
 
-__attribute__((section(\".dlist_so_${out}z_$n\")))
-char const * __name_$n = \"$n\";
-__attribute__((section(\".dlist_so_${out}z_$n\")))
-void ** __to_ptr_$n = (void**)&__ptr_$n;
-//=== END
+  	
+  	
+  echo creating $dir/stub-${n}.s  	
+echo >$dir/stub-${n}.s  "| stub for ${n}
+	.data
+_${n}: .globl _${n}	
+	.short 0x4ef9	| jmp
+___ptr_${n}:	
+	.long	_${out}Base
 
+	.text
+__name_${n}:
+	.asciz \"${n}\"
+
+	.section .dlist_so_${out}z_${n}
+	.long __name_${n}
+	.long ___ptr_${n}  
 "
 else
-echo >$dir/stub-$n.c "//=== BEGIN stubs for $n
-extern void *__${out}_sp;
+	
+# only normal variables  
 
-__attribute__((section(\".data.${out}_$n\")))
-void * $n = (void *)&__${out}_sp;
+  	echo "create export variable for ${n}" 
+echo >>$dir/export-$out.c "
 
-__attribute__((section(\".dlist_so_${out}z_$n\")))
-char const * __name_$n = \"$n\";
-__attribute__((section(\".dlist_so_${out}z_$n\")))
-void ** __to_ptr_$n = &$n;
-//=== END
+extern void * ${n};
+__attribute__((section(\".dlist_so_export_${n}\")))
+char const * __name_${n} = \"${n}\";
+__attribute__((section(\".dlist_so_export_${n}\")))
+void ** __ptr_to_${n} = (void**)&${n};
+"
+
+  echo creating $dir/stub-${n}.s  	
+echo >$dir/stub-${n}.s  "| stub for ${n}
+	.data
+_${n}: .globl _${n}	
+___ptr_${n}:	
+	.long	_${out}Base
+
+	.text
+__name_${n}:
+	.asciz \"${n}\"
+
+	.section .dlist_so_${out}z_${n}
+	.long __name_${n}
+	.long ___ptr_${n}  
 "
 fi
 
@@ -128,8 +147,8 @@ done
 
 pushd $dir >/dev/null
 echo compiling stubs
-echo m68k-amigaos-gcc ${LIB_MODE} -Os -fomit-frame-pointer *stub*.c -c
-m68k-amigaos-gcc ${LIB_MODE} -Os -fomit-frame-pointer *stub*.c -c
+echo m68k-amigaos-gcc ${LIB_MODE} -Os -fomit-frame-pointer *stub*.s *stub*.c -c
+m68k-amigaos-gcc ${LIB_MODE} -Os -fomit-frame-pointer *stub*.s *stub*.c -c
 
 echo create link lib $out.a
 rm -f ../$out.a
