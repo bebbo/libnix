@@ -190,15 +190,12 @@ __LibOpen(struct Library *_masterlib asm("a6")) {
 	// apply datadata relocs
 	long *p;
 	asm volatile("lea	___datadata_relocs,%0" : "=r"(p));
-	asm volatile("lea	__etext,%0" : "=r"(a4));
-	if (p < a4) {
-		long count = *p++;
-		long diff = (char*) &__lib - to;
-		while (count > 0) {
-			long *t = (long*) *p++;
-			*t -= diff;
-			--count;
-		}
+	long count = *p++;
+	long diff = (char*) &__lib - to;
+	while (count > 0) {
+		long t = (long) *p++;
+		*(long*)(t + to) -= diff;
+		--count;
 	}
 
 	// reload a4 for the child library
@@ -255,8 +252,12 @@ long __LibClose(struct Library *childLib asm("a6")) {
 	return r;
 }
 
+
+extern char __export_stubs_start;
+extern char __export_stubs_end;
+
 __regargs
-void __so_xlib_init(char const *name, void **to) {
+char const * __so_xlib_init(char const *name, void **to) {
 	long *p = &__so_xlib_export[1];
 	while (*p) {
 		char const *oname = (char const*) *p++;
@@ -269,25 +270,28 @@ void __so_xlib_init(char const *name, void **to) {
 		void *v = (void*) *p++;
 		if (0 == strcmp(name, oname)) {
 			*to = v;
-			register long * l asm("a2") = (long *)v - 1;
-			asm volatile("move.l a4,(%0)" :: "r"(l));
-			break;
+			if ((char *)v > &__export_stubs_start && (char *)v < &__export_stubs_end) {
+				register long * l asm("a2") = (long *)v - 1;
+				asm volatile("move.l a4,(%0)" :: "r"(l));
+			}
+			return 0;
 		}
 	}
-	if (!*to)
-		exit(10);
+	return name;
 }
 
-void __ResolveSymbols(long *p asm("a0"), struct Library *childLib asm("a6")) {
+char const * __ResolveSymbols(long *p asm("a0"), struct Library *childLib asm("a6")) {
 	register long *a4 asm("a4");
 	asm volatile("move.l	a4,-(a7)" :: "r"(a4));
 	asm volatile("lea	32766(a6),%0;\n" : "=r"(a4));
-	while (*p) {
+	char const * r = 0;
+	while (!r && *p) {
 		char const *name = (char const*) *p++;
 		void **to = (void**) *p++;
-		__so_xlib_init(name, to);
+		r = __so_xlib_init(name, to);
 	}
 	asm volatile("move.l	(a7)+,a4" : "=r"(a4));
+	return r;
 }
 
 extern void __initlibraries();
