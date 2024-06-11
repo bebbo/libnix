@@ -5,7 +5,7 @@ dir=$out-support
 shift
 
 if [[ "$1" == "" ]] || [[  "$out" == "" ]]; then
-  echo "USAGE mkstub <libname> <def file>"
+  echo "USAGE mkstub <libname> <def file> <object files...>"
   echo "USAGE mkstub <libname> <object files...>"
   exit 1
 fi
@@ -13,6 +13,8 @@ fi
 if [[ "${1%%.def}" != "$1" ]]; then
   if [ -f "$1" ]; then
   echo "Using DEF file $1"
+  deffile=$1
+  shift
   else
 	echo "$1 not found"
 	exit 1
@@ -39,12 +41,20 @@ static long __so_${out}_start[1] = {0};
 void __so_${out}_open() {
   ${out}Base = OldOpenLibrary(\"$out.library\");
   if (!${out}Base) {
-	FPuts(Output(), \"failed to load $out.library\n\");
+	FPuts(Output(), \"failed to load $out.library\\n\");
     exit(10);
   }
   register long * a0 asm(\"a0\") = &__so_${out}_start[1];
   register void * a6 asm(\"a6\") = ${out}Base;
-  asm volatile(\"jsr (-30,a6)\"::\"r\"(a0), \"r\"(a6));
+  register long d0 asm(\"d0\");
+  asm volatile(\"jsr (-30,a6)\": \"=r\"(d0): \"r\"(a0), \"r\"(a6));
+  if (d0) {
+  	BPTR out = Output();
+  	FPuts(out, \"can't resolve \");
+  	FPuts(out, (char const *)d0);
+  	FPuts(out, \"\\n\");
+	exit(10);
+  }
 }
 
 void __so_${out}_close() {
@@ -56,8 +66,16 @@ ADD2INIT(__so_${out}_open,  -78); // priority one less than __initlibraries
 ADD2EXIT(__so_${out}_close, -78);
 "
 
+echo >$dir/export-$out.c "
+__attribute__((section(\".data.export~\")))
+short __export_stubs_end = -1;
+__attribute__((section(\".data.export@\")))
+short __export_stubs_start = -1;
+
+"
+
 # get last word = var name of exported functions
-(if [[ "${1%%.def}" != "$1" ]]; then cat $1; else m68k-amigaos-objdump -t $* | grep "0000 01 "; fi) | while read line; do
+(if [[ "${1%%.def}" != "$deffile" ]]; then cat $deffile; else m68k-amigaos-objdump -t $* | grep "0000 01 "; fi) | while read line; do
 
 n=$(echo $line | awk '{ print $NF }' | grep -v "___")
 n=${n:1}
@@ -67,8 +85,11 @@ if [[ "${n}" == "" ]]; then
 fi
 
   text=${line##*.text}
+  direct=${line##*.direct}
 # text segment -> function with stub
-  if [[ "$text" != "$line" ]]; then
+  if [[ "$text" != "$line" ]] || [[ "$direct" != "$line" ]]  ; then
+
+    if [[ "$text" != "$line" ]] ; then
   	
   	echo "create export function for ${n}" 
 	echo >>$dir/export-$out.c "
@@ -86,7 +107,7 @@ fi
 \"	move.l (___save_sp:W,a4),-(sp) \n\"
 \"	move.l (___save_a4:W,a4),a4 \n\"
 \"	rts \n\");
-	
+
 extern void * __export_${n};
 __attribute__((section(\".dlist_so_export_${n}\")))
 char const * __name_${n} = \"${n}\";
@@ -94,7 +115,18 @@ __attribute__((section(\".dlist_so_export_${n}\")))
 void ** __ptr_to_${n} = &__export_${n};
 "
 
-  	
+  	else
+  		
+	echo >>$dir/export-$out.c "
+
+__attribute__((section(\".dlist_so_export_${n}\")))
+char const * __name_${n} = \"${n}\";
+__attribute__((section(\".dlist_so_export_${n}\")))
+void ** __ptr_to_${n} = &${n};
+"
+  		
+  	fi
+
   	
   echo creating $dir/stub-${n}.s  	
 echo >$dir/stub-${n}.s  "| stub for ${n}
@@ -119,11 +151,11 @@ else
   	echo "create export variable for ${n}" 
 echo >>$dir/export-$out.c "
 
-extern void * ${n};
+extern void * ${n}__data;
 __attribute__((section(\".dlist_so_export_${n}\")))
 char const * __name_${n} = \"${n}\";
 __attribute__((section(\".dlist_so_export_${n}\")))
-void ** __ptr_to_${n} = (void**)&${n};
+void ** __ptr_to_${n} = (void**)&${n}__data;
 "
 
   echo creating $dir/stub-${n}.s  	
@@ -145,8 +177,10 @@ fi
 
 done
 
+
 pushd $dir >/dev/null
 echo compiling stubs
+
 echo m68k-amigaos-gcc ${LIB_MODE} -Os -fomit-frame-pointer *stub*.s *stub*.c -c
 m68k-amigaos-gcc ${LIB_MODE} -Os -fomit-frame-pointer *stub*.s *stub*.c -c
 
@@ -160,4 +194,6 @@ m68k-amigaos-gcc -resident -Os -fomit-frame-pointer export*.c -c
 
 popd >/dev/null
 
-
+if [[ "$*" != "" ]]; then
+	m68k-amigaos-gcc -shared -noixemul $* $dir/export-$out.o -o ${out}.library 
+fi
