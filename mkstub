@@ -30,12 +30,13 @@ echo >$dir/init-stub-${out}.c "// STUB to load and init the so file
 #include <proto/dos.h>
 #include <proto/exec.h>
 #include <stabs.h>
+#include <stdlib.h>
 
 void * ${out}Base = 0;
 
 // linked first stub
 __attribute__((section(\".dlist_so_${out}\")))
-static long __so_${out}_start[1] = {0};
+long __so_${out}_start[1] = {0};
 
 // init all references by name
 void __so_${out}_open() {
@@ -46,12 +47,12 @@ void __so_${out}_open() {
   }
   register long * a0 asm(\"a0\") = &__so_${out}_start[1];
   register void * a6 asm(\"a6\") = ${out}Base;
-  register long d0 asm(\"d0\");
-  asm volatile(\"jsr (-30,a6)\": \"=r\"(d0): \"r\"(a0), \"r\"(a6));
-  if (d0) {
+  char const * s;
+  asm volatile(\"jsr (-30,a6); move.l d0,%0\": \"=r\"(s): \"r\"(a0), \"r\"(a6));
+  if (s) {
   	BPTR out = Output();
   	FPuts(out, \"can't resolve \");
-  	FPuts(out, (char const *)d0);
+  	FPuts(out, s);
   	FPuts(out, \"\\n\");
 	exit(10);
   }
@@ -118,11 +119,11 @@ void ** __ptr_to_${n} = &__export_${n};
   	else
   		
 	echo >>$dir/export-$out.c "
-
+extern void ${n}();
 __attribute__((section(\".dlist_so_export_${n}\")))
 char const * __name_${n} = \"${n}\";
 __attribute__((section(\".dlist_so_export_${n}\")))
-void ** __ptr_to_${n} = &${n};
+void ** __ptr_to_${n} = (void **)&${n};
 "
   		
   	fi

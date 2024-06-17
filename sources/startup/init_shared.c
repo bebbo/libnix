@@ -185,7 +185,9 @@ __LibOpen(struct Library *_masterlib asm("a6")) {
 	struct Library *childLib = (struct Library*) to;
 	childLib->lib_Sum = (ULONG) task;
 	childLib->lib_OpenCnt = 1;
-	AddHead(&__libList, (struct Node* )&childLib[1]); // the child's libList as node...
+	struct Node* node = (struct Node* )&childLib[1];
+	node->ln_Name = (char *)childLib;
+	AddHead(&__libList, node); // the child's libList as node...
 
 	// apply datadata relocs
 	long *p;

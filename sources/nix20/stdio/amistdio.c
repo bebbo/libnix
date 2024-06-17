@@ -11,11 +11,7 @@
 
 static int bsz = 128;
 static char __printf_default_buffer[128];
-static char *buffer;
-
-void __allocBuff() {
-	buffer = __printf_default_buffer;
-}
+static char *buffer = __printf_default_buffer;
 
 void __freeBuff() {
 	if (buffer && buffer != __printf_default_buffer) {
@@ -33,7 +29,6 @@ void setPrintfBufferSize(int sz) {
 	}
 }
 
-ADD2INIT(__allocBuff, -42);
 ADD2EXIT(__freeBuff, -42);
 
 // the callback per character, checks for end of buffer!
