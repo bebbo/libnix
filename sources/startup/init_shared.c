@@ -199,6 +199,7 @@ __LibOpen(struct Library *_masterlib asm("a6")) {
 		*(long*)(t + to) -= diff;
 		--count;
 	}
+	CacheClearU();
 
 	// reload a4 for the child library
 	asm volatile(
@@ -292,6 +293,9 @@ char const * __ResolveSymbols(long *p asm("a0"), struct Library *childLib asm("a
 		void **to = (void**) *p++;
 		r = __so_xlib_init(name, to);
 	}
+
+	CacheClearU();
+
 	asm volatile("move.l	(a7)+,a4" : "=r"(a4));
 	return r;
 }
