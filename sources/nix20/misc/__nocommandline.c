@@ -62,7 +62,7 @@ void __nocommandline(void)
       SelectInput(win);
       SelectOutput(win);
     }
-    if(wbs->sm_ArgList!=NULL) /* cd to icon */
+    if(wbs->sm_ArgList!=NULL && wbs->sm_ArgList->wa_Lock) /* cd to icon */
       cd=CurrentDir(DupLock(wbs->sm_ArgList->wa_Lock));
 
     __argc=0;
