@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* WindowBase[2] = { (void*)-1, "window.library" };
+void* WindowBase[2] = { (void*)-1, "window.class" };
 
 #elif defined (__AMIGAOS4__)
 
@@ -28,7 +28,7 @@ void __exit_Window(void) __attribute__((destructor));
 
 void __init_Window(void) {
   if (WindowBase == NULL) {
-    WindowBase = (struct Library *) IExec->OpenLibrary("window.library", 0);
+    WindowBase = (struct Library *) IExec->OpenLibrary("window.class", 0);
     assert(WindowBase != NULL);
   }
   if (IWindow == NULL) {

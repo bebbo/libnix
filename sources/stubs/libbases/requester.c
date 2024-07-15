@@ -7,7 +7,7 @@ extern "C" {
 #if defined (__libnix__)
 
 __attribute__((section(".dlist___LIB_LIST__")))
-void* RequesterBase[2] = { (void*)-1, "requester.library" };
+void* RequesterBase[2] = { (void*)-1, "requester.class" };
 
 #elif defined (__AMIGAOS4__)
 
@@ -28,7 +28,7 @@ void __exit_Requester(void) __attribute__((destructor));
 
 void __init_Requester(void) {
   if (RequesterBase == NULL) {
-    RequesterBase = (struct Library *) IExec->OpenLibrary("requester.library", 0);
+    RequesterBase = (struct Library *) IExec->OpenLibrary("requester.class", 0);
     assert(RequesterBase != NULL);
   }
   if (IRequester == NULL) {
