@@ -1,20 +1,27 @@
 #include <time.h>
 #include <limits.h>
-#include <dos/dos.h>
 #include <proto/dos.h>
+#include <proto/timer.h>
 #include "stabs.h"
 
-static struct DateStamp ds;
+static struct EClockVal eval0;
 
 void __initclock(void)
-{ DateStamp(&ds); }
+{
+	struct Device * TimerBase = DOSBase->dl_TimeReq->tr_node.io_Device;
+	ReadEClock(&eval0);
+}
 
 ADD2INIT(__initclock,-10);
 
 clock_t clock(void)
-{ struct DateStamp ds2;
-  DateStamp(&ds2);
-  return (((ds2.ds_Days-ds.ds_Days)*(24*60)+
-           ds2.ds_Minute-ds.ds_Minute)*(60*TICKS_PER_SECOND)+
-           ds2.ds_Tick-ds.ds_Tick)*CLOCKS_PER_SEC/TICKS_PER_SECOND;
+{
+	struct EClockVal eval;
+	struct Device * TimerBase = DOSBase->dl_TimeReq->tr_node.io_Device;
+	UWORD freq = ReadEClock(&eval) / 1000; // 709 or 715  < 1024
+
+	ULONG difflo = eval.ev_lo - eval0.ev_lo;
+	ULONG diffhi = eval.ev_hi - eval0.ev_hi;
+	ULONG remhi = diffhi % freq; // max 10 bit
+	return difflo / freq + (((remhi << 22) / freq) << 10);
 }
