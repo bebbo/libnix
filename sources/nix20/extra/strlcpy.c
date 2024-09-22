@@ -1,13 +1,18 @@
 #include <ctype.h>
 #include <string.h>
 
-size_t strlcpy(char * dst, const char * src, size_t maxlen) {
-    const size_t srclen = strlen(src);
-    if (srclen + 1 < maxlen) {
-        memcpy(dst, src, srclen + 1);
-    } else if (maxlen != 0) {
-        memcpy(dst, src, maxlen - 1);
-        dst[maxlen-1] = '\0';
+size_t strlcpy(char *dst, const char *src, size_t dsize) {
+    const char * p = src;
+    if (dsize) {
+      while (dsize--) {
+        if ((*dst++ = *p++) == 0)
+            break;
+      } 
+      dst[-1] = 0;
     }
-    return srclen;
+
+    while (*p)
+        ++p;
+
+    return p - src;
 }
