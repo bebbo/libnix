@@ -78,7 +78,7 @@ short __export_stubs_start = -1;
 # get last word = var name of exported functions
 (if [[ "${1%%.def}" != "$deffile" ]]; then cat $deffile; else m68k-amigaos-objdump -t $* | grep "0000 01 "; fi) | while read line; do
 
-n=$(echo $line | awk '{ print $NF }' | grep -v "___")
+n=$(echo $line | awk '{ print $NF }' | grep -v __initlibraries | grep -v __initcpp )
 n=${n:1}
 
 if [[ "${n}" == "" ]]; then
