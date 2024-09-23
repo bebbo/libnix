@@ -11,8 +11,8 @@
 
 int amiputs(char const *s) {
 	BPTR f = Output();
-	FPuts(f, s);
-	int r = FPuts(f, "\r\n");
-	Flush(f);
-	return r;
+	ULONG l = strlen(s);
+	Write(f, s, l);
+	Write(f, "\r\n", 2);
+	return l + 2;
 }

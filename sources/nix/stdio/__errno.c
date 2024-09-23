@@ -1,5 +1,7 @@
 #include "stdio.h"
 
+asm("\t.data");
+asm("__impure_ptr__data: .globl __impure_ptr__data");
 struct _reent
 {
   int _errno;			/* local copy of errno */
@@ -10,4 +12,4 @@ struct _reent
 #ifdef __posix_threads__
 __thread
 #endif
-errno;
+errno = {-1};

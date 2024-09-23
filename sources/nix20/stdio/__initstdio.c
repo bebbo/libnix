@@ -18,14 +18,11 @@
 #define KPrintF(a,...)
 #endif
 
-struct filenode {
-  struct MinNode node;
-  FILE theFILE;
-};
+#include "../../nix/stdio/__filenode.h"
 
 extern struct ExecBase * SysBase;
 
-extern unsigned __BUFSIZ;
+extern unsigned *__BUFSIZE;
 
 /*
  * SBF: I put all functions into this file which are linked anyway if stdio is used.
@@ -103,8 +100,8 @@ FILE *fdopen(int filedes, const char *mode) {
 		struct filenode *node = (struct filenode *) malloc(sizeof(*node));
 		if (node != NULL) {
 			FILE * f = &node->theFILE;
-			if ((f->_bf._base = (unsigned char *) malloc(__BUFSIZ)) != NULL) {
-				AddHead((struct List * )&__filelist, (struct Node * )&node->node);
+			if ((f->_bf._base = (unsigned char *) malloc(*__BUFSIZE)) != NULL) {
+				AddHead((struct List * )&___filelist, (struct Node * )&node->node);
 				f->_p = 0;
 				f->_r = 0;
 				f->_w = 0;
@@ -114,7 +111,7 @@ FILE *fdopen(int filedes, const char *mode) {
 				if (_lx_addflags(filedes, *mode == 'a' ? O_APPEND : 0) & O_WRONLY)
 					f->_flags |= __SWO; /* set write-only flag */
 				f->file = filedes;
-				f->_bf._size = __BUFSIZ;
+				f->_bf._size = *__BUFSIZE;
 				f->linebufsize = 0;
 				f->tmpp = 0;
 				f->tmpinc = 0;
@@ -179,11 +176,11 @@ void __initstdio(void) {
 	__stdfilesize = 0;
 #endif
 	if ((__stdfiledes = (StdFileDes **) malloc(4 * sizeof(StdFileDes *)))) {
-		unsigned __bufsiz = __BUFSIZ;
-		__BUFSIZ = 512;
+		unsigned __bufsiz = *__BUFSIZE;
+		*__BUFSIZE = 512;
 		if ((sfd = stdfiledes(Input()))) {
 			sfd->lx_oflags = O_RDONLY;
-			__BUFSIZ = __bufsiz;
+			*__BUFSIZE = __bufsiz;
 			if ((sfd = stdfiledes(Output()))) {
 				BPTR bstderr;
 				struct Process * proc = (struct Process *) SysBase->ThisTask;
@@ -208,7 +205,7 @@ void __initstdio(void) {
 
 						if ((*f = err = fdopen(STDERR_FILENO, "w")) == NULL)
 							exit(20);
-						__BUFSIZ = 4;
+						*__BUFSIZE = 4;
 
 						free(err->_bf._base);
 						flags = err->_flags & ~(__SMBF | __SLBF);
@@ -216,7 +213,7 @@ void __initstdio(void) {
 						err->_bf._base = err->unget;
 						err->_bf._size = 3;
 					}
-					__BUFSIZ = __bufsiz;
+					*__BUFSIZE = __bufsiz;
 					return;
 				}
 			}
@@ -286,14 +283,14 @@ int fclose(FILE *stream) {
 	return retval;
 }
 
-struct MinList __filelist = { /* list of open files (fflush() needs also access) */
-(struct MinNode *) &__filelist.mlh_Tail,
-NULL, (struct MinNode *) &__filelist.mlh_Head };
+struct MinList ___filelist = { /* list of open files (fflush() needs also access) */
+(struct MinNode *) &___filelist.mlh_Tail,
+NULL, (struct MinNode *) &___filelist.mlh_Head };
 
 void __exitstdio(void) {
 	int i, max;
 	struct MinNode *node;
-	while ((node = __filelist.mlh_Head)->mln_Succ != NULL) {
+	while ((node = ___filelist.mlh_Head)->mln_Succ != NULL) {
 		fclose(&((struct filenode *) node)->theFILE);
 	}
 

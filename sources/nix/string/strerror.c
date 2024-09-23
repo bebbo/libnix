@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-const char * __sys_errlist[] = {
+const char * __sys_errlist__data[] = {
 	"Undefined error",
 
 	"Operation not permitted",	// 1: EPERM
@@ -159,7 +159,9 @@ const char * __sys_errlist[] = {
 	"State not recoverable",	// 131: ENOTRECOVERABLE
 };
 
-#define sys_nerr (sizeof(__sys_errlist)/sizeof(__sys_errlist[0]))
+const char ** __sys_errlist = __sys_errlist__data;
+
+#define sys_nerr (sizeof(__sys_errlist__data)/sizeof(__sys_errlist__data[0]))
 extern int
 #ifdef __posix_threads__
 __thread

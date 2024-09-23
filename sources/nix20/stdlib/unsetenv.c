@@ -3,14 +3,12 @@
 #include <dos/var.h>
 #include <proto/dos.h>
 
-extern int __clearenviron();
-extern int __fillenviron();
+#undef environ
+#define environ __dont_use_environ
 
 int unsetenv(const char *name) {
-	if (name && *name && DeleteVar((CONST_STRPTR)name, 0)) {
-    	__clearenviron();
-    	__fillenviron();
-    	return 0;
+	if (name && *name) {
+		return setenv(name, 0, 1);
     }
 	errno = EINVAL;
     return -1;

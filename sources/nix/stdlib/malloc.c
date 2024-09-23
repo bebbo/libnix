@@ -91,7 +91,7 @@ void free(void * _p) {
 }
 
 #else
-extern ULONG _MSTEP;
+extern ULONG *__MEMORY_STEP;
 
 struct MinList __memorylist; /* memorylist (empty): free needs also access */
 struct SignalSemaphore  *__memsema;
@@ -119,8 +119,8 @@ void *malloc(size_t size)
     node=node->mln_Succ;
   }
   size2=sizeof(struct MemHeader)+sizeof(ULONG)+size; /* Total memory needed */
-  if(size2<=_MSTEP)
-    size2=_MSTEP; /* Allocate a _MSTEP bytes large block if possible */
+  if(size2<=*__MEMORY_STEP)
+    size2=*__MEMORY_STEP; /* Allocate a __MEMORY_STEP bytes large block if possible */
   size2=(size2+4095)&~4095; /* Blow up to full MMU Page */
   if((b=(struct MemHeader *)AllocMem(size2,MEMF_ANY))!=NULL)
   {

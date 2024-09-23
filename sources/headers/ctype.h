@@ -73,7 +73,7 @@ extern __stdargs int toascii_l (int __c, locale_t __l);
 #ifdef __HAVE_LOCALE_INFO__
 __stdargs const char *__locale_ctype_ptr (void);
 #else
-#define __locale_ctype_ptr()	_ctype_
+#define __locale_ctype_ptr()	_ctype_ptr
 #endif
 
 # define __CTYPE_PTR	(__locale_ctype_ptr ())
@@ -114,7 +114,7 @@ __stdargs const char *__locale_ctype_ptr (void);
 #ifdef __HAVE_LOCALE_INFO__
 __stdargs const char *__locale_ctype_ptr_l (locale_t);
 #else
-#define __locale_ctype_ptr_l(l)	_ctype_
+#define __locale_ctype_ptr_l(l)	_ctype_ptr
 #endif
 #define __ctype_lookup_l(__c,__l) ((__locale_ctype_ptr_l(__l)+sizeof(""[__c]))[(int)(__c)])
 
@@ -177,7 +177,7 @@ __stdargs const char *__locale_ctype_ptr_l (locale_t);
 #endif /* !__cplusplus */
 
 /* For C++ backward-compatibility only.  */
-extern const char	* _ctype_;
+extern const char	* _ctype_ptr;
 
 _END_STD_C
 

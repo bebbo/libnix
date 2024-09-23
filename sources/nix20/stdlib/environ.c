@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <unistd.h>
 #include "stabs.h"
 #include <exec/execbase.h>
 #include <proto/exec.h>
@@ -6,19 +7,12 @@
 #include <dos/dosextens.h>
 #include <dos/var.h>
 
-#ifdef __KICK13__
-#define LV_VAR 0
-struct LocalVar {
-	struct Node lv_Node;
-	UWORD	lv_Flags;
-	UBYTE	*lv_Value;
-	ULONG	lv_Len;
-};
-#endif
+char *__dummy_env[] = { 0 };
+char ** environ_ptr__data = __dummy_env;
+char ***environ_ptr = &environ_ptr__data;
 
-static char *dummy_env[] = { 0 };
-
-char **environ = dummy_env;
+#undef environ
+#define environ __dont_use_environ
 
 int __fillenviron() {
 	unsigned index, slen, tlen;
@@ -33,9 +27,8 @@ int __fillenviron() {
 		if (n->ln_Type == LV_VAR)
 			++varCount;
 	}}
-	environ = (char **)malloc(varCount * sizeof(char *));
-	if (environ == 0) {
-		environ = dummy_env;
+	char ** new_environ = (char **)malloc(varCount * sizeof(char *));
+	if (new_environ == 0) {
 		errno = ENOMEM;
 		return -1;
 	}
@@ -48,7 +41,7 @@ int __fillenviron() {
 
 		slen = strlen(n->lv_Node.ln_Name);
 		tlen = slen + n->lv_Len + 1;
-		p = environ[index] = malloc(tlen + 1);
+		p = new_environ[index] = malloc(tlen + 1);
 		if (!p) {
 			errno = ENOMEM;
 			break;
@@ -60,31 +53,20 @@ int __fillenviron() {
 		p[tlen] = 0;
 		++index;
 	}}
-	environ[index++] = 0;
+	new_environ[index++] = 0;
+	environ_ptr__data = new_environ;
 	return index - varCount;
 }
 
-void __clearenviron() {
-	if (environ != dummy_env) {
-		char ** p = environ;
+int clearenv(void) {
+	if (environ_ptr__data != __dummy_env) {
+		char ** p = environ_ptr__data;
 		while (*p) {
 			free(*p++);
 		}
-		free(environ);
-		environ = dummy_env;
+		free(environ_ptr__data);
+		environ_ptr__data = __dummy_env;
 	}
-}
-
-int clearenv(void) {
-	struct Process * proc = (struct Process *)SysBase->ThisTask;
-	{struct Node *t, * n; for (n = (struct Node *)proc->pr_LocalVars.mlh_Head; n->ln_Succ; n = t) {
-		t = n->ln_Succ;
-		if (n->ln_Type != LV_VAR)
-			continue;
-
-		DeleteVar((CONST_STRPTR)n->ln_Name, 0);
-	}}
-	__clearenviron();
 	return 0;
 }
 

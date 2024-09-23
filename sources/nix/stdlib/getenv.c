@@ -21,7 +21,7 @@ struct LocalVar {
 };
 #endif
 
-extern char **environ;
+extern char **environ_ptr__data;
 
 char *getenv(const char *name) {
 	unsigned len;
@@ -33,7 +33,7 @@ char *getenv(const char *name) {
 	}
 
 	len = strlen(name);
-	for (p = environ; *p; ++p) {
+	for (p = environ_ptr__data; *p; ++p) {
 		if (0 == strncmp(*p, name, len) && len[*p] == '=')
 			return len + 1 + *p;
 	}

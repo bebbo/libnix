@@ -9,7 +9,7 @@
 typedef int (*fxtype)(int);
 
 #define FX(a) {#a, is##a}
-struct __fx {
+static struct __fx {
 	const char * name;
 	fxtype fx;
 } const data[] = { FX(alnum), FX(alpha), FX(blank), FX(cntrl), FX(digit), FX(lower), FX(print), FX(punct), FX(space), FX(upper), FX(xdigit), };

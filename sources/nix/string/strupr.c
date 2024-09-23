@@ -1,5 +1,6 @@
 #include <string.h>
-__stdargs  char *strupr(char *s)
+asm("_strupr: .global _strupr");
+char *strupper(char *s)
 { unsigned char *s1=(unsigned char *)s;
 
   while(*s1) {

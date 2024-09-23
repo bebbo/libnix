@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# create the def file for the library
+# run it in the libb folder
+
+find nix -name "*.o" \
+  -not -name cxxglue.o \
+  -not -name __eprintf.o  \
+  -not -name assert.o  \
+  -not -name ldiv.o  \
+  -not -name fprintf.o  \
+  -not -name fscanf.o  \
+  -not -name printf.o  \
+  -not -name scanf.o  \
+  -not -name snprintf.o  \
+  -not -name sprintf.o  \
+  -not -name sscanf.o  \
+  -not -name tmpfile.o  \
+  -not -name tmpnam.o  \
+  -not -name vfprintf.o  \
+  -not -name vfscanf.o  \
+  -not -name vprintf.o  \
+  -not -name vscanf.o  \
+  -not -name vsnprintf.o  \
+  -not -name vsprintf.o  \
+  -not -name vsscanf.o  \
+  -not -name __vfprintf_total_size.o \
+  -not -name __vwfprintf_total_size.o \
+  -not -name tmpfile.o  \
+  > ofiles.txt
+find nix20   -name "*.o" \
+  -not -name swapstack.o \
+  -not -name __nocommandline.o \
+  >> ofiles.txt
+find nixmain -name "*.o" >> ofiles.txt
+find math    -name "*.o" >> ofiles.txt
+
+# all function names
+rm -f all.def
+while IFS="" read -r p || [ -n "$p" ]
+do
+  m68k-amigaos-objdump -t "$p" | grep " 0000 01" | grep " .text" | xargs | awk '{print $6;}' >> all.def
+done < ofiles.txt
+
+cat all.def | grep . | sort > alls.def
+
+# check for duplicates
+uniq -d alls.def
+
+# find all using some Base or internal variables
+echo Base >tainted.txt
+
+fs=0
+
+while [ $fs != $(stat --printf="%s" tainted.txt) ]; do
+  fs=$(stat --printf="%s" tainted.txt)
+  echo $fs 
+  cp tainted.txt tainted2.txt
+  while IFS="" read -r p || [ -n "$p" ]
+  do
+    x=$(m68k-amigaos-objdump -t "$p" | grep -f tainted.txt)
+    if [ "$x" != "" ]; then
+      m68k-amigaos-objdump -t "$p" | grep " 0000 01" | xargs | awk '{print $6;}' >> tainted2.txt
+    fi
+  done < ofiles.txt
+  cat tainted2.txt | grep . | sort -u > tainted.txt
+  rm -f tainted2.txt
+done
+
+# write libnix.def
+rm -f libnix.def
+
+while IFS="" read -r p || [ -n "$p" ]
+do
+  if [ "$(grep $p tainted.txt)" == "" ]
+  then
+    echo .direct $p >> libnix.def
+  else
+    echo .text $p >> libnix.def
+  fi
+done < alls.def
+
+rm -f all.def
+rm -f alls.def
+rm -f tainted.txt
+rm -f tainted2.txt

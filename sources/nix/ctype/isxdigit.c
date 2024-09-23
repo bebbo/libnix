@@ -1,4 +1,4 @@
-extern const unsigned char * _ctype_;
+extern const unsigned char * _ctype_ptr;
 
 int isxdigit(int c)
-{ return _ctype_[1+c]&68; }
+{ return _ctype_ptr[1+c]&68; }

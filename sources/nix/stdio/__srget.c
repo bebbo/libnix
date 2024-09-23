@@ -41,7 +41,7 @@ int __srget(FILE *stream) /* Get next input block */
 	}
 	if (stream->_flags & (__SNBF | __SLBF)) /* Before reading from line- or unbuffered input file */
 	{ /* fflush all line buffered output files (ANSI) */
-		struct filenode *fp = (struct filenode*) __filelist.mlh_Head;
+		struct filenode *fp = (struct filenode*) ___filelist.mlh_Head;
 		while (fp->node.mln_Succ) {
 			if ((fp->theFILE._flags & (__SWR | __SLBF)) == (__SWR | __SLBF))
 				__fflush(&fp->theFILE); /* Don't return EOF if this fails */

@@ -1,4 +1,4 @@
-extern const unsigned char * _ctype_;
+extern const unsigned char * _ctype_ptr;
 
 int isspace(int c)
-{ return _ctype_[1+c]&8; }
+{ return _ctype_ptr[1+c]&8; }

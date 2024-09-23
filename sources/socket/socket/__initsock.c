@@ -174,7 +174,7 @@ static int __stdargs _sock_select(struct _StdFileDes *fp,int select_cmd,int io_m
 
 StdFileDes *_create_socket(int family,int type,int protocol);
 
-struct _StdFileFx socket_fx = {
+static struct _StdFileFx socket_fx = {
 		_sock_read, _sock_write, _sock_close, _sock_dup, _sock_fstat, _sock_select
 };
 

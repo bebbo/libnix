@@ -8,35 +8,26 @@
 
 static char *dummy_env[] = { 0 };
 
-char **environ = dummy_env;
+char ** environ_ptr__data = dummy_env;
+char ***environ_ptr = &environ_ptr__data;
+
+#undef environ
+#define environ __dont_use_environ
 
 int __fillenviron() {
-	// size the environ
-	environ = (char **)malloc(1 * sizeof(char *));
-	if (environ == 0) {
-		environ = dummy_env;
-		errno = ENOMEM;
-		return -1;
-	}
-
-	// fill the environ
-	environ[0] = 0;
+	// not yet implemented
 	return 0;
 }
 
-void __clearenviron() {
-	if (environ != dummy_env) {
-		char ** p = environ;
+int clearenv(void) {
+	if (environ_ptr__data != dummy_env) {
+		char ** p = environ_ptr__data;
 		while (*p) {
 			free(*p++);
 		}
-		free(environ);
-		environ = dummy_env;
+		free(environ_ptr__data);
+		environ_ptr__data = dummy_env;
 	}
-}
-
-int clearenv(void) {
-	__clearenviron();
 	return 0;
 }
 

@@ -1,6 +1,7 @@
 #define __NO_INLINE__
 #include <string.h>
-__stdargs char *strlwr(char *s) {
+asm("_strlwr: .global _strlwr");
+char *strlower(char *s) {
 	unsigned char *s1 = (unsigned char *) s;
 
 	while (*s1) {
