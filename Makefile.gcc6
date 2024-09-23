@@ -121,16 +121,8 @@ install: install_lib install_libb install_libm020 install_libm020bb install_libm
 install_lib:
 	$(MAKE) install_one kind=lib to=""
 	mv $(PREFIX)/m68k-amigaos/libnix/lib/libstubs.a $(PREFIX)/m68k-amigaos/lib/ 
-install_libb: install_lib
+install_libb: 
 	$(MAKE) install_one kind=libb to="libb/"
-	cd libb && $(root)/preplib
-	cd libb && $(root)/mkstub libnix4 libnix.def $$(cat ofiles.txt | xargs)
-	cd libb && $(CC) -shared -noixemul $$(cat ofiles.txt | xargs) libnix4-support/export*.o -o libnix4.library \
-	-Wl,-ulibVersionMajor=$(MAJOR),-ulibVersionMinor=$(MINOR),-ulibName=libnix4 \
-	$(STRIP)	
-	rsync libb/libnix4.a $(PREFIX)/m68k-amigaos/libnix/lib/
-	rsync libb/libnix4.library $(PREFIX)/m68k-amigaos/libnix/
-	
 install_libm020:
 	$(MAKE) install_one kind=libm020 to="libm020/"
 install_libm020bb:
@@ -241,6 +233,14 @@ lib$(libname).a: $(shell find $(root)/sources/$(lib)/* -name '*.c') $(stolen) $(
 	@#echo archive $(kind)/$@
 	@$(AR) rcs $@ $$(find ./$(lib)/* -name '*.o' -newer $(lib)/stamp)
 
+libb/libnix4.library:
+	cd libb && $(root)/preplib
+	cd libb && $(root)/mkstub libnix4 libnix.def $$(cat ofiles.txt | xargs)
+	cd libb && $(CC) -shared -noixemul $$(cat ofiles.txt | xargs) libnix4-support/export*.o -o libnix4.library \
+	-Wl,-ulibVersionMajor=$(MAJOR),-ulibVersionMinor=$(MINOR),-ulibName=libnix4 \
+	$(STRIP)	
+	rsync libb/libnix4.a $(PREFIX)/m68k-amigaos/libnix/lib/
+	rsync libb/libnix4.library $(PREFIX)/m68k-amigaos/libnix/
 
 # cleanup
 clean:
