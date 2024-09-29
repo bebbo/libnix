@@ -7,8 +7,6 @@
  * 4. 1900 was none, 2000 is one
  */
 
-extern int daylight;
-
 static char monthtable[]=
 { 31,29,31,30,31,30,31,31,30,31,30 };
 

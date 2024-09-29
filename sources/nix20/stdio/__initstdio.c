@@ -30,14 +30,11 @@ extern unsigned *__BUFSIZE;
 extern int __fflush(FILE *);
 extern void __seterrno(void);
 
-#ifdef __posix_threads__
-FILE * ___stdin[4];
-FILE **__sF = &___stdin[1];
-#else
-// hack: errno is here seen as int, and it's defined as struct in __sf.c
-// stdin, stdout, stderr are attached to errno.
-FILE **__sF = (FILE **) (&errno + 1); /* stdin, stdout, stderr */
-#endif
+extern FILE * ___stdin[4];
+extern int __errno__data;
+extern FILE * __sF__data[3];
+extern int * __errno;
+extern FILE **__sF;
 /*
  ** the internal storage
  */
