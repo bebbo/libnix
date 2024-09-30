@@ -55,7 +55,7 @@ struct tm *gmtime_r(const time_t *t, struct tm *result)
       tim-=monthtable[i];
   utim.tm_mon=i;
   utim.tm_mday=tim+1;
-  utim.tm_isdst=daylight;
+  utim.tm_isdst=_daylight;
   return &utim;
 }
 

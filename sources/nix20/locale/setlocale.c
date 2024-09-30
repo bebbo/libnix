@@ -23,8 +23,8 @@ static unsigned char *ctype;
 extern char *__decimalpoint;
 
 /* for LC_TIME */
-long timezone;
-//extern int daylight;
+long _timezone;
+//extern int _daylight;
 
 struct lconv __lconv;
 
@@ -163,9 +163,9 @@ char *setlocale(int category, const char *name) {
 	}
 
 	if (__localevec[LC_TIME - 1] != NULL)
-		timezone = __localevec[LC_TIME - 1]->loc_GMTOffset;
+		_timezone = __localevec[LC_TIME - 1]->loc_GMTOffset;
 	else
-		timezone = 0;
+		_timezone = 0;
 
 	return (char *) name;
 }

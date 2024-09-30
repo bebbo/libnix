@@ -72,13 +72,13 @@ int utimes(const char *file, const struct timeval *times) {
 		}
 		t = modtime.tv_sec;
 #if 0
-    extern long timezone;
+    extern long _timezone;
 #endif
 		t -= (2922L * SECSPERDAY); /* Datestamps start from Jan 1, 1978, unix
 		 time from Jan 1, 1970, i.e., 2922 days
 		 earlier! */
 #if 0
-    t -= timezone;	/* Adjust for local time */
+    t -= _timezone;	/* Adjust for local time */
 #endif
 		d.ds_Days = t / SECSPERDAY;
 		t %= SECSPERDAY;

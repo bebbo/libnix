@@ -2,13 +2,13 @@
 #include <dos/dos.h>
 #include <proto/dos.h>
 
-extern long timezone;
+extern long _timezone;
 
 time_t time(time_t *tloc)
 { struct DateStamp t;
   time_t ti;
   DateStamp(&t); /* Get timestamp */
-  ti=((t.ds_Days+2922)*1440+t.ds_Minute+timezone)*60+
+  ti=((t.ds_Days+2922)*1440+t.ds_Minute+_timezone)*60+
      t.ds_Tick/TICKS_PER_SECOND;
   if(tloc!=NULL)
     *tloc=ti;
