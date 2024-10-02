@@ -39,7 +39,7 @@ find math    -name "*.o" >> ofiles.txt
 rm -f all.def
 while IFS="" read -r p || [ -n "$p" ]
 do
-  m68k-amigaos-objdump -t "$p" | grep " 0000 01" | grep " .text" | xargs | awk '{print $6;}' >> all.def
+  m68k-amigaos-objdump -t "$p" | grep " 0000 01" | grep " .text" | xargs -0 | grep .text | awk '{print $6;}' >> all.def
 done < ofiles.txt
 
 cat all.def | grep . | sort > alls.def
@@ -48,7 +48,14 @@ cat all.def | grep . | sort > alls.def
 uniq -d alls.def
 
 # find all using some Base or internal variables
-echo Base >tainted.txt
+rm -f tainted.txt
+while IFS="" read -r p || [ -n "$p" ]
+do
+  x=$(m68k-amigaos-objdump -t "$p" | grep ' 0001 86\| 0000 21')
+  if [ "$x" != "" ]; then
+    m68k-amigaos-objdump -t "$p" | grep " 0000 01" | xargs -0 | awk '{print $6;}' | grep . >> tainted.txt
+  fi
+done < ofiles.txt
 
 fs=0
 
@@ -60,7 +67,7 @@ while [ $fs != $(stat --printf="%s" tainted.txt) ]; do
   do
     x=$(m68k-amigaos-objdump -t "$p" | grep -f tainted.txt)
     if [ "$x" != "" ]; then
-      m68k-amigaos-objdump -t "$p" | grep " 0000 01" | xargs | awk '{print $6;}' >> tainted2.txt
+      m68k-amigaos-objdump -t "$p" | grep " 0000 01" | xargs -0 | awk '{print $6;}' | grep . >> tainted2.txt
     fi
   done < ofiles.txt
   cat tainted2.txt | grep . | sort -u > tainted.txt
@@ -84,3 +91,11 @@ rm -f all.def
 rm -f alls.def
 rm -f tainted.txt
 rm -f tainted2.txt
+
+echo ".data ___sF" >>libnix.def
+echo ".data ___errno" >>libnix.def
+echo ".data __ctype_ptr" >>libnix.def
+echo ".data _environ_ptr" >>libnix.def
+echo ".data ___timezone" >>libnix.def
+echo ".data ___daylight" >>libnix.def
+echo ".data ___tzname" >>libnix.def
