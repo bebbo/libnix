@@ -4,7 +4,7 @@
 
 long __timezone__data = 0;
 int  __daylight__data = 0;
-char *__tzname__data[2];
+char *__tzname__data[2] = {"GMT", "GMT"};
 
 long * __timezone = &__timezone__data;
 int  * __daylight = &__daylight__data;
