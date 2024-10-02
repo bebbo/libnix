@@ -20,12 +20,27 @@ static __attribute__((noreturn)) __attribute__((noinline)) void __openliberror()
 		long * base = l++;
 		char const * const name = *(char **) (l++);
 		if (*base == -1) {
-			strcpy(buf, name);
-			strcat(buf, FAILED);
+			char * p = buf;
+			for (char const * q = name; *q;) { *p++ = *q++; } // strcpy
+			for (char const * q = FAILED; *q;) { *p++ = *q++; } // strcat
+			*p = 0;
 			Write(Output(), buf, strlen(buf));
 		}
 	}
 	exit(20);
+}
+
+__attribute__((noinline))
+static int endswithResource(char const * name) {
+	char const * p = name;
+	while (*p) ++p;
+	p -= 10;
+	if (p < name) return 0;
+	for (char const * q = ".resource";*q;++p, ++q) {
+		if (*p != *q)
+			return 0;
+	}
+	return 1;
 }
 
 void __initlibraries(void) {
@@ -34,7 +49,7 @@ void __initlibraries(void) {
 	while (*l) {
 		long * base = l++;
 		char const * const name = *(char **) (l++);
-		long lib = (long)(strstr(name, ".resource") ? OpenResource(name) : OldOpenLibrary(name));
+		long lib = (long)(endswithResource(name) ? OpenResource(name) : OldOpenLibrary(name));
 		if (lib)
 			*base = lib;
 		else
@@ -50,7 +65,7 @@ void __exitlibraries(void) {
 		long * base = l++;
 		char const * const name = *(char **) (l++);
 		if (*base != -1) {
-			if (!strstr(name, ".resource"))
+			if (!endswithResource(name))
 				CloseLibrary((struct Library *)*base);
 		}
 	}
