@@ -119,7 +119,7 @@ void ** __ptr_to_${n} = &__export_${n};
   	else
   		
 	echo >>$dir/export-$out.c "
-extern void ${n}();
+extern void *${n};
 __attribute__((section(\".dlist_so_export_${n}\")))
 char const * __name_${n} = \"${n}\";
 __attribute__((section(\".dlist_so_export_${n}\")))
@@ -196,5 +196,6 @@ m68k-amigaos-gcc -resident -Os -fomit-frame-pointer export*.c -c
 popd >/dev/null
 
 if [[ "$*" != "" ]]; then
+	echo	m68k-amigaos-gcc -shared -noixemul $* $dir/export-$out.o -o ${out}.library 
 	m68k-amigaos-gcc -shared -noixemul $* $dir/export-$out.o -o ${out}.library 
 fi
