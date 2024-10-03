@@ -1,11 +1,12 @@
-#ifndef __KICK13__
 #include <limits.h>
 #include <locale.h>
 #include <string.h>
 #include <stdlib.h>
 #include <dos/dos.h>
+#ifndef __KICK13__
 #include <libraries/locale.h>
 #include <proto/locale.h>
+#endif
 #include <proto/exec.h>
 #include "stabs.h"
 
@@ -60,20 +61,25 @@ char *setlocale(int category, const char *name) {
 	if (name == NULL) /* return name of current locale */
 	{
 		size_t s = 0;
-		for (i = a; i <= b; i++)
+		for (i = a; i <= b; i++) {
+#ifndef __KICK13__
 			if (__localevec[i] != NULL)
 				s += strlen((const char *) __localevec[i]->loc_LocaleName);
 			else
+#endif
 				s++; /* "C" locale */
+		}
 
 		if ((string = malloc(s + b - a + 1)) == NULL)
 			return NULL;
 
 		string[0] = '\0';
 		for (i = a; i <= b; i++) {
+#ifndef __KICK13__
 			if (__localevec[i] != NULL)
 				strcat(string, (const char *) __localevec[i]->loc_LocaleName);
 			else
+#endif
 				strcat(string, "C");
 			if (i != b)
 				strcat(string, "\n");
@@ -81,9 +87,7 @@ char *setlocale(int category, const char *name) {
 		return string;
 	}
 
-	if ((string = malloc(strlen_plus_one(name))) == NULL) /* gets freed next time */
-		return NULL;
-	strcpy(string, name);
+	string = strdup(name); /* gets freed next time or at end */
 
 	s1 = s2 = string;
 	for (i = a; i <= b; i++) {
@@ -91,6 +95,7 @@ char *setlocale(int category, const char *name) {
 			s2++;
 		c = *s2;
 		*s2 = '\0';
+#ifndef __KICK13__
 		if (LocaleBase == NULL || (s1[0] == 'C' && s1[1] == '\0')) /* This is the only place */
 			vec[i] = NULL; /* LocaleBase gets tested for NULL */
 		else if ((vec[i] = OpenLocale(s1[0]=='\0'?NULL:(STRPTR)s1)) == NULL) {
@@ -98,6 +103,9 @@ char *setlocale(int category, const char *name) {
 				CloseLocale(vec[i]);
 			return NULL;
 		}
+#else
+		vec[i] = NULL;
+#endif
 		*s2 = c;
 		if (c == '\0')
 			s2 = string;
@@ -105,11 +113,14 @@ char *setlocale(int category, const char *name) {
 	}
 
 	for (i = a; i <= b; i++) {
+#ifndef __KICK13__
 		if (__localevec[i] != NULL)
 			CloseLocale(__localevec[i]);
+#endif
 		__localevec[i] = vec[i];
 	}
 
+#ifndef __KICK13__
 	if (__localevec[LC_CTYPE - 1] != NULL) {
 		struct Locale *locale = __localevec[LC_CTYPE - 1];
 		ctype[0] = 0;
@@ -118,8 +129,10 @@ char *setlocale(int category, const char *name) {
 					| (IsSpace(locale,i) ? 8 : 0) | (IsDigit(locale,i) ? 4 : 0) | (IsLower(locale,i) ? 2 : 0) | (IsUpper(locale,i) ? 1 : 0);
 		_ctype_ptr = ctype;
 	} else
+#endif
 		_ctype_ptr = _ctype_ptr__data;
 
+#ifndef __KICK13__
 	if (__localevec[LC_MONETARY - 1] != NULL) {
 		struct Locale *locale = __localevec[LC_MONETARY - 1];
 		__lconv.int_curr_symbol = (char *) locale->loc_MonIntCS;
@@ -137,7 +150,9 @@ char *setlocale(int category, const char *name) {
 		__lconv.n_cs_precedes = locale->loc_MonNegativeCSPos;
 		__lconv.n_sep_by_space = locale->loc_MonNegativeSpaceSep;
 		__lconv.n_sign_posn = locale->loc_MonNegativeSignPos;
-	} else {
+	} else
+#endif
+	{
 		__lconv.int_curr_symbol = "";
 		__lconv.currency_symbol = "";
 		__lconv.mon_decimal_point = "";
@@ -157,14 +172,24 @@ char *setlocale(int category, const char *name) {
 
 	if (__localevec[LC_NUMERIC - 1] != NULL) {
 		struct Locale *locale = __localevec[LC_NUMERIC - 1];
+#ifndef __KICK13__
 		__lconv.decimal_point = (char*) locale->loc_DecimalPoint;
+#else
+		__lconv.decimal_point = (char*) ".";
+#endif
 		__decimalpoint = __lconv.decimal_point;
+#ifndef __KICK13__
 		__lconv.thousands_sep = (char*) locale->loc_GroupSeparator;
+#else
+		__lconv.thousands_sep = (char*)",";
+#endif
 	}
 
+#ifndef __KICK13__
 	if (__localevec[LC_TIME - 1] != NULL)
 		_timezone = __localevec[LC_TIME - 1]->loc_GMTOffset;
 	else
+#endif
 		_timezone = 0;
 
 	return (char *) name;
@@ -186,5 +211,4 @@ void __exitlocale(void) {
 
 ADD2INIT(__initlocale, -10);
 ADD2EXIT(__exitlocale, -10);
-#endif
 
