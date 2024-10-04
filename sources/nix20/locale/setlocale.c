@@ -15,9 +15,9 @@ extern struct LocaleBase *LocaleBase;
 extern struct Locale *__localevec[];
 
 /* for LC_CTYPE */
-extern const unsigned char _ctype_ptr__data[];
+extern const unsigned char _ctype___data[];
 __near
-extern const unsigned char * _ctype_ptr;
+extern const unsigned char * _ctype_;
 static unsigned char *ctype;
 
 /* for LC_NUMERIC */
@@ -127,10 +127,10 @@ char *setlocale(int category, const char *name) {
 		for (i = 0; i < 256; i++)
 			ctype[i + 1] = ((IsPrint(locale,i) && !IsGraph(locale, i)) ? 128 : 0) | (IsXDigit(locale,i) ? 64 : 0) | (IsCntrl(locale,i) ? 32 : 0) | (IsPunct(locale,i) ? 16 : 0)
 					| (IsSpace(locale,i) ? 8 : 0) | (IsDigit(locale,i) ? 4 : 0) | (IsLower(locale,i) ? 2 : 0) | (IsUpper(locale,i) ? 1 : 0);
-		_ctype_ptr = ctype;
+		_ctype_ = ctype;
 	} else
 #endif
-		_ctype_ptr = _ctype_ptr__data;
+		_ctype_ = _ctype___data;
 
 #ifndef __KICK13__
 	if (__localevec[LC_MONETARY - 1] != NULL) {
@@ -203,10 +203,12 @@ void __initlocale(void) {
 }
 
 void __exitlocale(void) {
+#ifndef __KICK13__
 	int i;
 	for (i = 0; i < 5; i++)
 		if (__localevec[i] != NULL)
 			CloseLocale(__localevec[i]);
+#endif
 }
 
 ADD2INIT(__initlocale, -10);

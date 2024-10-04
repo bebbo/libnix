@@ -1,2 +1,2 @@
-char __decimalpoint_data = '.';
-char * __decimalpoint = &__decimalpoint_data;
+char __decimalpoint__data = '.';
+char * __decimalpoint = &__decimalpoint__data;

@@ -14,6 +14,8 @@ size_t strxfrm(char *buffer, const char *s, size_t n) {
 		return StrConvert(__localevec[LC_COLLATE-1], (STRPTR )s, (STRPTR )buffer, n, SC_COLLATE1);
 }
 #else
-#include <stabs.h>
-ALIAS(strxfrm,strncpy);
+size_t strxfrm(char *buffer, const char *s, size_t n) {
+	strncpy(buffer, s, n);
+	return strlen(s);
+}
 #endif

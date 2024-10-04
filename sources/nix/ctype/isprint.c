@@ -1,4 +1,4 @@
-extern const unsigned char * _ctype_ptr;
+extern const unsigned char * _ctype_;
 
 int isprint(int c)
-{ return _ctype_ptr[1+c]&151; }
+{ return _ctype_[1+c]&151; }

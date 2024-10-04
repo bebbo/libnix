@@ -71,12 +71,12 @@ extern __stdargs int toascii_l (int __c, locale_t __l);
 #define	_B	0200
 
 #ifdef __HAVE_LOCALE_INFO__
-__stdargs const char *__locale_ctype_ptr (void);
+__stdargs const char *__locale_ctype_ (void);
 #else
-#define __locale_ctype_ptr()	_ctype_ptr
+#define __locale_ctype_()	_ctype_
 #endif
 
-# define __CTYPE_PTR	(__locale_ctype_ptr ())
+# define __CTYPE_PTR	(__locale_ctype_ ())
 
 #ifndef __cplusplus
 /* These macros are intentionally written in a manner that will trigger
@@ -114,7 +114,7 @@ __stdargs const char *__locale_ctype_ptr (void);
 #ifdef __HAVE_LOCALE_INFO__
 __stdargs const char *__locale_ctype_ptr_l (locale_t);
 #else
-#define __locale_ctype_ptr_l(l)	_ctype_ptr
+#define __locale_ctype_ptr_l(l)	_ctype_
 #endif
 #define __ctype_lookup_l(__c,__l) ((__locale_ctype_ptr_l(__l)+sizeof(""[__c]))[(int)(__c)])
 
@@ -177,7 +177,7 @@ __stdargs const char *__locale_ctype_ptr_l (locale_t);
 #endif /* !__cplusplus */
 
 /* For C++ backward-compatibility only.  */
-extern const char	* _ctype_ptr;
+extern const char	* _ctype_;
 
 _END_STD_C
 

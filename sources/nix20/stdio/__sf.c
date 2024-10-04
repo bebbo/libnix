@@ -3,6 +3,7 @@
 asm("\t.bss");
 asm("____stdin: .globl ____stdin");
 asm("___errno__data: .globl ___errno__data");
+asm("__impure_ptr__data: .globl __impure_ptr__data");
 asm("\t.long 0");
 asm("___sF__data: .globl ___sF__data");
 asm("\t.long 0");

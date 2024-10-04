@@ -94,8 +94,10 @@ rm -f tainted2.txt
 
 echo ".data ___sF" >>libnix.def
 echo ".data ___errno" >>libnix.def
-echo ".data __ctype_ptr" >>libnix.def
+echo ".data __ctype_" >>libnix.def
 echo ".data _environ_ptr" >>libnix.def
 echo ".data ___timezone" >>libnix.def
 echo ".data ___daylight" >>libnix.def
 echo ".data ___tzname" >>libnix.def
+echo ".data ___decimalpoint" >>libnix.def
+echo ".data __impure_ptr" >>libnix.def
