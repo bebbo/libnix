@@ -245,7 +245,7 @@ static const struct Resident RomTag = {
 /*                                                                            */
 /******************************************************************************/
 
-__attribute__((section(".list___FuncTable__")))
+__attribute__((section(".list___FuncTable__,\"aw\"")))
 APTR __FuncTable__[] = {0};
 
 ADD2LIST(DevOpen,__FuncTable__,22);
