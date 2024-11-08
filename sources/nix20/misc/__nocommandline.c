@@ -38,7 +38,7 @@ extern char  *__commandline;
 extern unsigned long __commandlen;
 extern struct WBStartup *_WBenchMsg;
 
-extern char __stdiowin[];
+extern char * __stdiowin;
 
 static char *cline=NULL; /* Copy of commandline */
 static BPTR cd=0l;       /* Lock for Current Directory */
@@ -54,7 +54,7 @@ void __nocommandline(void)
   struct WBStartup *wbs=_WBenchMsg;
 
   if(wbs!=NULL)
-  { if(__stdiowin[0])
+  { if(__stdiowin)
     { BPTR win;
 
       if((window=win=Open(__stdiowin,MODE_OLDFILE))==0l)
