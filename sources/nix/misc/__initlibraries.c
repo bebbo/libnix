@@ -34,7 +34,7 @@ __attribute__((noinline))
 static int endswithResource(char const * name) {
 	char const * p = name;
 	while (*p) ++p;
-	p -= 10;
+	p -= 9;
 	if (p < name) return 0;
 	for (char const * q = ".resource";*q;++p, ++q) {
 		if (*p != *q)
