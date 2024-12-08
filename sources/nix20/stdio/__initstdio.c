@@ -18,7 +18,16 @@
 #define KPrintF(a,...)
 #endif
 
-#include "../../nix/stdio/__filenode.h"
+/* objects in ___filelist */
+#include <exec/lists.h>
+struct filenode {
+  struct MinNode node;
+  FILE theFILE;
+};
+
+/* own stuff */
+extern struct MinList ___filelist; /* List of all fopen'ed files */
+extern struct MinList __memorylist; /* List of memory puddles */
 
 extern struct ExecBase * SysBase;
 
