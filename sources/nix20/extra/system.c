@@ -48,10 +48,6 @@ int execve(const char *path, char *const argv[], char *const envp[]) {
 	return execv(path, argv);
 }
 
-int pipe(int pipefd[2]) {
-	return -1;
-}
-
 pid_t fork(void) {
 	return 0;
 }

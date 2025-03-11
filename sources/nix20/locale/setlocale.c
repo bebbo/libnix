@@ -24,7 +24,7 @@ static unsigned char *ctype;
 extern char *__decimalpoint;
 
 /* for LC_TIME */
-long _timezone;
+extern long __timezone__data;
 //extern int _daylight;
 
 struct lconv __lconv;
@@ -187,10 +187,10 @@ char *setlocale(int category, const char *name) {
 
 #ifndef __KICK13__
 	if (__localevec[LC_TIME - 1] != NULL)
-		_timezone = __localevec[LC_TIME - 1]->loc_GMTOffset;
+		__timezone__data = __localevec[LC_TIME - 1]->loc_GMTOffset * 60;
 	else
 #endif
-		_timezone = 0;
+		__timezone__data = 0;
 
 	return (char *) name;
 }

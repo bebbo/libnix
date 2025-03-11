@@ -71,9 +71,6 @@ int utimes(const char *file, const struct timeval *times) {
 			modtime.tv_usec %= 1000000;
 		}
 		t = modtime.tv_sec;
-#if 0
-    extern long _timezone;
-#endif
 		t -= (2922L * SECSPERDAY); /* Datestamps start from Jan 1, 1978, unix
 		 time from Jan 1, 1970, i.e., 2922 days
 		 earlier! */
