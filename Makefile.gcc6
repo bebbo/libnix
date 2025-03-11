@@ -10,6 +10,8 @@ CFLAGS ?= -Os -fomit-frame-pointer
 uname := $(shell uname)
 root ?= $(shell echo $$PWD)
 export root
+
+target ?= m68k-amigaos
  
 MAKEFILES=$(root)/Makefile.gcc6
 
@@ -31,9 +33,9 @@ endif
 
 # use nix13 or nix20
 ifeq (,$(lc))
-CC = m68k-amigaos-gcc
-AR = m68k-amigaos-ar
-AS = m68k-amigaos-as
+CC = $(target)-gcc
+AR = $(target)-ar
+AS = $(target)-as
 
 VARIANTS_TO_BUILD = info lib libb libm020 libm020bb libm020bb32 libm881 libm020bb881 libm020bb32881
 LIBS_TO_BUILD ?= libnix libnix13 libnix20 libnixmain libnix_main libm libsocket libstub
@@ -120,7 +122,7 @@ install: install_lib install_libb install_libm020 install_libm020bb install_libm
 	
 install_lib:
 	$(MAKE) install_one kind=lib to=""
-	mv $(PREFIX)/m68k-amigaos/libnix/lib/libstubs.a $(PREFIX)/m68k-amigaos/lib/ 
+	mv $(PREFIX)/$(target)/libnix/lib/libstubs.a $(PREFIX)/$(target)/lib/ 
 install_libb: 
 	$(MAKE) install_one kind=libb to="libb/"
 install_libm020:
@@ -144,9 +146,9 @@ install_libm060bb32:
 
 # install the files for the given $(kind) into $(to)
 install_one:
-	mkdir -p $(PREFIX)/m68k-amigaos/libnix/lib/$(to)
-	rsync $(kind)/*.a $(PREFIX)/m68k-amigaos/libnix/lib/$(to) --exclude=$(kind)/libstubs.a
-	find $(kind) -maxdepth 1 -name "*.o" -exec cp {} $(PREFIX)/m68k-amigaos/libnix/lib/$(to) \;
+	mkdir -p $(PREFIX)/$(target)/libnix/lib/$(to)
+	rsync $(kind)/*.a $(PREFIX)/$(target)/libnix/lib/$(to) --exclude=$(kind)/libstubs.a
+	find $(kind) -maxdepth 1 -name "*.o" -exec cp {} $(PREFIX)/$(target)/libnix/lib/$(to) \;
 
 # startup stuff
 .PHONY: libdir
@@ -242,8 +244,8 @@ libb/libnix4.library:
 	-Wl,-ulibVersionMajor=$(MAJOR),-ulibVersionMinor=$(MINOR),-ulibName=libnix4 \
 	$(STRIP)
 	$(AR) rcs libb/libnix4.a lib/nix/__initlibraries.o lib/nix/__initcpp.o lib/nix20/__nocommandline.o lib/nixmain/__stdiowin.o
-	rsync libb/libnix4.a $(PREFIX)/m68k-amigaos/libnix/lib/
-	rsync libb/libnix4.library $(PREFIX)/m68k-amigaos/libnix/
+	rsync libb/libnix4.a $(PREFIX)/$(target)/libnix/lib/
+	rsync libb/libnix4.library $(PREFIX)/$(target)/libnix/
 
 # cleanup
 clean:
