@@ -32,10 +32,3 @@ struct MsgPort *CreatePort(CONST_STRPTR name,LONG pri)
   return port;
 }
 
-VOID DeletePort(struct MsgPort *port)
-{ APTR SysBase = *(APTR *)4L;
-
-  if (port->mp_Node.ln_Name)
-    RemPort(port);
-  FreeSignal(port->mp_SigBit); FreeMem(port,sizeof(*port));
-}
