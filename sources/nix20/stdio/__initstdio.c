@@ -27,7 +27,6 @@ struct filenode {
 
 /* own stuff */
 extern struct MinList ___filelist; /* List of all fopen'ed files */
-extern struct MinList __memorylist; /* List of memory puddles */
 
 extern struct ExecBase * SysBase;
 
@@ -39,9 +38,6 @@ extern unsigned *__BUFSIZE;
 extern int __fflush(FILE *);
 extern void __seterrno(void);
 
-extern FILE * ___stdin[4];
-extern int __errno__data;
-extern FILE * __sF__data[3];
 extern int * __errno;
 extern FILE **__sF;
 /*
@@ -49,6 +45,7 @@ extern FILE **__sF;
  */
 StdFileDes **__stdfiledes;
 unsigned __stdfilesize;
+unsigned __stdfilesize_max;
 #ifdef __posix_threads__
 unsigned __stdLock[2];
 #endif
@@ -159,7 +156,7 @@ int __fclose(FILE * stream) {
 	return error;
 }
 
-static StdFileDes * stdfiledes(BPTR fh) {
+static StdFileDes * __mk_stdfiledes(BPTR fh) {
 	StdFileDes *sfd = (StdFileDes *) malloc(sizeof(StdFileDes));
 	if (sfd) {
 		__stdfiledes[__stdfilesize] = sfd;
@@ -169,7 +166,7 @@ static StdFileDes * stdfiledes(BPTR fh) {
 		_setup_file(sfd);
 		sfd->lx_flags |= LX_SYS;
 	}
-	KPrintF("stdfiledes [__stdfiledes=%ld, __stdfilecount=%ld]\n", __stdfiledes, __stdfilesize);
+	KPrintF("__mk_stdfiledes [__stdfiledes=%ld, __stdfilecount=%ld]\n", __stdfiledes, __stdfilesize);
 	return sfd;
 }
 
@@ -181,13 +178,14 @@ void __initstdio(void) {
 #ifdef __KICK13__
 	__stdfilesize = 0;
 #endif
+	__stdfilesize_max = 4;
 	if ((__stdfiledes = (StdFileDes **) malloc(4 * sizeof(StdFileDes *)))) {
 		unsigned __bufsiz = *__BUFSIZE;
 		*__BUFSIZE = 512;
-		if ((sfd = stdfiledes(Input()))) {
+		if ((sfd = __mk_stdfiledes(Input()))) {
 			sfd->lx_oflags = O_RDONLY;
 			*__BUFSIZE = __bufsiz;
-			if ((sfd = stdfiledes(Output()))) {
+			if ((sfd = __mk_stdfiledes(Output()))) {
 				BPTR bstderr;
 				struct Process * proc = (struct Process *) SysBase->ThisTask;
 #ifdef __KICK13__
@@ -200,7 +198,7 @@ void __initstdio(void) {
 				  (!proc->pr_CLI || (bstderr = stderrdes = Open((CONST_STRPTR)"*", MODE_OLDFILE)) == 0))
 					bstderr = __stdfiledes[STDOUT_FILENO]->lx_fh;
 
-				if ((sfd = stdfiledes(bstderr))) {
+				if ((sfd = __mk_stdfiledes(bstderr))) {
 					__stdfiledes[3] = 0; // have a free one
 					{
 						short flags;
