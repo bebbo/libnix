@@ -7,7 +7,6 @@
 
 extern StdFileDes **__stdfiledes;
 extern unsigned __stdfilesize;
-extern unsigned __stdfilesize_max;
 #ifdef __posix_threads__
 unsigned __stdLock[2];
 #endif
@@ -68,7 +67,7 @@ static StdFileDes *__allocfd2(void) {
 	StdFileDes *fp, **sfd;
 	int file, max;
 
-	for (sfd = __stdfiledes, max = __stdfilesize_max, file = 0; file < max; sfd++, file++)
+	for (sfd = __stdfiledes, max = __stdfilesize, file = 0; file < max; sfd++, file++)
 		if (!sfd[0] || !sfd[0]->lx_inuse)
 			break;
 
@@ -84,7 +83,7 @@ static StdFileDes *__allocfd2(void) {
 		}
 		__stdfiledes = sfd;
 		*(sfd = &sfd[file]) = 0;
-		__stdfilesize++;
+		++__stdfilesize;
 	}
 
 	if ((fp = sfd[0]) == NULL) {

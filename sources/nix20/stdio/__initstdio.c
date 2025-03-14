@@ -45,7 +45,6 @@ extern FILE **__sF;
  */
 StdFileDes **__stdfiledes;
 unsigned __stdfilesize;
-unsigned __stdfilesize_max;
 #ifdef __posix_threads__
 unsigned __stdLock[2];
 #endif
@@ -178,8 +177,7 @@ void __initstdio(void) {
 #ifdef __KICK13__
 	__stdfilesize = 0;
 #endif
-	__stdfilesize_max = 4;
-	if ((__stdfiledes = (StdFileDes **) malloc(4 * sizeof(StdFileDes *)))) {
+	if ((__stdfiledes = (StdFileDes **) malloc(3 * sizeof(StdFileDes *)))) {
 		unsigned __bufsiz = *__BUFSIZE;
 		*__BUFSIZE = 512;
 		if ((sfd = __mk_stdfiledes(Input()))) {
@@ -199,7 +197,6 @@ void __initstdio(void) {
 					bstderr = __stdfiledes[STDOUT_FILENO]->lx_fh;
 
 				if ((sfd = __mk_stdfiledes(bstderr))) {
-					__stdfiledes[3] = 0; // have a free one
 					{
 						short flags;
 						// fdopen stdin, stdout and stderr and make stderr unbuffered

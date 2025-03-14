@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 const char * __sys_errlist__data[] = {
-	"Undefined error",
+	"No error",
 
 	"Operation not permitted",	// 1: EPERM
 	"No such file or directory",	// 2: ENOENT
@@ -170,7 +170,7 @@ errno;
 extern void __seterrno(void);
 
 char *strerror(int eno)
-{ if(eno<1||eno>=sys_nerr)
+{ if(eno<0||eno>=sys_nerr)
   { int saved_errno=errno;
     __seterrno();
     eno = errno;
