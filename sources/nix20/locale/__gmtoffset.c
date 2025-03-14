@@ -1,8 +1,10 @@
 /* Greenwich mean time offset and daylight savings time flag 
  */
 #include <time.h>
+#ifndef __KICK13__
 #include <proto/locale.h>
 #include <stabs.h>
+#endif
 
 long __timezone__data = 0;
 int  __daylight__data = 0;
@@ -24,4 +26,6 @@ void tzset() {
 #endif
 }
 
+#ifndef __KICK13__
 ADD2INIT(tzset, -11);
+#endif
