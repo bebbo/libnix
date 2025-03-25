@@ -10,15 +10,53 @@
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include "stabs.h"
-#include "stdio.h"
+#include "amistdio.h"
 
-#if 0
+#ifdef TRACK_AND_CHECK
+
+int __track_max;
+long * __track;
+
+void __trackMe(int no, int sz) {
+	if (no >= __track_max) {
+		long * t = (long *) AllocVec(__track_max * sizeof(long) * 2, MEMF_CLEAR);
+		memcpy(t, __track, __track_max * sizeof(long));
+		FreeVec(__track);
+		__track = t;
+		__track_max += __track_max;
+	}
+	__track[no] = sz;
+}
+
+void __untrackMe(int no) {
+	if (no >= __track_max) {
+		printf("invalid track no %ld\n", no);
+		return;
+	}
+	__track[no] = 0;
+}
+
+void __initmalloc() {
+	__track_max = 1000;
+	__track = (long*)AllocVec(__track_max*sizeof(long), MEMF_CLEAR);
+}
+void __exitmalloc() {
+	for (int i = 0; i < __track_max; ++i) {
+		int sz = __track[i];
+		if (sz)
+			printf("not freed #%ld size=%ld\n", i, sz);
+	}
+	FreeVec(__track);
+}
+ADD2INIT(__initmalloc,-50);
+ADD2EXIT(__exitmalloc,-50);
+
 
 __attribute__((noinline)) void foo(void * p, int sz, int no, int na, int nz) {
-	printf("trashed mem at %p sz=%d alloc #%d damaged: before %d, behind %d\n", p, sz, no, na, nz);
+	printf("trashed mem at %08lx sz=%ld alloc #%ld damaged: before %ld, behind %ld\n", p, sz, no, na, nz);
 }
 __attribute__((noinline)) void faa(void * p) {
-	printf("invalid free%p\n", p);
+	printf("invalid free%08lx\n", p);
 }
 #if 0
 #define N 256
@@ -37,14 +75,16 @@ void * malloc(size_t size) {
 	size = (size + 3) & ~3; // round up
 
 	// protect the memory
-	char * const p = (char *)AllocVec(size + X + ADD + N, MEMF_PUBLIC);
+	char * p = (char *)AllocVec(size + X + ADD + N, MEMF_PUBLIC);
 
 	char * q = p;
 	// size
 	*(int*)q = size;
 	q += 4;
 	// no
-	*(int*)q = ++NO;
+	int no = ++NO;
+	__trackMe(no, size);
+	*(int*)q = no;
 	q += 4;
 	// 0 1 2 3 ... 255 before
 	for (int i = 0; i < N; ++i)
@@ -72,6 +112,7 @@ void free(void * _p) {
 	int size = *(int*)q;
 	q += 4;
 	int no = *(int*)q;
+	__untrackMe(no);
 	q += 4;
 	int bada = 0;
 	for (int i = 0; i < N; ++i)
@@ -89,6 +130,7 @@ void free(void * _p) {
 	else
 		FreeVec(p);
 }
+
 
 #else
 extern ULONG *__MEMORY_STEP;
@@ -124,6 +166,8 @@ void *malloc(size_t size)
   size2=(size2+4095)&~4095; /* Blow up to full MMU Page */
   if((b=(struct MemHeader *)AllocMem(size2,MEMF_ANY))!=NULL)
   {
+//	  printf("AllocMem(%ld) -> %08lx\n", size2, b);
+
     b->mh_Lower=b->mh_First=(struct MemChunk *)(b+1);
     b->mh_First->mc_Next=NULL;
     b->mh_Free=b->mh_First->mc_Bytes=size2-sizeof(struct MemHeader);
@@ -138,7 +182,7 @@ void *malloc(size_t size)
  end:
   ReleaseSemaphore(__memsema);
 
-//	printf("malloc    %08x: %8d\n", a, size); fflush(stdout);
+//	printf("malloc    %08lx: %ld\n", a, size); fflush(stdout);
 
   return a;
 }
@@ -158,6 +202,7 @@ void free(void *ptr) {
 	for (;;) {
 		if (((struct MinNode *) a)->mln_Succ == NULL) /* Is not in list ????? */
 		{
+			puts("OUCH!");
 			return;
 		}
 
@@ -172,6 +217,7 @@ void free(void *ptr) {
 	if (a->mh_Free == (size_t)((char *) a->mh_Upper - (char *) a->mh_Lower)) /* All free ? */
 	{
 		Remove(&a->mh_Node);
+//		  printf("FreeMem(%08lx, %ld)\n", a, (char *)a->mh_Upper-(char *)a);
 		FreeMem(a, (char * )a->mh_Upper - (char * )a);
 	}
 	ReleaseSemaphore(__memsema);
@@ -192,8 +238,10 @@ void __initmalloc(void)
 
 void __exitmalloc(void)
 { struct MemHeader *a;
-  while((a=(struct MemHeader *)RemHead((struct List *)&__memorylist))!=NULL)
+  while((a=(struct MemHeader *)RemHead((struct List *)&__memorylist))!=NULL) {
+//	  printf("FreeMem(%08lx, %ld)\n", a, (char *)a->mh_Upper-(char *)a);
     FreeMem(a,(char *)a->mh_Upper-(char *)a); /* free all memory */
+  }
   FreeMem(__memsema, sizeof(struct SignalSemaphore));
 }
 

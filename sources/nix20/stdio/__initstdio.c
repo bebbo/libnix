@@ -301,7 +301,9 @@ void __exitstdio(void) {
 			sfd->lx_inuse = 1; // force closing
 			close(i);
 		}
+//		free(sfd); // freed by __exitmalloc
 	}
+//	free(__stdfiledes); // freed by __exitmalloc
 
 	if (stderrdes)
 		Close(stderrdes);
