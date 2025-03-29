@@ -47,7 +47,16 @@ int amivsnprintf(char * buff, int sz, const char *fmt, va_list args) {
 }
 
 int amivfprintf(BPTR f, const char *fmt, va_list args) {
-	int r = amivsnprintf(buffer, bsz, fmt, args);
+	int r;
+	for(;;) {
+		r = amivsnprintf(buffer, bsz, fmt, args);
+		if (r + 1 < bsz)
+			break;
+		int lbsz = bsz;
+		setPrintfBufferSize(bsz + strlen(fmt));
+		if (bsz == lbsz)
+			break;
+	}
 	FPuts(f, buffer);
 	if (strchr(buffer, '\n'))
 		Flush(f);

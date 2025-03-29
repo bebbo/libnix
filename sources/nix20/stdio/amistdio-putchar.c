@@ -10,6 +10,5 @@
 #include <proto/exec.h>
 
 void amiputchar(char c) {
-	BPTR f = Output();
-	Write(f, &c, 1);
+	FPutC(Output(), c);
 }
