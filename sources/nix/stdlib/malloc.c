@@ -10,8 +10,8 @@
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include "stabs.h"
-#include "amistdio.h"
 
+//#define TRACK_AND_CHECK
 #ifdef TRACK_AND_CHECK
 
 int __track_max;
@@ -202,7 +202,6 @@ void free(void *ptr) {
 	for (;;) {
 		if (((struct MinNode *) a)->mln_Succ == NULL) /* Is not in list ????? */
 		{
-			puts("OUCH!");
 			return;
 		}
 
