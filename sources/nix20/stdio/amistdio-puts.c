@@ -12,7 +12,7 @@
 int amiputs(char const *s) {
 	BPTR f = Output();
 	ULONG l = strlen(s);
-	Write(f, s, l);
-	Write(f, "\r\n", 2);
+	FPuts(f, s);
+	FPuts(f, "\r\n");
 	return l + 2;
 }
