@@ -9,8 +9,8 @@
 #include <proto/dos.h>
 #include <proto/exec.h>
 
-static int bsz = 128;
-static char __printf_default_buffer[128];
+static char __printf_default_buffer[80];
+static int bsz = sizeof(__printf_default_buffer);
 static char *buffer = __printf_default_buffer;
 
 void __freeBuff() {
@@ -50,12 +50,13 @@ int amivfprintf(BPTR f, const char *fmt, va_list args) {
 	int r;
 	for(;;) {
 		r = amivsnprintf(buffer, bsz, fmt, args);
-		if (r + 1 < bsz)
+		if (r + 1 < bsz) // reached end of buffer?
 			break;
-		int lbsz = bsz;
-		setPrintfBufferSize(bsz + strlen(fmt));
-		if (bsz == lbsz)
-			break;
+		int obsz = bsz; // try to resize
+		setPrintfBufferSize(bsz * 3);
+		if (obsz == bsz)
+			break; // resize failed
+		// print again with longer buffer
 	}
 	FPuts(f, buffer);
 	if (strchr(buffer, '\n'))

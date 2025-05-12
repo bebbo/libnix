@@ -10,5 +10,10 @@
 #include <proto/exec.h>
 
 void amiputchar(char c) {
+<<<<<<< HEAD
 	FPutC(Output(), c);
+=======
+	BPTR f = Output();
+	FPutC(f, c);
+>>>>>>> refs/heads/master
 }
