@@ -41,6 +41,12 @@ unsigned short __cleanupflag = 0;
 long __save_a4;
 long __save_sp;
 
+struct A4List {
+	struct A4List * next;
+	void * code;
+	ULONG a4;
+} __a4List;
+
 __attribute__((section(".list___INIT_LIST__")))
 const int __INIT_LIST__[1] = { 0 };
 __attribute__((section(".list___EXIT_LIST__")))
@@ -66,10 +72,6 @@ int __ZZZ_DLIST__[1] = { 0 };
 
 long __LibClose(struct Library *childLib asm("a6"));
 void __callfuncs(const int *p asm("a2"), unsigned short prioo asm("d2"));
-
-void __restore_a4() {
-	asm volatile("lea 32766(a6),a4");
-}
 
 static inline VOID __NewList(struct List *_NewList_list) {
 	_NewList_list->lh_TailPred = (struct Node*) _NewList_list;
@@ -215,8 +217,32 @@ __LibOpen(struct Library *_masterlib asm("a6")) {
 		childLib = 0;
 	}
 
+	// queue the library into pr_Task->tc_TrapData
+	__a4List.next = (struct A4List *)task->tc_TrapData;
+	__a4List.code = __LibOpen;
+	__a4List.a4 = a4;
+	task->tc_TrapData = &__a4List;
+
 	asm volatile("move.l	(a7)+,a4" : "=r"(a4));
 	return childLib;
+}
+
+/**
+ * A safe way to restore a4: search the A4List
+ */
+void __restore_a4() {
+	asm volatile("movem.l d0/a0/a1,-(a7)");
+	struct ExecBase * SysBase = *(struct ExecBase **)4;
+	struct Task * task = SysBase->ThisTask;
+	struct A4List * a4i = (struct A4List *)task->tc_TrapData;
+	while (a4i) {
+		if (a4i->code == __LibOpen) {
+			asm volatile("move.l %0,a4" :: "a"(a4i->a4));
+			break;
+		}
+		a4i = a4i->next;
+	}
+	asm volatile("movem.l (a7)+,d0/a0/a1");
 }
 
 // close the library
@@ -243,7 +269,7 @@ long __LibClose(struct Library *childLib asm("a6")) {
 		Remove((struct Node* )&childLib[1]);
 		FreeVec(((char* )childLib) - childLib->lib_NegSize);
 
-		// load a4 with initila data segment
+		// load a4 with initial data segment
 		asm volatile("lea	___a4_init,%0;\n" : "=r"(a4));
 		/* one less user */
 		if (!__theMasterLib->lib_OpenCnt && (__theMasterLib->lib_Flags & LIBF_DELEXP))
