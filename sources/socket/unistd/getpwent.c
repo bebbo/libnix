@@ -249,6 +249,8 @@ struct passwd *getpwuid(uid_t uid)
       /* Don't do this if uid == -2 (nobody2) */
       /* This happens when someone doesn't use AmiTCP's login */
       if (uid != (uid_t)-2) {
+    	  if (!USERGROUP_BASE_NAME)
+    		  return 0;
         if ((pwd=__TCP2InetPwd(UG_getpwuid(uid),lss)) == NULL)
           errno = ug_GetErr();
         return pwd;
