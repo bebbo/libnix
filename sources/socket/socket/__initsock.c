@@ -396,7 +396,6 @@ void __initsocket(void)
     DB( BUG("progname is %s\n", progname); )
 
 	SocketBase = lss->lx_BsdSocketBase;
-    printf("%p\n", SocketBase);
 
     list[3].ti_Data = (1L << lss->lx_sigurg);
     list[4].ti_Data = (1L << lss->lx_sigio);
